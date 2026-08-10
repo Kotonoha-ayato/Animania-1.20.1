@@ -1,12 +1,14 @@
 modLoader="javafml"
 loaderVersion="${loader_version_range}"
 license="LGPL-3.0-or-later"
-issueTrackerURL="https://github.com/capnkirok/animaniamod/issues"
+issueTrackerURL="https://github.com/kawer95/Animania-1.20.1/issues"
 
 [[mods]]
 modId="${mod_id}"
 version="${mod_version}"
 displayName="${mod_name}"
+displayURL="https://github.com/kawer95/Animania-1.20.1"
+updateJSONURL="https://raw.githubusercontent.com/kawer95/Animania-1.20.1/main/version-check.json"
 authors="Animania Team; capnkirok and upstream contributors"
 description='''${mod_description}'''
 
