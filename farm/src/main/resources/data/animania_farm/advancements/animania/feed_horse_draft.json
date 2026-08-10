@@ -13,31 +13,85 @@
   "parent": "animania_farm:animania/root",
   "criteria": {
     "foal": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:wheat"
+        },
+        "entity": "animania_farm:foal_draft"
+      }
     },
     "foal1": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:carrot"
+        },
+        "entity": "animania_farm:foal_draft"
+      }
     },
     "foal2": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:apple"
+        },
+        "entity": "animania_farm:foal_draft"
+      }
     },
     "mare": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:wheat"
+        },
+        "entity": "animania_farm:mare_draft"
+      }
     },
     "mare1": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:carrot"
+        },
+        "entity": "animania_farm:mare_draft"
+      }
     },
     "mare2": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:apple"
+        },
+        "entity": "animania_farm:mare_draft"
+      }
     },
     "stallion": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:carrot"
+        },
+        "entity": "animania_farm:stallion_draft"
+      }
     },
     "stallion1": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:wheat"
+        },
+        "entity": "animania_farm:stallion_draft"
+      }
     },
     "stallion2": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:apple"
+        },
+        "entity": "animania_farm:stallion_draft"
+      }
     }
   },
   "requirements": [

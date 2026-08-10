@@ -13,13 +13,22 @@
   "parent": "animania_catsdogs:animania/cats",
   "criteria": {
     "kitten": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "entity": "animania_catsdogs:kitten_american_shorthair"
+      }
     },
     "female": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "entity": "animania_catsdogs:queen_american_shorthair"
+      }
     },
     "male": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "entity": "animania_catsdogs:tom_american_shorthair"
+      }
     }
   },
   "requirements": [

@@ -13,7 +13,13 @@
   "parent": "animania_extra:animania/root",
   "criteria": {
     "hamster": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "animania_extra:hamster_food"
+        },
+        "entity": "animania_extra:hamster"
+      }
     }
   }
 }

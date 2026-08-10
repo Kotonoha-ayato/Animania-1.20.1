@@ -13,10 +13,22 @@
   "parent": "animania_farm:animania/feed_horse_draft",
   "criteria": {
     "mare": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "animania_farm:riding_crop"
+        },
+        "entity": "animania_farm:mare_draft"
+      }
     },
     "stallion": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "animania_farm:riding_crop"
+        },
+        "entity": "animania_farm:stallion_draft"
+      }
     }
   },
   "requirements": [

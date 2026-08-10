@@ -1,1 +1,7 @@
-{"variants":{"":{"model":"animania_farm:block/milk_jersey"}}}
+{
+  "variants": {
+    "": {
+      "model": "animania_farm:block/milk_jersey"
+    }
+  }
+}

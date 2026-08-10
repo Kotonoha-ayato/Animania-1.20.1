@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "animania_farm:item/egg_pig_random"
+  }
+}

@@ -1,7 +1,7 @@
 {
   "parent": "builtin/generated",
   "textures": {
-    "layer0": "animania:items/peacock_feather_blue"
+    "layer0": "animania:item/peacock_feather_blue"
   },
   "display": {
     "ground": {

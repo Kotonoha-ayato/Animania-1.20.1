@@ -13,13 +13,31 @@
   "parent": "animania_catsdogs:animania/feed_dog_husky",
   "criteria": {
     "puppy": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:beef"
+        },
+        "entity": "animania_catsdogs:puppy_labrador"
+      }
     },
     "female": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:beef"
+        },
+        "entity": "animania_catsdogs:female_labrador"
+      }
     },
     "male": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:beef"
+        },
+        "entity": "animania_catsdogs:male_labrador"
+      }
     }
   },
   "requirements": [

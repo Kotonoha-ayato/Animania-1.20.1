@@ -1,7 +1,7 @@
 {
   "parent": "builtin/generated",
   "textures": {
-    "layer0": "animania_farm:items/cooked_large_black_roast"
+    "layer0": "animania_farm:item/cooked_large_black_roast"
   },
   "display": {
     "ground": {

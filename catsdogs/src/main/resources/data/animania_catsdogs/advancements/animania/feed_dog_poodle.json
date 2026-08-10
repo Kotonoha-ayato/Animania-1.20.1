@@ -13,13 +13,31 @@
   "parent": "animania_catsdogs:animania/feed_dog_pomeranian",
   "criteria": {
     "puppy": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:beef"
+        },
+        "entity": "animania_catsdogs:puppy_poodle"
+      }
     },
     "female": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:beef"
+        },
+        "entity": "animania_catsdogs:female_poodle"
+      }
     },
     "male": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:beef"
+        },
+        "entity": "animania_catsdogs:male_poodle"
+      }
     }
   },
   "requirements": [

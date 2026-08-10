@@ -1,7 +1,7 @@
 {
   "parent": "builtin/generated",
   "textures": {
-    "layer0": "animania_farm:items/egg_chicken_random"
+    "layer0": "animania_farm:item/egg_chicken_random"
   },
   "display": {
     "ground": {

@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "animania_farm:items/jersey_cheese_wheel"
+    "layer0": "animania_farm:item/jersey_cheese_wheel"
   }
 }

@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:block/cube_all",
   "textures": {
-    "all": "animania:blocks/hamster_wheel"
+    "all": "animania:block/hamster_wheel"
   }
 }

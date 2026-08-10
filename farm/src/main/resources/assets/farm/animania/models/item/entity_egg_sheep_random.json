@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "animania_farm:items/egg_sheep_random"
+    "layer0": "animania_farm:item/egg_sheep_random"
   }
 }

@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "animania_extra:items/raw_peacock"
+    "layer0": "animania_extra:item/raw_peacock"
   }
 }

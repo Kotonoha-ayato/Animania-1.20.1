@@ -13,25 +13,67 @@
   "parent": "animania_extra:animania/feed_ferret_grey",
   "criteria": {
     "ferret": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:egg"
+        },
+        "entity": "animania_extra:ferret_white"
+      }
     },
     "ferret2": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:chicken"
+        },
+        "entity": "animania_extra:ferret_white"
+      }
     },
     "ferret3": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:mutton"
+        },
+        "entity": "animania_extra:ferret_white"
+      }
     },
     "ferret4": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "optional": {
+          "item": "animania_extra:brown_egg"
+        },
+        "entity": "animania_extra:ferret_white"
+      }
     },
     "ferret5": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "optional": {
+          "item": "animania_extra:raw_prime_chicken"
+        },
+        "entity": "animania_extra:ferret_white"
+      }
     },
     "ferret6": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "optional": {
+          "item": "animania_extra:raw_prime_mutton"
+        },
+        "entity": "animania_extra:ferret_white"
+      }
     },
     "ferret7": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "animania_extra:raw_prime_rabbit"
+        },
+        "entity": "animania_extra:ferret_white"
+      }
     }
   },
   "requirements": [

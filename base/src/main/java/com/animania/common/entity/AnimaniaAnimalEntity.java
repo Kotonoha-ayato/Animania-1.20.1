@@ -8,6 +8,7 @@ import com.animania.api.data.AnimalGender;
 import com.animania.api.data.AnimalSnapshot;
 import com.animania.api.data.SpeciesDefinition;
 import com.animania.common.config.AnimaniaConfig;
+import com.animania.common.advancement.FeedAnimalTrigger;
 import com.animania.common.block.AnimaniaStorageBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -16,6 +17,7 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -393,7 +395,14 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal {
             return InteractionResult.sidedSuccess(level().isClientSide);
         }
         if (stack.is(AnimaniaTags.ANIMAL_FEED) || isAnimaniaFood(stack)) {
-            if (!level().isClientSide) feed(stack);
+            if (!level().isClientSide) {
+                ItemStack fedItem = stack.copyWithCount(1);
+                feed(stack);
+                if (player instanceof ServerPlayer serverPlayer) {
+                    ResourceLocation entityId = ForgeRegistries.ENTITY_TYPES.getKey(getType());
+                    if (entityId != null) FeedAnimalTrigger.INSTANCE.trigger(serverPlayer, fedItem, entityId);
+                }
+            }
             if (!level().isClientSide && !player.getAbilities().instabuild
                     && config(AnimaniaConfig.PLANTS_REMOVED_AFTER_EATING, true)) stack.shrink(1);
             return InteractionResult.sidedSuccess(level().isClientSide);

@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "animania:blocks/nest"
+    "layer0": "animania:block/nest"
   }
 }

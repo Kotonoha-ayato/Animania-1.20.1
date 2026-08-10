@@ -13,13 +13,31 @@
   "parent": "animania_catsdogs:animania/feed_dog_german_shepherd",
   "criteria": {
     "puppy": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:beef"
+        },
+        "entity": "animania_catsdogs:puppy_great_dane"
+      }
     },
     "female": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:beef"
+        },
+        "entity": "animania_catsdogs:female_great_dane"
+      }
     },
     "male": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:beef"
+        },
+        "entity": "animania_catsdogs:male_great_dane"
+      }
     }
   },
   "requirements": [

@@ -13,40 +13,112 @@
   "parent": "animania_extra:animania/feed_rabbit_dutch",
   "criteria": {
     "havana_kit": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:carrot"
+        },
+        "entity": "animania_extra:kit_havana"
+      }
     },
     "havana_doe": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:carrot"
+        },
+        "entity": "animania_extra:doe_havana"
+      }
     },
     "havana_buck": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:carrot"
+        },
+        "entity": "animania_extra:buck_havana"
+      }
     },
     "havana_kit1": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:apple"
+        },
+        "entity": "animania_extra:kit_havana"
+      }
     },
     "havana_doe1": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:apple"
+        },
+        "entity": "animania_extra:doe_havana"
+      }
     },
     "havana_buck1": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:apple"
+        },
+        "entity": "animania_extra:buck_havana"
+      }
     },
     "havana_kit2": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:wheat"
+        },
+        "entity": "animania_extra:kit_havana"
+      }
     },
     "havana_doe2": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:wheat"
+        },
+        "entity": "animania_extra:doe_havana"
+      }
     },
     "havana_buck2": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:wheat"
+        },
+        "entity": "animania_extra:buck_havana"
+      }
     },
     "havana_kit3": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:beetroot"
+        },
+        "entity": "animania_extra:kit_havana"
+      }
     },
     "havana_doe3": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:beetroot"
+        },
+        "entity": "animania_extra:doe_havana"
+      }
     },
     "havana_buck3": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:beetroot"
+        },
+        "entity": "animania_extra:buck_havana"
+      }
     }
   },
   "requirements": [

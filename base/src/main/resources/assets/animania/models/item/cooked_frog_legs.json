@@ -1,7 +1,7 @@
 {
   "parent": "builtin/generated",
   "textures": {
-    "layer0": "animania:items/cooked_frog_legs"
+    "layer0": "animania:item/cooked_frog_legs"
   },
   "display": {
     "ground": {

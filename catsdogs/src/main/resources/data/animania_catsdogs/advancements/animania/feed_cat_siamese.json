@@ -13,13 +13,22 @@
   "parent": "animania_catsdogs:animania/feed_cat_ragdoll",
   "criteria": {
     "kitten": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "entity": "animania_catsdogs:kitten_siamese"
+      }
     },
     "female": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "entity": "animania_catsdogs:queen_siamese"
+      }
     },
     "male": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "entity": "animania_catsdogs:tom_siamese"
+      }
     }
   },
   "requirements": [

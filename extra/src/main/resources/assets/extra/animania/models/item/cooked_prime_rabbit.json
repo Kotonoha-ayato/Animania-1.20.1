@@ -1,7 +1,7 @@
 {
   "parent": "builtin/generated",
   "textures": {
-    "layer0": "animania_extra:items/rabbit_cooked"
+    "layer0": "animania_extra:item/rabbit_cooked"
   },
   "display": {
     "ground": {

@@ -1,1 +1,6 @@
-{"parent":"minecraft:block/cube_all","textures":{"all":"animania_farm:blocks/milk_sheep"}}
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "animania_farm:block/milk_sheep"
+  }
+}

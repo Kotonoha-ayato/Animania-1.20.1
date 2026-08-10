@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "animania_catsdogs:items/cat_tower"
+    "layer0": "animania_catsdogs:item/cat_tower"
   }
 }

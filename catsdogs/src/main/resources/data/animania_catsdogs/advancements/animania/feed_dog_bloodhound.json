@@ -13,13 +13,31 @@
   "parent": "animania_catsdogs:animania/dogs",
   "criteria": {
     "puppy": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:beef"
+        },
+        "entity": "animania_catsdogs:puppy_blood_hound"
+      }
     },
     "female": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:beef"
+        },
+        "entity": "animania_catsdogs:female_blood_hound"
+      }
     },
     "male": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:beef"
+        },
+        "entity": "animania_catsdogs:male_blood_hound"
+      }
     }
   },
   "requirements": [

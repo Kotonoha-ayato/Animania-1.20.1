@@ -1,11 +1,11 @@
 {
   "__comment": "Model generated using MrCrayfish's Model Creator (http://mrcrayfish.com/modelcreator/)",
   "textures": {
-    "0": "animania_farm:blocks/sheep_cheese_side",
-    "1": "animania_farm:blocks/sheep_cheese_inner",
-    "2": "animania_farm:blocks/sheep_cheese_top",
-    "3": "animania_farm:blocks/sheep_cheese_bottom",
-    "particle": "animania_farm:blocks/sheep_cheese_top"
+    "0": "animania_farm:block/sheep_cheese_side",
+    "1": "animania_farm:block/sheep_cheese_inner",
+    "2": "animania_farm:block/sheep_cheese_top",
+    "3": "animania_farm:block/sheep_cheese_bottom",
+    "particle": "animania_farm:block/sheep_cheese_top"
   },
   "elements": [
     {

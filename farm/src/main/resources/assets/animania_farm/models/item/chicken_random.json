@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "animania_farm:items/chicken_random"
+    "layer0": "animania_farm:item/chicken_random"
   }
 }

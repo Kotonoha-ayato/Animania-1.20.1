@@ -15,10 +15,34 @@
   "parent": "animania_extra:animania/feed_hedgehog",
   "criteria": {
     "normal": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:name_tag",
+          "nbt": {
+            "display": {
+              "Name": "Sanic"
+            },
+            "RepairCost": 0
+          }
+        },
+        "entity": "animania_extra:hedgehog"
+      }
     },
     "albino": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:name_tag",
+          "nbt": {
+            "display": {
+              "Name": "Sanic"
+            },
+            "RepairCost": 0
+          }
+        },
+        "entity": "animania_extra:hedgehog_albino"
+      }
     }
   },
   "requirements": [

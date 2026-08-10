@@ -13,13 +13,31 @@
   "parent": "animania_farm:animania/feed_cow_longhorn",
   "criteria": {
     "jersey_calf": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:wheat"
+        },
+        "entity": "animania_farm:calf_jersey"
+      }
     },
     "jersey_cow": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:wheat"
+        },
+        "entity": "animania_farm:cow_jersey"
+      }
     },
     "jersey_bull": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:wheat"
+        },
+        "entity": "animania_farm:bull_jersey"
+      }
     }
   },
   "requirements": [

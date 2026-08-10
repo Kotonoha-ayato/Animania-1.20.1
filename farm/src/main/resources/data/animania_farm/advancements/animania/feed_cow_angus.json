@@ -13,13 +13,31 @@
   "parent": "animania_farm:animania/cows",
   "criteria": {
     "angus_calf": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:wheat"
+        },
+        "entity": "animania_farm:calf_angus"
+      }
     },
     "angus_cow": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:wheat"
+        },
+        "entity": "animania_farm:cow_angus"
+      }
     },
     "angus_bull": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:wheat"
+        },
+        "entity": "animania_farm:bull_angus"
+      }
     }
   },
   "requirements": [

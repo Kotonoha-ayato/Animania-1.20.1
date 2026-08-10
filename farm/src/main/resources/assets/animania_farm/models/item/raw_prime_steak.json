@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "animania_farm:items/raw_prime_steak"
+    "layer0": "animania_farm:item/raw_prime_steak"
   }
 }

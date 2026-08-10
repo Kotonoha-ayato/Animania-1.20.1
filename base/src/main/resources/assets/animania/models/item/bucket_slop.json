@@ -1,7 +1,7 @@
 {
   "parent": "builtin/generated",
   "textures": {
-    "layer0": "animania:items/bucket_slop"
+    "layer0": "animania:item/bucket_slop"
   },
   "display": {
     "ground": {

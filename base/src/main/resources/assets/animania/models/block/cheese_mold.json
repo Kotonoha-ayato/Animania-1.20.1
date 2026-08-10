@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:block/cube_all",
   "textures": {
-    "all": "animania:blocks/cheese_mold"
+    "all": "animania:block/cheese_mold"
   }
 }

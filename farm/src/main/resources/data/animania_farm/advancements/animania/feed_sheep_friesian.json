@@ -13,13 +13,31 @@
   "parent": "animania_farm:animania/feed_sheep_dorset",
   "criteria": {
     "friesian_lamb": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:wheat"
+        },
+        "entity": "animania_farm:lamb_friesian"
+      }
     },
     "friesian_ewe": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:wheat"
+        },
+        "entity": "animania_farm:ewe_friesian"
+      }
     },
     "friesian_ram": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:wheat"
+        },
+        "entity": "animania_farm:ram_friesian"
+      }
     }
   },
   "requirements": [

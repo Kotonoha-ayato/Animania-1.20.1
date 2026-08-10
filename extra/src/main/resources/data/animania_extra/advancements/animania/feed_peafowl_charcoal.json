@@ -13,40 +13,112 @@
   "parent": "animania_extra:animania/feed_peafowl_blue",
   "criteria": {
     "charcoal_peachick": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:wheat_seeds"
+        },
+        "entity": "animania_extra:peachick_charcoal"
+      }
     },
     "charcoal_peahen": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:wheat_seeds"
+        },
+        "entity": "animania_extra:peahen_charcoal"
+      }
     },
     "charcoal_peacock": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:wheat_seeds"
+        },
+        "entity": "animania_extra:peacock_charcoal"
+      }
     },
     "charcoal_peachick1": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:melon_seeds"
+        },
+        "entity": "animania_extra:peachick_charcoal"
+      }
     },
     "charcoal_peahen1": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:melon_seeds"
+        },
+        "entity": "animania_extra:peahen_charcoal"
+      }
     },
     "charcoal_peacock1": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:melon_seeds"
+        },
+        "entity": "animania_extra:peacock_charcoal"
+      }
     },
     "charcoal_peachick2": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:beetroot_seeds"
+        },
+        "entity": "animania_extra:peachick_charcoal"
+      }
     },
     "charcoal_peahen2": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:beetroot_seeds"
+        },
+        "entity": "animania_extra:peahen_charcoal"
+      }
     },
     "charcoal_peacock2": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:beetroot_seeds"
+        },
+        "entity": "animania_extra:peacock_charcoal"
+      }
     },
     "charcoal_peachick3": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:pumpkin_seeds"
+        },
+        "entity": "animania_extra:peachick_charcoal"
+      }
     },
     "charcoal_peahen3": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:pumpkin_seeds"
+        },
+        "entity": "animania_extra:peahen_charcoal"
+      }
     },
     "charcoal_peacock3": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:pumpkin_seeds"
+        },
+        "entity": "animania_extra:peacock_charcoal"
+      }
     }
   },
   "requirements": [

@@ -1,7 +1,7 @@
 {
   "parent": "builtin/generated",
   "textures": {
-    "layer0": "animania:items/ball_yellow"
+    "layer0": "animania:item/ball_yellow"
   },
   "display": {
     "ground": {

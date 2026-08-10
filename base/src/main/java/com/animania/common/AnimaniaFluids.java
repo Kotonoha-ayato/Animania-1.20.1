@@ -8,6 +8,9 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraftforge.fluids.FluidType;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.minecraft.resources.ResourceLocation;
+import java.util.function.Consumer;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -23,7 +26,17 @@ public final class AnimaniaFluids {
             DeferredRegister.create(ForgeRegistries.BLOCKS, Animania.MOD_ID);
 
     public static final RegistryObject<FluidType> SLOP_TYPE = FLUID_TYPES.register("slop",
-            () -> new FluidType(FluidType.Properties.create().density(1000).viscosity(1000).canSwim(false)));
+            () -> new FluidType(FluidType.Properties.create().density(1000).viscosity(1000).canSwim(false)) {
+                @Override
+                public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
+                    consumer.accept(new IClientFluidTypeExtensions() {
+                        private static final ResourceLocation STILL = new ResourceLocation(Animania.MOD_ID, "block/slop_still");
+                        private static final ResourceLocation FLOW = new ResourceLocation(Animania.MOD_ID, "block/slop_flow");
+                        @Override public ResourceLocation getStillTexture() { return STILL; }
+                        @Override public ResourceLocation getFlowingTexture() { return FLOW; }
+                    });
+                }
+            });
     public static final RegistryObject<FlowingFluid> SOURCE_SLOP = FLUIDS.register("slop",
             () -> new ForgeFlowingFluid.Source(slopProperties()));
     public static final RegistryObject<FlowingFluid> FLOWING_SLOP = FLUIDS.register("flowing_slop",

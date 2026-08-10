@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "animania_farm:items/cooked_prime_beef"
+    "layer0": "animania_farm:item/cooked_prime_beef"
   }
 }

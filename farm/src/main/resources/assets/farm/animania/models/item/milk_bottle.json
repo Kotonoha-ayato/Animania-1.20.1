@@ -1,7 +1,7 @@
 {
   "parent": "builtin/generated",
   "textures": {
-    "layer0": "animania_farm:items/bottle_milk"
+    "layer0": "animania_farm:item/bottle_milk"
   },
   "display": {
     "ground": {

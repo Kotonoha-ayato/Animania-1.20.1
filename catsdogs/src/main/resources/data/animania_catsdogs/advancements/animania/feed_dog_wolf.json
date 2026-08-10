@@ -13,13 +13,31 @@
   "parent": "animania_catsdogs:animania/feed_dog_fox",
   "criteria": {
     "puppy": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:beef"
+        },
+        "entity": "animania_catsdogs:puppy_wolf"
+      }
     },
     "female": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:beef"
+        },
+        "entity": "animania_catsdogs:female_wolf"
+      }
     },
     "male": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:beef"
+        },
+        "entity": "animania_catsdogs:male_wolf"
+      }
     }
   },
   "requirements": [

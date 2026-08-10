@@ -1,7 +1,7 @@
 {
   "parent": "builtin/generated",
   "textures": {
-    "layer0": "animania_farm:items/chevon_raw"
+    "layer0": "animania_farm:item/chevon_raw"
   },
   "display": {
     "ground": {

@@ -13,13 +13,31 @@
   "parent": "animania_farm:animania/feed_sheep_dorper",
   "criteria": {
     "dorset_lamb": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:wheat"
+        },
+        "entity": "animania_farm:lamb_dorset"
+      }
     },
     "dorset_ewe": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:wheat"
+        },
+        "entity": "animania_farm:ewe_dorset"
+      }
     },
     "dorset_ram": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:wheat"
+        },
+        "entity": "animania_farm:ram_dorset"
+      }
     }
   },
   "requirements": [

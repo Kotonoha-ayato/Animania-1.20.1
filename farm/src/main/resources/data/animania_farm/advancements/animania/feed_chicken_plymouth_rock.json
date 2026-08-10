@@ -13,40 +13,112 @@
   "parent": "animania_farm:animania/feed_chicken_orpington",
   "criteria": {
     "plymouth_rock_chick": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:wheat_seeds"
+        },
+        "entity": "animania_farm:chick_plymouth_rock"
+      }
     },
     "plymouth_rock_hen": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:wheat_seeds"
+        },
+        "entity": "animania_farm:hen_plymouth_rock"
+      }
     },
     "plymouth_rock_rooster": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:wheat_seeds"
+        },
+        "entity": "animania_farm:rooster_plymouth_rock"
+      }
     },
     "plymouth_rock_chick1": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:melon_seeds"
+        },
+        "entity": "animania_farm:chick_plymouth_rock"
+      }
     },
     "plymouth_rock_hen1": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:melon_seeds"
+        },
+        "entity": "animania_farm:hen_plymouth_rock"
+      }
     },
     "plymouth_rock_rooster1": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:melon_seeds"
+        },
+        "entity": "animania_farm:rooster_plymouth_rock"
+      }
     },
     "plymouth_rock_chick2": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:beetroot_seeds"
+        },
+        "entity": "animania_farm:chick_plymouth_rock"
+      }
     },
     "plymouth_rock_hen2": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:beetroot_seeds"
+        },
+        "entity": "animania_farm:hen_plymouth_rock"
+      }
     },
     "plymouth_rock_rooster2": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:beetroot_seeds"
+        },
+        "entity": "animania_farm:rooster_plymouth_rock"
+      }
     },
     "plymouth_rock_chick3": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:pumpkin_seeds"
+        },
+        "entity": "animania_farm:chick_plymouth_rock"
+      }
     },
     "plymouth_rock_hen3": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:pumpkin_seeds"
+        },
+        "entity": "animania_farm:hen_plymouth_rock"
+      }
     },
     "plymouth_rock_rooster3": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:pumpkin_seeds"
+        },
+        "entity": "animania_farm:rooster_plymouth_rock"
+      }
     }
   },
   "requirements": [

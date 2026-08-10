@@ -13,13 +13,31 @@
   "parent": "animania_farm:animania/feed_sheep_jacob",
   "criteria": {
     "merino_lamb": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:wheat"
+        },
+        "entity": "animania_farm:lamb_merino"
+      }
     },
     "merino_ewe": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:wheat"
+        },
+        "entity": "animania_farm:ewe_merino"
+      }
     },
     "merino_ram": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:wheat"
+        },
+        "entity": "animania_farm:ram_merino"
+      }
     }
   },
   "requirements": [

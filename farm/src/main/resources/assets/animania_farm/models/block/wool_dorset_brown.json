@@ -1,6 +1,6 @@
 {
   "parent": "block/cube_all",
   "textures": {
-    "all": "animania_farm:blocks/wool_dorset_brown"
+    "all": "animania_farm:block/wool_dorset_brown"
   }
 }

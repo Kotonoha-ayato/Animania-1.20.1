@@ -1,7 +1,7 @@
 {
   "parent": "builtin/generated",
   "textures": {
-    "layer0": "animania_farm:items/bucket_milk_holstein"
+    "layer0": "animania_farm:item/bucket_milk_holstein"
   },
   "display": {
     "ground": {

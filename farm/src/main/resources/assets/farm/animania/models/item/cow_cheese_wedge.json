@@ -1,7 +1,7 @@
 {
   "parent": "builtin/generated",
   "textures": {
-    "layer0": "animania_farm:items/cheese_wedge_friesian"
+    "layer0": "animania_farm:item/cheese_wedge_friesian"
   },
   "display": {
     "ground": {

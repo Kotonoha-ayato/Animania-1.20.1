@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "animania:entity/tileentities/water_bottle"
+    "layer0": "animania:item/water_bottle"
   }
 }

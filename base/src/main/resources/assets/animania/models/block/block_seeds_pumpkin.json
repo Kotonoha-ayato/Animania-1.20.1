@@ -1,7 +1,7 @@
 {
   "parent": "block/carpet",
   "textures": {
-    "wool": "animania:blocks/seeds_pumpkin",
-    "particle": "animania:blocks/seeds_pumpkin"
+    "wool": "animania:block/seeds_pumpkin",
+    "particle": "animania:block/seeds_pumpkin"
   }
 }

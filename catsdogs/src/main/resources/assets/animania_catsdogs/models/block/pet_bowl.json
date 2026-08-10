@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:block/cube_all",
   "textures": {
-    "all": "animania_catsdogs:blocks/pet_bowl"
+    "all": "animania_catsdogs:block/pet_bowl"
   }
 }

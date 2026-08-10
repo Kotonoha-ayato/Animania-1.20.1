@@ -1,17 +1,18 @@
 package com.animania.client.render;
 
-import com.animania.client.model.AnimaniaAnimalModel;
+import com.animania.client.model.LegacyAnimalModel;
 import com.animania.common.entity.AnimaniaAnimalEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 
 /** Client-only renderer using native ModelPart animation and legacy-compatible IDs. */
-public class AnimaniaAnimalRenderer extends MobRenderer<AnimaniaAnimalEntity, AnimaniaAnimalModel> {
-    public AnimaniaAnimalRenderer(EntityRendererProvider.Context context) {
-        super(context, new AnimaniaAnimalModel(context.bakeLayer(com.animania.client.AnimaniaClient.ANIMAL_LAYER)), 0.45f);
+public class AnimaniaAnimalRenderer extends MobRenderer<AnimaniaAnimalEntity, LegacyAnimalModel> {
+    public AnimaniaAnimalRenderer(EntityRendererProvider.Context context, ModelLayerLocation layer) {
+        super(context, new LegacyAnimalModel(context.bakeLayer(layer)), 0.45f);
     }
 
     @Override

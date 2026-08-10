@@ -1,7 +1,7 @@
 {
   "parent": "builtin/generated",
   "textures": {
-    "layer0": "animania:items/raw_prime_peacock"
+    "layer0": "animania:item/raw_prime_peacock"
   },
   "display": {
     "ground": {

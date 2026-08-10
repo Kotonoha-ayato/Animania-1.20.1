@@ -1,7 +1,7 @@
 {
   "parent": "builtin/generated",
   "textures": {
-    "layer0": "animania_farm:items/bacon_omelette"
+    "layer0": "animania_farm:item/bacon_omelette"
   },
   "display": {
     "ground": {

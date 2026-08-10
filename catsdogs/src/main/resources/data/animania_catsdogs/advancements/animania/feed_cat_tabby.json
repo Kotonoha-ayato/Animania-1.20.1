@@ -13,13 +13,22 @@
   "parent": "animania_catsdogs:animania/feed_cat_siamese",
   "criteria": {
     "kitten": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "entity": "animania_catsdogs:kitten_tabby"
+      }
     },
     "female": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "entity": "animania_catsdogs:queen_tabby"
+      }
     },
     "male": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "entity": "animania_catsdogs:tom_tabby"
+      }
     }
   },
   "requirements": [

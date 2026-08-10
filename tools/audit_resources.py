@@ -13,6 +13,11 @@ ENTITY_SOURCES = {
     "extra": "extra/src/main/java/com/animania/extra/ExtraLegacyIds.java",
     "catsdogs": "catsdogs/src/main/java/com/animania/catsdogs/CatsDogsLegacyIds.java",
 }
+CONTENT_SOURCES = {
+    "farm": "farm/src/main/java/com/animania/farm/FarmContent.java",
+    "extra": "extra/src/main/java/com/animania/extra/ExtraContent.java",
+    "catsdogs": "catsdogs/src/main/java/com/animania/catsdogs/CatsDogsContent.java",
+}
 RECIPE_TYPES = {
     "minecraft:crafting_shaped", "minecraft:crafting_shapeless", "minecraft:smelting",
     "minecraft:smoking", "minecraft:campfire_cooking", "minecraft:stonecutting",
@@ -27,6 +32,7 @@ VANILLA_ADVANCEMENT_TRIGGERS = {
     "minecraft:player_hurt_entity", "minecraft:used_totem", "minecraft:consume_item",
     "minecraft:location", "minecraft:placed_block", "minecraft:enchanted_item",
 }
+SUPPORTED_ADVANCEMENT_TRIGGERS = VANILLA_ADVANCEMENT_TRIGGERS | {"animania:feed_animal"}
 
 
 def _validate_ingredient(value: object, location: str, errors: list[str]) -> None:
@@ -70,7 +76,9 @@ def _validate_loot(data: object, location: str, errors: list[str]) -> None:
 def _validate_advancement(data: object, location: str, errors: list[str]) -> None:
     if isinstance(data, dict):
         trigger = data.get("trigger")
-        if trigger is not None and trigger not in VANILLA_ADVANCEMENT_TRIGGERS:
+        if trigger == "minecraft:tick":
+            errors.append(f"{location}: unconditional tick criterion is forbidden")
+        elif trigger is not None and trigger not in SUPPORTED_ADVANCEMENT_TRIGGERS:
             errors.append(f"{location}: unsupported advancement trigger {trigger}")
         for key, value in data.items():
             _validate_advancement(value, f"{location}.{key}", errors)
@@ -86,6 +94,12 @@ def _legacy_entity_ids(root: Path, module: str) -> set[str]:
     text = source.read_text(encoding="utf-8")
     body = text.split("List.of(", 1)[1].split(");", 1)[0]
     return set(re.findall(r'"([a-z0-9_]+)"', body))
+
+
+def _java_list(root: Path, source: str, field: str) -> set[str]:
+    text = (root / source).read_text(encoding="utf-8")
+    match = re.search(field + r"\s*=\s*List\.of\((.*?)\);", text, re.S)
+    return set(re.findall(r'"([a-z0-9_]+)"', match.group(1))) if match else set()
 
 
 def _validate_biome_modifier(data: object, location: str, namespace: str, errors: list[str]) -> None:
@@ -169,6 +183,8 @@ def main() -> None:
                             if not isinstance(ref, str) or ":" not in ref or ref.startswith("#"):
                                 continue
                             ref_namespace, texture_path = ref.split(":", 1)
+                            if texture_path.startswith(("items/", "blocks/")):
+                                errors.append(f"{module}: legacy plural texture path {ref} referenced by {relative}")
                             if ref_namespace == "minecraft":
                                 continue
                             texture = resource_root / "assets" / ref_namespace / "textures" / f"{texture_path}.png"
@@ -211,6 +227,25 @@ def main() -> None:
             missing_textures = sorted(expected - textures)
             if missing_textures:
                 errors.append(f"{module}: missing entity textures: {', '.join(missing_textures)}")
+
+            content_items = _java_list(args.root, CONTENT_SOURCES[module], "ITEM_IDS")
+            content_blocks = _java_list(args.root, CONTENT_SOURCES[module], "BLOCK_IDS")
+            egg_items = {"entity_egg_" + entity for entity in expected
+                         if entity not in {"cart", "wagon", "tiller"}}
+            expected_item_models = content_items | content_blocks | egg_items
+            model_dir = resource_root / "assets" / namespace / "models" / "item"
+            actual_item_models = {item.stem for item in model_dir.glob("*.json")}
+            missing_models = sorted(expected_item_models - actual_item_models)
+            if missing_models:
+                errors.append(f"{module}: missing registered item models: {', '.join(missing_models)}")
+
+            generated_name = ("CatsDogs" if module == "catsdogs" else module.title()) + "LegacyModelLayers.java"
+            generated = args.root / module / "src/main/java/com/animania" / module / "client/model" / generated_name
+            generated_text = generated.read_text(encoding="utf-8") if generated.exists() else ""
+            layer_ids = set(re.findall(r'LAYERS\.put\("([a-z0-9_]+)"', generated_text))
+            missing_layers = sorted(expected - {"cart", "wagon", "tiller"} - layer_ids)
+            if missing_layers:
+                errors.append(f"{module}: missing breed-specific native model layers: {', '.join(missing_layers)}")
 
         locale_dir = resource_root / "assets" / namespace / "lang"
         locales = sorted(item.stem for item in locale_dir.glob("*.json")) if locale_dir.exists() else []

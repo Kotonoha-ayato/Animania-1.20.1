@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "animania:items/cheese"
+    "layer0": "animania:item/cheese"
   }
 }

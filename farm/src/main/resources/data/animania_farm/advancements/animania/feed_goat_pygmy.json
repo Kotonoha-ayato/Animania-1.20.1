@@ -13,40 +13,112 @@
   "parent": "animania_farm:animania/feed_goat_nigerian_dwarf",
   "criteria": {
     "pygmy_kid": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:wheat"
+        },
+        "entity": "animania_farm:kid_pygmy"
+      }
     },
     "pygmy_doe": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:wheat"
+        },
+        "entity": "animania_farm:doe_pygmy"
+      }
     },
     "pygmy_buck": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:wheat"
+        },
+        "entity": "animania_farm:buck_pygmy"
+      }
     },
     "pygmy_kid1": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:string"
+        },
+        "entity": "animania_farm:kid_pygmy"
+      }
     },
     "pygmy_doe1": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:string"
+        },
+        "entity": "animania_farm:doe_pygmy"
+      }
     },
     "pygmy_buck1": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:string"
+        },
+        "entity": "animania_farm:buck_pygmy"
+      }
     },
     "pygmy_kid2": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:stick"
+        },
+        "entity": "animania_farm:kid_pygmy"
+      }
     },
     "pygmy_doe2": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:stick"
+        },
+        "entity": "animania_farm:doe_pygmy"
+      }
     },
     "pygmy_buck2": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:stick"
+        },
+        "entity": "animania_farm:buck_pygmy"
+      }
     },
     "pygmy_kid3": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:apple"
+        },
+        "entity": "animania_farm:kid_pygmy"
+      }
     },
     "pygmy_doe3": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:apple"
+        },
+        "entity": "animania_farm:doe_pygmy"
+      }
     },
     "pygmy_buck3": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:apple"
+        },
+        "entity": "animania_farm:buck_pygmy"
+      }
     }
   },
   "requirements": [

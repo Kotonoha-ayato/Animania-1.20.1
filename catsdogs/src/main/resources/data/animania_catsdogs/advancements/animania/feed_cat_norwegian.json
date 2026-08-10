@@ -13,13 +13,22 @@
   "parent": "animania_catsdogs:animania/feed_cat_exotic",
   "criteria": {
     "kitten": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "entity": "animania_catsdogs:kitten_norwegian"
+      }
     },
     "female": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "entity": "animania_catsdogs:queen_norwegian"
+      }
     },
     "male": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "entity": "animania_catsdogs:tom_norwegian"
+      }
     }
   },
   "requirements": [

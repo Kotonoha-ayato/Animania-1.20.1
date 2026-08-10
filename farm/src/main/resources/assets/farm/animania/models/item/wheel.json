@@ -1,7 +1,7 @@
 {
   "parent": "builtin/generated",
   "textures": {
-    "layer0": "animania_farm:items/wheel"
+    "layer0": "animania_farm:item/wheel"
   },
   "display": {
     "ground": {

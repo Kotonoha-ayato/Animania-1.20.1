@@ -13,13 +13,31 @@
   "parent": "animania_farm:animania/feed_cow_hereford",
   "criteria": {
     "holstein_calf": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:wheat"
+        },
+        "entity": "animania_farm:calf_holstein"
+      }
     },
     "holstein_cow": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:wheat"
+        },
+        "entity": "animania_farm:cow_holstein"
+      }
     },
     "holstein_bull": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:wheat"
+        },
+        "entity": "animania_farm:bull_holstein"
+      }
     }
   },
   "requirements": [

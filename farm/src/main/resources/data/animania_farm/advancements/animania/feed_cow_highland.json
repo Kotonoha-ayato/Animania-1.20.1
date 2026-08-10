@@ -13,13 +13,31 @@
   "parent": "animania_farm:animania/feed_cow_jersey",
   "criteria": {
     "highland_calf": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:wheat"
+        },
+        "entity": "animania_farm:calf_highland"
+      }
     },
     "highland_cow": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:wheat"
+        },
+        "entity": "animania_farm:cow_highland"
+      }
     },
     "highland_bull": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:wheat"
+        },
+        "entity": "animania_farm:bull_highland"
+      }
     }
   },
   "requirements": [

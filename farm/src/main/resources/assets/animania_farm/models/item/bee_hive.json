@@ -1,7 +1,7 @@
 {
   "parent": "builtin/generated",
   "textures": {
-    "layer0": "animania_farm:items/bee_hive"
+    "layer0": "animania_farm:item/bee_hive"
   },
   "display": {
     "ground": {

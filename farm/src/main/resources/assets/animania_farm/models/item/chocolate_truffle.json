@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "animania_farm:items/chocolate_truffle"
+    "layer0": "animania_farm:item/chocolate_truffle"
   }
 }

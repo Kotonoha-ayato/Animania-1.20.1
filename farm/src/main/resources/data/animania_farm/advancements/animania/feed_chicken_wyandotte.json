@@ -13,40 +13,112 @@
   "parent": "animania_farm:animania/feed_chicken_rhode_island_red",
   "criteria": {
     "wyandotte_chick": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:wheat_seeds"
+        },
+        "entity": "animania_farm:chick_wyandotte"
+      }
     },
     "wyandotte_hen": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:wheat_seeds"
+        },
+        "entity": "animania_farm:hen_wyandotte"
+      }
     },
     "wyandotte_rooster": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:wheat_seeds"
+        },
+        "entity": "animania_farm:rooster_wyandotte"
+      }
     },
     "wyandotte_chick1": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:melon_seeds"
+        },
+        "entity": "animania_farm:chick_wyandotte"
+      }
     },
     "wyandotte_hen1": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:melon_seeds"
+        },
+        "entity": "animania_farm:hen_wyandotte"
+      }
     },
     "wyandotte_rooster1": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:melon_seeds"
+        },
+        "entity": "animania_farm:rooster_wyandotte"
+      }
     },
     "wyandotte_chick2": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:beetroot_seeds"
+        },
+        "entity": "animania_farm:chick_wyandotte"
+      }
     },
     "wyandotte_hen2": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:beetroot_seeds"
+        },
+        "entity": "animania_farm:hen_wyandotte"
+      }
     },
     "wyandotte_rooster2": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:beetroot_seeds"
+        },
+        "entity": "animania_farm:rooster_wyandotte"
+      }
     },
     "wyandotte_chick3": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:pumpkin_seeds"
+        },
+        "entity": "animania_farm:chick_wyandotte"
+      }
     },
     "wyandotte_hen3": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:pumpkin_seeds"
+        },
+        "entity": "animania_farm:hen_wyandotte"
+      }
     },
     "wyandotte_rooster3": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:pumpkin_seeds"
+        },
+        "entity": "animania_farm:rooster_wyandotte"
+      }
     }
   },
   "requirements": [

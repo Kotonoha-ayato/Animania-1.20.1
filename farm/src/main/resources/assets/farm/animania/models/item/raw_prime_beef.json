@@ -1,7 +1,7 @@
 {
   "parent": "builtin/generated",
   "textures": {
-    "layer0": "animania_farm:items/raw_angus_beef"
+    "layer0": "animania_farm:item/raw_angus_beef"
   },
   "display": {
     "ground": {

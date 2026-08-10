@@ -1,7 +1,7 @@
 {
   "parent": "block/carpet",
   "textures": {
-    "wool": "animania:blocks/straw",
-    "particle": "animania:blocks/straw"
+    "wool": "animania:block/straw",
+    "particle": "animania:block/straw"
   }
 }

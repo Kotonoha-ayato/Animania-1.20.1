@@ -13,13 +13,22 @@
   "parent": "animania_catsdogs:animania/feed_cat_tabby",
   "criteria": {
     "kitten": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "entity": "animania_catsdogs:kitten_ocelot"
+      }
     },
     "female": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "entity": "animania_catsdogs:queen_ocelot"
+      }
     },
     "male": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "entity": "animania_catsdogs:tom_ocelot"
+      }
     }
   },
   "requirements": [

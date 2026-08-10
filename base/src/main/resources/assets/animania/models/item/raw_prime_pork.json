@@ -1,7 +1,7 @@
 {
   "parent": "builtin/generated",
   "textures": {
-    "layer0": "animania:items/raw_large_black_pork"
+    "layer0": "animania:item/raw_large_black_pork"
   },
   "display": {
     "ground": {

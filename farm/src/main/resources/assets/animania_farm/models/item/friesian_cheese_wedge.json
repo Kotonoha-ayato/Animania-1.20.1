@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "animania_farm:items/friesian_cheese_wedge"
+    "layer0": "animania_farm:item/friesian_cheese_wedge"
   }
 }

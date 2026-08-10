@@ -1,7 +1,7 @@
 {
   "parent": "builtin/generated",
   "textures": {
-    "layer0": "animania_farm:items/raw_orpington_chicken"
+    "layer0": "animania_farm:item/raw_orpington_chicken"
   },
   "display": {
     "ground": {

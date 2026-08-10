@@ -14,6 +14,21 @@ def ids(source: Path, field: str) -> list[str]:
     return re.findall(r'"([a-z0-9_]+)"', match.group(1)) if match else []
 
 
+def egg_texture(module: str, entity_id: str) -> str:
+    if module == "farm":
+        family = "chicken" if any(x in entity_id for x in ("chick", "hen", "rooster")) else \
+                 "cow" if any(x in entity_id for x in ("calf", "cow", "bull")) else \
+                 "goat" if any(x in entity_id for x in ("kid", "doe", "buck")) else \
+                 "pig" if any(x in entity_id for x in ("piglet", "sow", "hog")) else "sheep"
+    elif module == "extra":
+        family = "peacock" if any(x in entity_id for x in ("peachick", "peahen", "peacock")) else \
+                 "rabbit" if any(x in entity_id for x in ("kit_", "doe_", "buck_")) else \
+                 "ferret" if "ferret" in entity_id else "rabbit"
+    else:
+        family = "cat" if any(x in entity_id for x in ("kitten_", "queen_", "tom_")) else "dog"
+    return f"egg_{family}_random"
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", type=Path, required=True)
@@ -21,11 +36,11 @@ def main() -> None:
     base_resource = args.root / "base" / "src" / "main" / "resources" / "assets" / "animania"
     base_items = ["manual", "hay", "salt", "cheese", "water_bottle"]
     base_item_textures = {
-        "manual": "animania:items/animania_manual",
-        "hay": "animania:blocks/hay",
-        "salt": "animania:items/salt",
-        "cheese": "animania:items/cheese",
-        "water_bottle": "animania:entity/tileentities/water_bottle",
+        "manual": "animania:item/animania_manual",
+        "hay": "animania:block/hay",
+        "salt": "animania:item/salt",
+        "cheese": "animania:item/cheese",
+        "water_bottle": "animania:item/water_bottle",
     }
     base_blocks = ["trough", "nest", "cheese_mold", "pet_bowl", "salt_lick", "mud", "straw", "invisiblock", "hamster_wheel"]
     base_lang = {}
@@ -54,6 +69,10 @@ def main() -> None:
         java = args.root / module / "src" / "main" / "java" / "com" / "animania" / module / ("FarmContent.java" if module == "farm" else "ExtraContent.java" if module == "extra" else "CatsDogsContent.java")
         item_ids = ids(java, "ITEM_IDS")
         block_ids = ids(java, "BLOCK_IDS")
+        legacy_java = java.with_name(module.title().replace("Catsdogs", "CatsDogs") + "LegacyIds.java")
+        entity_ids = ids(legacy_java, "ALL")
+        item_ids = list(dict.fromkeys(item_ids + ["entity_egg_" + entity for entity in entity_ids
+                                                   if entity not in {"cart", "wagon", "tiller"}]))
         resource = args.root / module / "src" / "main" / "resources" / "assets" / modid
         lang = {}
         for item in item_ids:
@@ -64,11 +83,11 @@ def main() -> None:
             # and an egg_<family> texture. Never replace the hand-authored
             # model with a generic item stub when datagen is rerun.
             if item.startswith("entity_egg_"):
-                if not out.exists():
-                    target = item.removeprefix("entity_egg_")
-                    out.write_text(json.dumps({"parent": "builtin/generated", "textures": {"layer0": f"{modid}:items/egg_{target}"}}, indent=2) + "\n", encoding="utf-8")
+                target = item.removeprefix("entity_egg_")
+                texture = egg_texture(module, target)
+                out.write_text(json.dumps({"parent": "minecraft:item/generated", "textures": {"layer0": f"{modid}:item/{texture}"}}, indent=2) + "\n", encoding="utf-8")
             else:
-                out.write_text(json.dumps({"parent": "minecraft:item/generated", "textures": {"layer0": f"{legacy_namespace}:animania/items/{item}"}}, indent=2) + "\n", encoding="utf-8")
+                out.write_text(json.dumps({"parent": "minecraft:item/generated", "textures": {"layer0": f"{modid}:item/{item}"}}, indent=2) + "\n", encoding="utf-8")
         for block in block_ids:
             lang[f"block.{modid}.{block}"] = block.replace("_", " ").title()
             state = resource / "blockstates" / f"{block}.json"
@@ -76,7 +95,7 @@ def main() -> None:
             state.write_text(json.dumps({"variants": {"": {"model": f"{modid}:block/{block}"}}}, indent=2) + "\n", encoding="utf-8")
             model = resource / "models" / "block" / f"{block}.json"
             model.parent.mkdir(parents=True, exist_ok=True)
-            model.write_text(json.dumps({"parent": "minecraft:block/cube_all", "textures": {"all": f"{legacy_namespace}:animania/blocks/{block}"}}, indent=2) + "\n", encoding="utf-8")
+            model.write_text(json.dumps({"parent": "minecraft:block/cube_all", "textures": {"all": f"{modid}:block/{block}"}}, indent=2) + "\n", encoding="utf-8")
             item_model = resource / "models" / "item" / f"{block}.json"
             item_model.parent.mkdir(parents=True, exist_ok=True)
             item_model.write_text(json.dumps({"parent": f"{modid}:block/{block}"}, indent=2) + "\n", encoding="utf-8")

@@ -1,7 +1,7 @@
 {
   "parent": "builtin/generated",
   "textures": {
-    "layer0": "animania_farm:items/cooked_angus_roast"
+    "layer0": "animania_farm:item/cooked_angus_roast"
   },
   "display": {
     "ground": {

@@ -1,7 +1,7 @@
 {
   "parent": "builtin/generated",
   "textures": {
-    "layer0": "animania:items/rabbit_raw"
+    "layer0": "animania:item/rabbit_raw"
   },
   "display": {
     "ground": {

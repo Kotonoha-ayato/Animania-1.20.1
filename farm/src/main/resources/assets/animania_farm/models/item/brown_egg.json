@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "animania_farm:items/brown_egg"
+    "layer0": "animania_farm:item/brown_egg"
   }
 }

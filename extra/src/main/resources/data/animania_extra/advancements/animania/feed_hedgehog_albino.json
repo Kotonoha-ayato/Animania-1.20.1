@@ -13,22 +13,58 @@
   "parent": "animania_extra:animania/feed_hedgehog",
   "criteria": {
     "hedgehog1": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:egg"
+        },
+        "entity": "animania_extra:hedgehog_albino"
+      }
     },
     "hedgehog2": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "optional": {
+          "item": "animania_extra:brown_egg"
+        },
+        "entity": "animania_extra:hedgehog_albino"
+      }
     },
     "hedgehog3": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:beetroot"
+        },
+        "entity": "animania_extra:hedgehog_albino"
+      }
     },
     "hedgehog4": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:carrot"
+        },
+        "entity": "animania_extra:hedgehog_albino"
+      }
     },
     "hedgehog5": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "animania_extra:peacock_egg_blue"
+        },
+        "entity": "animania_extra:hedgehog_albino"
+      }
     },
     "hedgehog6": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "animania_extra:peacock_egg_white"
+        },
+        "entity": "animania_extra:hedgehog_albino"
+      }
     }
   },
   "requirements": [

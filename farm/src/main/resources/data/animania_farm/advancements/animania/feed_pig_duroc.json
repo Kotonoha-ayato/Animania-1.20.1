@@ -13,49 +13,139 @@
   "parent": "animania_farm:animania/pigs",
   "criteria": {
     "duroc_piglet": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "carrot"
+        },
+        "entity": "animania_farm:piglet_duroc"
+      }
     },
     "duroc_sow": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "carrot"
+        },
+        "entity": "animania_farm:sow_duroc"
+      }
     },
     "duroc_hog": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "carrot"
+        },
+        "entity": "animania_farm:hog_duroc"
+      }
     },
     "duroc_piglet1": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "potato"
+        },
+        "entity": "animania_farm:piglet_duroc"
+      }
     },
     "duroc_sow1": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "potato"
+        },
+        "entity": "animania_farm:sow_duroc"
+      }
     },
     "duroc_hog1": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "potato"
+        },
+        "entity": "animania_farm:hog_duroc"
+      }
     },
     "duroc_piglet2": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "poisonous_potato"
+        },
+        "entity": "animania_farm:piglet_duroc"
+      }
     },
     "duroc_sow2": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "poisonous_potato"
+        },
+        "entity": "animania_farm:sow_duroc"
+      }
     },
     "duroc_hog2": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "poisonous_potato"
+        },
+        "entity": "animania_farm:hog_duroc"
+      }
     },
     "duroc_piglet3": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "bread"
+        },
+        "entity": "animania_farm:piglet_duroc"
+      }
     },
     "duroc_sow3": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "bread"
+        },
+        "entity": "animania_farm:sow_duroc"
+      }
     },
     "duroc_hog3": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "bread"
+        },
+        "entity": "animania_farm:hog_duroc"
+      }
     },
     "duroc_piglet4": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "beetroot"
+        },
+        "entity": "animania_farm:piglet_duroc"
+      }
     },
     "duroc_sow4": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "beetroot"
+        },
+        "entity": "animania_farm:sow_duroc"
+      }
     },
     "duroc_hog4": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "beetroot"
+        },
+        "entity": "animania_farm:hog_duroc"
+      }
     }
   },
   "requirements": [

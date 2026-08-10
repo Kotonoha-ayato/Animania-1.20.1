@@ -1,7 +1,7 @@
 {
   "parent": "builtin/generated",
   "textures": {
-    "layer0": "animania:items/cooked_peacock"
+    "layer0": "animania:item/cooked_peacock"
   },
   "display": {
     "ground": {

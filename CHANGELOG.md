@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.0.0 - client resource and advancement corrections
+
+- Restored the server-authoritative `animania:feed_animal` advancement trigger; entering a world no longer grants every husbandry advancement.
+- Converted all 221 addon animal registrations from the shared placeholder mesh to breed-specific native `ModelPart`/`LayerDefinition` geometry generated from the pinned 1.12 Java models.
+- Added every dynamically registered animal egg item model and migrated item/block atlas paths to the singular 1.20.1 layout.
+- Added modern slop fluid client textures/rendering and corrected the seed block state/model.
+- Strengthened the release resource audit to reject tick criteria, plural atlas paths, missing registered item models, and missing breed model layers.
+
 ## 3.0.0 (Minecraft 1.20.1 / Forge 47.4.22)
 
 This is the first Forge-only Java 17 release of the complete Animania 1.12

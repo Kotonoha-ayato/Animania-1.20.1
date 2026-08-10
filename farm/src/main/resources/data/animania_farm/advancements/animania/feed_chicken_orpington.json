@@ -13,40 +13,112 @@
   "parent": "animania_farm:animania/feed_chicken_leghorn",
   "criteria": {
     "orpington_chick": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:wheat_seeds"
+        },
+        "entity": "animania_farm:chick_orpington"
+      }
     },
     "orpington_hen": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:wheat_seeds"
+        },
+        "entity": "animania_farm:hen_orpington"
+      }
     },
     "orpington_rooster": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:wheat_seeds"
+        },
+        "entity": "animania_farm:rooster_orpington"
+      }
     },
     "orpington_chick1": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:melon_seeds"
+        },
+        "entity": "animania_farm:chick_orpington"
+      }
     },
     "orpington_hen1": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:melon_seeds"
+        },
+        "entity": "animania_farm:hen_orpington"
+      }
     },
     "orpington_rooster1": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:melon_seeds"
+        },
+        "entity": "animania_farm:rooster_orpington"
+      }
     },
     "orpington_chick2": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:beetroot_seeds"
+        },
+        "entity": "animania_farm:chick_orpington"
+      }
     },
     "orpington_hen2": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:beetroot_seeds"
+        },
+        "entity": "animania_farm:hen_orpington"
+      }
     },
     "orpington_rooster2": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:beetroot_seeds"
+        },
+        "entity": "animania_farm:rooster_orpington"
+      }
     },
     "orpington_chick3": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:pumpkin_seeds"
+        },
+        "entity": "animania_farm:chick_orpington"
+      }
     },
     "orpington_hen3": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:pumpkin_seeds"
+        },
+        "entity": "animania_farm:hen_orpington"
+      }
     },
     "orpington_rooster3": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:pumpkin_seeds"
+        },
+        "entity": "animania_farm:rooster_orpington"
+      }
     }
   },
   "requirements": [

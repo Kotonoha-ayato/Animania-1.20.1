@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "animania_extra:items/raw_frog_legs"
+    "layer0": "animania_extra:item/raw_frog_legs"
   }
 }

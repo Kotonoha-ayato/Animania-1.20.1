@@ -1,7 +1,7 @@
 {
   "parent": "builtin/generated",
   "textures": {
-    "layer0": "animania_farm:items/truffle"
+    "layer0": "animania_farm:item/truffle"
   },
   "display": {
     "ground": {

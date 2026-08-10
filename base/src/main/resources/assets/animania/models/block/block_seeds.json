@@ -1,7 +1,7 @@
 {
-  "parent": "block/carpet",
+  "parent": "minecraft:block/carpet",
   "textures": {
-    "wool": "animania:blocks/seeds",
-    "particle": "animania:blocks/seeds"
+    "wool": "animania:block/seeds",
+    "particle": "animania:block/seeds"
   }
 }

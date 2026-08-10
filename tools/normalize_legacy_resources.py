@@ -68,6 +68,8 @@ GENERIC_ITEM_ALIASES = {
 }
 
 ALIASES = {
+    # Criterion IDs are data serializers, not content IDs owned by an addon.
+    "animania:feed_animal": "animania:feed_animal",
     "animania:entity_egg_random": "animania:entity_egg_random",
     "animania:cat_random": "animania_catsdogs:cat_random",
     "animania:dog_random": "animania_catsdogs:dog_random",
@@ -313,6 +315,7 @@ VANILLA_ADVANCEMENT_TRIGGERS = {
     "minecraft:player_hurt_entity", "minecraft:used_totem", "minecraft:consume_item",
     "minecraft:location", "minecraft:placed_block", "minecraft:enchanted_item",
 }
+SUPPORTED_ADVANCEMENT_TRIGGERS = VANILLA_ADVANCEMENT_TRIGGERS | {"animania:feed_animal"}
 
 
 def normalize_advancement(data: dict[str, Any], module: str) -> dict[str, Any]:
@@ -323,11 +326,8 @@ def normalize_advancement(data: dict[str, Any], module: str) -> dict[str, Any]:
             if not isinstance(criterion, dict):
                 continue
             trigger = criterion.get("trigger")
-            if trigger not in VANILLA_ADVANCEMENT_TRIGGERS:
-                # Keep the advancement visible without relying on the removed
-                # 1.12 custom criterion serializer.
-                criterion["trigger"] = "minecraft:tick"
-                criterion.pop("conditions", None)
+            if trigger not in SUPPORTED_ADVANCEMENT_TRIGGERS:
+                raise ValueError(f"Unsupported advancement trigger: {trigger}")
     return out
 
 
@@ -378,8 +378,12 @@ def rewrite_texture_refs(value: Any, module: str) -> Any:
     if not isinstance(value, str) or ":" not in value:
         return value
     namespace, path = value.split(":", 1)
+    if path.startswith("items/"):
+        path = "item/" + path[len("items/"):]
+    elif path.startswith("blocks/"):
+        path = "block/" + path[len("blocks/"):]
     if module == "base":
-        return value
+        return f"{namespace}:{path}"
     # The old addon model files lived below assets/<addon>/animania but their
     # textures lived at assets/<addon>/textures.  Remove that artificial path
     # component and use the modern addon namespace.

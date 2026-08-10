@@ -1,12 +1,12 @@
 {
   "__comment": "Model generated using MrCrayfish's Model Creator (http://mrcrayfish.com/modelcreator/)",
   "textures": {
-    "0": "animania_farm:blocks/cheese_mold_side",
-    "1": "animania_farm:blocks/cheese_mold_side_inner",
-    "2": "animania_farm:blocks/cheese_mold_top",
-    "3": "animania_farm:blocks/cheese_mold_bottom",
-    "4": "animania_farm:blocks/cheese_mold_inner",
-    "particle": "animania_farm:blocks/cheese_mold_bottom"
+    "0": "animania_farm:block/cheese_mold_side",
+    "1": "animania_farm:block/cheese_mold_side_inner",
+    "2": "animania_farm:block/cheese_mold_top",
+    "3": "animania_farm:block/cheese_mold_bottom",
+    "4": "animania_farm:block/cheese_mold_inner",
+    "particle": "animania_farm:block/cheese_mold_bottom"
   },
   "elements": [
     {

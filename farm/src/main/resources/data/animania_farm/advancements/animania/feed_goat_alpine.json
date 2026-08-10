@@ -13,40 +13,112 @@
   "parent": "animania_farm:animania/goats",
   "criteria": {
     "alpine_kid": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:wheat"
+        },
+        "entity": "animania_farm:kid_alpine"
+      }
     },
     "alpine_doe": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:wheat"
+        },
+        "entity": "animania_farm:doe_alpine"
+      }
     },
     "alpine_buck": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:wheat"
+        },
+        "entity": "animania_farm:buck_alpine"
+      }
     },
     "alpine_kid1": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:string"
+        },
+        "entity": "animania_farm:kid_alpine"
+      }
     },
     "alpine_doe1": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:string"
+        },
+        "entity": "animania_farm:doe_alpine"
+      }
     },
     "alpine_buck1": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:string"
+        },
+        "entity": "animania_farm:buck_alpine"
+      }
     },
     "alpine_kid2": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:stick"
+        },
+        "entity": "animania_farm:kid_alpine"
+      }
     },
     "alpine_doe2": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:stick"
+        },
+        "entity": "animania_farm:doe_alpine"
+      }
     },
     "alpine_buck2": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:stick"
+        },
+        "entity": "animania_farm:buck_alpine"
+      }
     },
     "alpine_kid3": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:apple"
+        },
+        "entity": "animania_farm:kid_alpine"
+      }
     },
     "alpine_doe3": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:apple"
+        },
+        "entity": "animania_farm:doe_alpine"
+      }
     },
     "alpine_buck3": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:apple"
+        },
+        "entity": "animania_farm:buck_alpine"
+      }
     }
   },
   "requirements": [

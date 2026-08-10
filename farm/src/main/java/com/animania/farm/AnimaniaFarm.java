@@ -100,6 +100,7 @@ public final class AnimaniaFarm {
         MinecraftForge.EVENT_BUS.addListener(AnimaniaFarm::decorateHiveOnChunkLoad);
         MinecraftForge.EVENT_BUS.addListener(AnimaniaFarm::processHiveQueue);
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> bus.addListener(AnimaniaFarmClient::onClientSetup));
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> bus.addListener(AnimaniaFarmClient::registerLayers));
     }
 
     private void attributes(EntityAttributeCreationEvent event) {

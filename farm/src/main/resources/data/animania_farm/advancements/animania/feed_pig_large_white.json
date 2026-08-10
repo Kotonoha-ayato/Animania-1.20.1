@@ -13,49 +13,139 @@
   "parent": "animania_farm:animania/feed_pig_large_black",
   "criteria": {
     "large_white_piglet": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "carrot"
+        },
+        "entity": "animania_farm:piglet_large_white"
+      }
     },
     "large_white_sow": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "carrot"
+        },
+        "entity": "animania_farm:sow_large_white"
+      }
     },
     "large_white_hog": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "carrot"
+        },
+        "entity": "animania_farm:hog_large_white"
+      }
     },
     "large_white_piglet1": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "potato"
+        },
+        "entity": "animania_farm:piglet_large_white"
+      }
     },
     "large_white_sow1": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "potato"
+        },
+        "entity": "animania_farm:sow_large_white"
+      }
     },
     "large_white_hog1": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "potato"
+        },
+        "entity": "animania_farm:hog_large_white"
+      }
     },
     "large_white_piglet2": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "poisonous_potato"
+        },
+        "entity": "animania_farm:piglet_large_white"
+      }
     },
     "large_white_sow2": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "poisonous_potato"
+        },
+        "entity": "animania_farm:sow_large_white"
+      }
     },
     "large_white_hog2": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "poisonous_potato"
+        },
+        "entity": "animania_farm:hog_large_white"
+      }
     },
     "large_white_piglet3": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "bread"
+        },
+        "entity": "animania_farm:piglet_large_white"
+      }
     },
     "large_white_sow3": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "bread"
+        },
+        "entity": "animania_farm:sow_large_white"
+      }
     },
     "large_white_hog3": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "bread"
+        },
+        "entity": "animania_farm:hog_large_white"
+      }
     },
     "large_white_piglet4": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "beetroot"
+        },
+        "entity": "animania_farm:piglet_large_white"
+      }
     },
     "large_white_sow4": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "beetroot"
+        },
+        "entity": "animania_farm:sow_large_white"
+      }
     },
     "large_white_hog4": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "beetroot"
+        },
+        "entity": "animania_farm:hog_large_white"
+      }
     }
   },
   "requirements": [

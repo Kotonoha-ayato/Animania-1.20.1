@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "animania:items/animania_manual"
+    "layer0": "animania:item/animania_manual"
   }
 }

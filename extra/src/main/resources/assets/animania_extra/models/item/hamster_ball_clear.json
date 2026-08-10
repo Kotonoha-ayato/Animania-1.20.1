@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "animania_extra:items/hamster_ball_clear"
+    "layer0": "animania_extra:item/hamster_ball_clear"
   }
 }

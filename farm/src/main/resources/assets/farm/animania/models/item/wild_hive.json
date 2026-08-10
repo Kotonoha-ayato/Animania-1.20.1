@@ -1,7 +1,7 @@
 {
   "parent": "builtin/generated",
   "textures": {
-    "layer0": "animania_farm:items/wild_hive"
+    "layer0": "animania_farm:item/wild_hive"
   },
   "display": {
     "ground": {

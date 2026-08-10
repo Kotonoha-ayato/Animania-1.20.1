@@ -67,6 +67,7 @@ public final class AnimaniaCatsDogs {
         bus.addListener(this::registerGameTests);
         MinecraftForge.EVENT_BUS.addListener(AnimaniaCatsDogs::replaceVanillaCompanion);
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> bus.addListener(AnimaniaCatsDogsClient::onClientSetup));
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> bus.addListener(AnimaniaCatsDogsClient::registerLayers));
     }
 
     private void attributes(EntityAttributeCreationEvent event) {

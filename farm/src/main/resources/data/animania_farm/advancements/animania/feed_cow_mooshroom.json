@@ -13,13 +13,31 @@
   "parent": "animania_farm:animania/feed_cow_highland",
   "criteria": {
     "mooshroom_calf": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:wheat"
+        },
+        "entity": "animania_farm:calf_mooshroom"
+      }
     },
     "mooshroom_cow": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:wheat"
+        },
+        "entity": "animania_farm:cow_mooshroom"
+      }
     },
     "mooshroom_bull": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:wheat"
+        },
+        "entity": "animania_farm:bull_mooshroom"
+      }
     }
   },
   "requirements": [

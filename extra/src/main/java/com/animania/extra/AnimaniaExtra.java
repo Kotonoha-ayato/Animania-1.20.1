@@ -63,6 +63,7 @@ public final class AnimaniaExtra {
         bus.addListener(this::registerGameTests);
         MinecraftForge.EVENT_BUS.addListener(AnimaniaExtra::replaceVanillaRabbit);
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> bus.addListener(AnimaniaExtraClient::onClientSetup));
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> bus.addListener(AnimaniaExtraClient::registerLayers));
     }
 
     private void attributes(EntityAttributeCreationEvent event) {

@@ -1,7 +1,7 @@
 {
   "parent": "builtin/generated",
   "textures": {
-    "layer0": "animania_farm:items/cheese_mold"
+    "layer0": "animania_farm:item/cheese_mold"
   },
   "display": {
     "ground": {

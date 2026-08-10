@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:block/cube_all",
   "textures": {
-    "all": "animania_farm:blocks/wild_hive"
+    "all": "animania_farm:block/wild_hive"
   }
 }

@@ -1,1 +1,6 @@
-{"parent":"minecraft:item/generated","textures":{"layer0":"animania_farm:items/bucket_milk_goat"}}
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "animania_farm:item/bucket_milk_goat"
+  }
+}

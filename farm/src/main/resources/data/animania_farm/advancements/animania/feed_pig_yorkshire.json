@@ -13,49 +13,139 @@
   "parent": "animania_farm:animania/feed_pig_old_spot",
   "criteria": {
     "yorkshire_piglet": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "carrot"
+        },
+        "entity": "animania_farm:piglet_yorkshire"
+      }
     },
     "yorkshire_sow": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "carrot"
+        },
+        "entity": "animania_farm:sow_yorkshire"
+      }
     },
     "yorkshire_hog": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "carrot"
+        },
+        "entity": "animania_farm:hog_yorkshire"
+      }
     },
     "yorkshire_piglet1": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "potato"
+        },
+        "entity": "animania_farm:piglet_yorkshire"
+      }
     },
     "yorkshire_sow1": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "potato"
+        },
+        "entity": "animania_farm:sow_yorkshire"
+      }
     },
     "yorkshire_hog1": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "potato"
+        },
+        "entity": "animania_farm:hog_yorkshire"
+      }
     },
     "yorkshire_piglet2": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "poisonous_potato"
+        },
+        "entity": "animania_farm:piglet_yorkshire"
+      }
     },
     "yorkshire_sow2": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "poisonous_potato"
+        },
+        "entity": "animania_farm:sow_yorkshire"
+      }
     },
     "yorkshire_hog2": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "poisonous_potato"
+        },
+        "entity": "animania_farm:hog_yorkshire"
+      }
     },
     "yorkshire_piglet3": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "bread"
+        },
+        "entity": "animania_farm:piglet_yorkshire"
+      }
     },
     "yorkshire_sow3": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "bread"
+        },
+        "entity": "animania_farm:sow_yorkshire"
+      }
     },
     "yorkshire_hog3": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "bread"
+        },
+        "entity": "animania_farm:hog_yorkshire"
+      }
     },
     "yorkshire_piglet4": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "beetroot"
+        },
+        "entity": "animania_farm:piglet_yorkshire"
+      }
     },
     "yorkshire_sow4": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "beetroot"
+        },
+        "entity": "animania_farm:sow_yorkshire"
+      }
     },
     "yorkshire_hog4": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "beetroot"
+        },
+        "entity": "animania_farm:hog_yorkshire"
+      }
     }
   },
   "requirements": [

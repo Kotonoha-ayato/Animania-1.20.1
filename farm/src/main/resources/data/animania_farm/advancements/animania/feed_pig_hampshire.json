@@ -13,49 +13,139 @@
   "parent": "animania_farm:animania/feed_pig_duroc",
   "criteria": {
     "hampshire_piglet": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "carrot"
+        },
+        "entity": "animania_farm:piglet_hampshire"
+      }
     },
     "hampshire_sow": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "carrot"
+        },
+        "entity": "animania_farm:sow_hampshire"
+      }
     },
     "hampshire_hog": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "carrot"
+        },
+        "entity": "animania_farm:hog_hampshire"
+      }
     },
     "hampshire_piglet1": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "potato"
+        },
+        "entity": "animania_farm:piglet_hampshire"
+      }
     },
     "hampshire_sow1": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "potato"
+        },
+        "entity": "animania_farm:sow_hampshire"
+      }
     },
     "hampshire_hog1": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "potato"
+        },
+        "entity": "animania_farm:hog_hampshire"
+      }
     },
     "hampshire_piglet2": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "poisonous_potato"
+        },
+        "entity": "animania_farm:piglet_hampshire"
+      }
     },
     "hampshire_sow2": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "poisonous_potato"
+        },
+        "entity": "animania_farm:sow_hampshire"
+      }
     },
     "hampshire_hog2": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "poisonous_potato"
+        },
+        "entity": "animania_farm:hog_hampshire"
+      }
     },
     "hampshire_piglet3": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "bread"
+        },
+        "entity": "animania_farm:piglet_hampshire"
+      }
     },
     "hampshire_sow3": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "bread"
+        },
+        "entity": "animania_farm:sow_hampshire"
+      }
     },
     "hampshire_hog3": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "bread"
+        },
+        "entity": "animania_farm:hog_hampshire"
+      }
     },
     "hampshire_piglet4": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "beetroot"
+        },
+        "entity": "animania_farm:piglet_hampshire"
+      }
     },
     "hampshire_sow4": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "beetroot"
+        },
+        "entity": "animania_farm:sow_hampshire"
+      }
     },
     "hampshire_hog4": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "beetroot"
+        },
+        "entity": "animania_farm:hog_hampshire"
+      }
     }
   },
   "requirements": [

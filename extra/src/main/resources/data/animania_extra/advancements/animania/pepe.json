@@ -15,7 +15,19 @@
   "parent": "animania_extra:animania/root",
   "criteria": {
     "pepe": {
-      "trigger": "minecraft:tick"
+      "trigger": "animania:feed_animal",
+      "conditions": {
+        "itemstack": {
+          "item": "minecraft:name_tag",
+          "nbt": {
+            "display": {
+              "Name": "Pepe"
+            },
+            "RepairCost": 0
+          }
+        },
+        "entity": "animania_extra:frog"
+      }
     }
   }
 }

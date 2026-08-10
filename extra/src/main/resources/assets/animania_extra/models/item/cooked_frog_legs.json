@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "animania_extra:items/cooked_frog_legs"
+    "layer0": "animania_extra:item/cooked_frog_legs"
   }
 }

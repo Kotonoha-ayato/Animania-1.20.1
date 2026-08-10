@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "animania_extra:items/peacock_egg_blue"
+    "layer0": "animania_extra:item/peacock_egg_blue"
   }
 }
