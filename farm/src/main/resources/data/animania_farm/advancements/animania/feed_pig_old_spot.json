@@ -1,0 +1,80 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_farm:entity_egg_piglet_old_spot"
+    },
+    "title": {
+      "translate": "advancements.animania.old_spot.title"
+    },
+    "description": {
+      "translate": "advancements.animania.old_spot.description"
+    }
+  },
+  "parent": "animania_farm:animania/feed_pig_large_white",
+  "criteria": {
+    "old_spot_piglet": {
+      "trigger": "minecraft:tick"
+    },
+    "old_spot_sow": {
+      "trigger": "minecraft:tick"
+    },
+    "old_spot_hog": {
+      "trigger": "minecraft:tick"
+    },
+    "old_spot_piglet1": {
+      "trigger": "minecraft:tick"
+    },
+    "old_spot_sow1": {
+      "trigger": "minecraft:tick"
+    },
+    "old_spot_hog1": {
+      "trigger": "minecraft:tick"
+    },
+    "old_spot_piglet2": {
+      "trigger": "minecraft:tick"
+    },
+    "old_spot_sow2": {
+      "trigger": "minecraft:tick"
+    },
+    "old_spot_hog2": {
+      "trigger": "minecraft:tick"
+    },
+    "old_spot_piglet3": {
+      "trigger": "minecraft:tick"
+    },
+    "old_spot_sow3": {
+      "trigger": "minecraft:tick"
+    },
+    "old_spot_hog3": {
+      "trigger": "minecraft:tick"
+    },
+    "old_spot_piglet4": {
+      "trigger": "minecraft:tick"
+    },
+    "old_spot_sow4": {
+      "trigger": "minecraft:tick"
+    },
+    "old_spot_hog4": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "requirements": [
+    [
+      "old_spot_hog",
+      "old_spot_sow",
+      "old_spot_piglet",
+      "old_spot_hog1",
+      "old_spot_sow1",
+      "old_spot_piglet1",
+      "old_spot_hog2",
+      "old_spot_sow2",
+      "old_spot_piglet2",
+      "old_spot_hog3",
+      "old_spot_sow3",
+      "old_spot_piglet3",
+      "old_spot_hog4",
+      "old_spot_sow4",
+      "old_spot_piglet4"
+    ]
+  ]
+}

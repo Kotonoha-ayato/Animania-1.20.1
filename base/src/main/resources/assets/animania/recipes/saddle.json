@@ -1,0 +1,22 @@
+{
+  "result": {
+    "item": "minecraft:saddle"
+  },
+  "pattern": [
+    "lll",
+    "iwi",
+    "   "
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "l": {
+      "tag": "minecraft:leather"
+    },
+    "w": {
+      "tag": "minecraft:wool"
+    },
+    "i": {
+      "tag": "minecraft:iron_ingots"
+    }
+  }
+}

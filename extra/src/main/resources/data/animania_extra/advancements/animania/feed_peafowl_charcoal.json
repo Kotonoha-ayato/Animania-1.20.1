@@ -1,0 +1,68 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_extra:entity_egg_peachick_charcoal"
+    },
+    "title": {
+      "translate": "advancements.animania.charcoal.title"
+    },
+    "description": {
+      "translate": "advancements.animania.charcoal.description"
+    }
+  },
+  "parent": "animania_extra:animania/feed_peafowl_blue",
+  "criteria": {
+    "charcoal_peachick": {
+      "trigger": "minecraft:tick"
+    },
+    "charcoal_peahen": {
+      "trigger": "minecraft:tick"
+    },
+    "charcoal_peacock": {
+      "trigger": "minecraft:tick"
+    },
+    "charcoal_peachick1": {
+      "trigger": "minecraft:tick"
+    },
+    "charcoal_peahen1": {
+      "trigger": "minecraft:tick"
+    },
+    "charcoal_peacock1": {
+      "trigger": "minecraft:tick"
+    },
+    "charcoal_peachick2": {
+      "trigger": "minecraft:tick"
+    },
+    "charcoal_peahen2": {
+      "trigger": "minecraft:tick"
+    },
+    "charcoal_peacock2": {
+      "trigger": "minecraft:tick"
+    },
+    "charcoal_peachick3": {
+      "trigger": "minecraft:tick"
+    },
+    "charcoal_peahen3": {
+      "trigger": "minecraft:tick"
+    },
+    "charcoal_peacock3": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "requirements": [
+    [
+      "charcoal_peacock",
+      "charcoal_peahen",
+      "charcoal_peachick",
+      "charcoal_peacock1",
+      "charcoal_peahen1",
+      "charcoal_peachick1",
+      "charcoal_peacock2",
+      "charcoal_peahen2",
+      "charcoal_peachick2",
+      "charcoal_peacock3",
+      "charcoal_peahen3",
+      "charcoal_peachick3"
+    ]
+  ]
+}

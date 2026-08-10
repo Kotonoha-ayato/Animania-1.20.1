@@ -1,0 +1,68 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_farm:entity_egg_kid_kinder"
+    },
+    "title": {
+      "translate": "advancements.animania.kinder.title"
+    },
+    "description": {
+      "translate": "advancements.animania.kinder.description"
+    }
+  },
+  "parent": "animania_farm:animania/feed_goat_kiko",
+  "criteria": {
+    "kinder_kid": {
+      "trigger": "minecraft:tick"
+    },
+    "kinder_doe": {
+      "trigger": "minecraft:tick"
+    },
+    "kinder_buck": {
+      "trigger": "minecraft:tick"
+    },
+    "kinder_kid1": {
+      "trigger": "minecraft:tick"
+    },
+    "kinder_doe1": {
+      "trigger": "minecraft:tick"
+    },
+    "kinder_buck1": {
+      "trigger": "minecraft:tick"
+    },
+    "kinder_kid2": {
+      "trigger": "minecraft:tick"
+    },
+    "kinder_doe2": {
+      "trigger": "minecraft:tick"
+    },
+    "kinder_buck2": {
+      "trigger": "minecraft:tick"
+    },
+    "kinder_kid3": {
+      "trigger": "minecraft:tick"
+    },
+    "kinder_doe3": {
+      "trigger": "minecraft:tick"
+    },
+    "kinder_buck3": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "requirements": [
+    [
+      "kinder_buck",
+      "kinder_doe",
+      "kinder_kid",
+      "kinder_buck1",
+      "kinder_doe1",
+      "kinder_kid1",
+      "kinder_buck2",
+      "kinder_doe2",
+      "kinder_kid2",
+      "kinder_buck3",
+      "kinder_doe3",
+      "kinder_kid3"
+    ]
+  ]
+}

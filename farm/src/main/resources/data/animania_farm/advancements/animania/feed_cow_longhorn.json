@@ -1,0 +1,32 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_farm:entity_egg_calf_longhorn"
+    },
+    "title": {
+      "translate": "advancements.animania.longhorn.title"
+    },
+    "description": {
+      "translate": "advancements.animania.longhorn.description"
+    }
+  },
+  "parent": "animania_farm:animania/feed_cow_holstein",
+  "criteria": {
+    "longhorn_calf": {
+      "trigger": "minecraft:tick"
+    },
+    "longhorn_cow": {
+      "trigger": "minecraft:tick"
+    },
+    "longhorn_bull": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "requirements": [
+    [
+      "longhorn_bull",
+      "longhorn_cow",
+      "longhorn_calf"
+    ]
+  ]
+}

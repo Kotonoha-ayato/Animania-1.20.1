@@ -1,0 +1,7 @@
+ext.mod_id = 'animania_extra'
+ext.mod_name = 'Animania Extra'
+ext.archive_name = 'animania-extra-1.20.1'
+ext.mod_description = 'Complete Animania amphibians, peafowl, rodents, rabbits, and related systems.'
+apply from: rootProject.file('gradle/forge-module.gradle')
+dependencies { implementation project(':base') }
+

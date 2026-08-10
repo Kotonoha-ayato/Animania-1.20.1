@@ -1,0 +1,68 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_farm:entity_egg_kid_kiko"
+    },
+    "title": {
+      "translate": "advancements.animania.kiko.title"
+    },
+    "description": {
+      "translate": "advancements.animania.kiko.description"
+    }
+  },
+  "parent": "animania_farm:animania/feed_goat_fainting",
+  "criteria": {
+    "kiko_kid": {
+      "trigger": "minecraft:tick"
+    },
+    "kiko_doe": {
+      "trigger": "minecraft:tick"
+    },
+    "kiko_buck": {
+      "trigger": "minecraft:tick"
+    },
+    "kiko_kid1": {
+      "trigger": "minecraft:tick"
+    },
+    "kiko_doe1": {
+      "trigger": "minecraft:tick"
+    },
+    "kiko_buck1": {
+      "trigger": "minecraft:tick"
+    },
+    "kiko_kid2": {
+      "trigger": "minecraft:tick"
+    },
+    "kiko_doe2": {
+      "trigger": "minecraft:tick"
+    },
+    "kiko_buck2": {
+      "trigger": "minecraft:tick"
+    },
+    "kiko_kid3": {
+      "trigger": "minecraft:tick"
+    },
+    "kiko_doe3": {
+      "trigger": "minecraft:tick"
+    },
+    "kiko_buck3": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "requirements": [
+    [
+      "kiko_buck",
+      "kiko_doe",
+      "kiko_kid",
+      "kiko_buck1",
+      "kiko_doe1",
+      "kiko_kid1",
+      "kiko_buck2",
+      "kiko_doe2",
+      "kiko_kid2",
+      "kiko_buck3",
+      "kiko_doe3",
+      "kiko_kid3"
+    ]
+  ]
+}

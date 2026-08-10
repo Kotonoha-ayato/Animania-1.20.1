@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "animania_extra:hamster_food",
+    "animania_extra:raw_prime_rabbit",
+    "animania_extra:cooked_prime_rabbit",
+    "animania_extra:raw_frog_legs",
+    "animania_extra:cooked_frog_legs",
+    "animania_extra:raw_peacock",
+    "animania_extra:cooked_peacock",
+    "animania_extra:raw_prime_peacock",
+    "animania_extra:cooked_prime_peacock"
+  ]
+}

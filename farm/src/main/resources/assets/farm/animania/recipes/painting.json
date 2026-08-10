@@ -1,0 +1,19 @@
+{
+  "result": {
+    "item": "minecraft:painting"
+  },
+  "pattern": [
+    "sss",
+    "sws",
+    "sss"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "s": {
+      "tag": "minecraft:planks"
+    },
+    "w": {
+      "tag": "minecraft:wool"
+    }
+  }
+}

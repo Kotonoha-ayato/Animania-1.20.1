@@ -1,0 +1,32 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_catsdogs:entity_egg_puppy_german_shepherd"
+    },
+    "title": {
+      "translate": "advancements.animania.german_shepherd.title"
+    },
+    "description": {
+      "translate": "advancements.animania.german_shepherd.description"
+    }
+  },
+  "parent": "animania_catsdogs:animania/feed_dog_dachshund",
+  "criteria": {
+    "puppy": {
+      "trigger": "minecraft:tick"
+    },
+    "female": {
+      "trigger": "minecraft:tick"
+    },
+    "male": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "requirements": [
+    [
+      "male",
+      "female",
+      "puppy"
+    ]
+  ]
+}

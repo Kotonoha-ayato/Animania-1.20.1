@@ -1,0 +1,19 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_extra:entity_egg_rabbit_random"
+    },
+    "title": {
+      "translate": "advancements.animania.rabbits.title"
+    },
+    "description": {
+      "translate": "advancements.animania.rabbits.description"
+    }
+  },
+  "parent": "animania_extra:animania/root",
+  "criteria": {
+    "impossible": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

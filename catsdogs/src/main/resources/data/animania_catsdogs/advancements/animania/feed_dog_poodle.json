@@ -1,0 +1,32 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_catsdogs:entity_egg_puppy_poodle"
+    },
+    "title": {
+      "translate": "advancements.animania.poodle.title"
+    },
+    "description": {
+      "translate": "advancements.animania.poodle.description"
+    }
+  },
+  "parent": "animania_catsdogs:animania/feed_dog_pomeranian",
+  "criteria": {
+    "puppy": {
+      "trigger": "minecraft:tick"
+    },
+    "female": {
+      "trigger": "minecraft:tick"
+    },
+    "male": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "requirements": [
+    [
+      "male",
+      "female",
+      "puppy"
+    ]
+  ]
+}

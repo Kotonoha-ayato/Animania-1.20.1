@@ -1,0 +1,19 @@
+{
+  "result": {
+    "item": "animania_farm:cheese_mold"
+  },
+  "pattern": [
+    "   ",
+    "pip",
+    " p "
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "p": {
+      "tag": "minecraft:planks"
+    },
+    "i": {
+      "tag": "minecraft:iron_ingots"
+    }
+  }
+}

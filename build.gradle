@@ -1,0 +1,75 @@
+plugins {
+    id 'net.minecraftforge.gradle' version '[6.0,6.2)' apply false
+}
+
+allprojects {
+    group = providers.gradleProperty('mod_group').get()
+    version = providers.gradleProperty('mod_version').get()
+
+    repositories {
+        mavenCentral()
+        maven { url = 'https://maven.minecraftforge.net' }
+        maven { url = 'https://maven.blamejared.com' }
+        maven { url = 'https://api.modrinth.com/maven' }
+        maven { url = 'https://www.cursemaven.com' }
+    }
+}
+
+tasks.register('releaseBuild') {
+    group = 'build'
+    description = 'Builds all four independently publishable Animania modules and the config migrator.'
+    dependsOn ':base:build', ':farm:build', ':extra:build', ':catsdogs:build', ':config-migrator:build'
+}
+
+tasks.register('runDataAll') {
+    group = 'verification'
+    description = 'Runs Forge data generation for every Animania module.'
+    dependsOn ':base:runData', ':farm:runData', ':extra:runData', ':catsdogs:runData'
+}
+
+tasks.register('runGameTestsAll') {
+    group = 'verification'
+    description = 'Runs the registered Forge GameTests for every Animania module.'
+    dependsOn ':base:runGameTestServer', ':farm:runGameTestServer', ':extra:runGameTestServer', ':catsdogs:runGameTestServer'
+}
+
+tasks.register('verifyRelease') {
+    group = 'verification'
+    description = 'Runs the full automated release verification and artifact/startup gates available in this checkout.'
+    dependsOn ':base:check', ':farm:check', ':extra:check', ':catsdogs:check', ':config-migrator:check',
+            'runDataAll', 'runGameTestsAll',
+            'resourceAudit', 'migrationMatrixAudit', 'releaseArtifactAudit', 'startupMatrixAudit'
+}
+
+tasks.register('resourceAudit', Exec) {
+    group = 'verification'
+    description = 'Checks modern JSON, locales, model textures, recipes, and CraftStudio removal.'
+    workingDir projectDir
+    commandLine 'python', 'tools/audit_resources.py', '--root', projectDir.absolutePath
+}
+
+tasks.register('migrationMatrixAudit', Exec) {
+    group = 'verification'
+    description = 'Requires every pinned 1.12 entry to have target evidence and tests.'
+    workingDir projectDir
+    commandLine 'python', 'tools/close_migration_matrix.py', '--root', projectDir.absolutePath,
+            '--matrix', project.file('docs/migration-matrix.json').absolutePath, '--check-only'
+}
+
+tasks.register('releaseArtifactAudit', Exec) {
+    group = 'verification'
+    description = 'Audits the four independent JARs, sources JARs, checksums, and dependencies.'
+    dependsOn 'releaseBuild'
+    workingDir projectDir
+    commandLine 'python', 'tools/audit_release.py', '--root', projectDir.absolutePath,
+            '--version', project.version.toString(), '--matrix', project.file('docs/migration-matrix.json').absolutePath
+}
+
+tasks.register('startupMatrixAudit', Exec) {
+    group = 'verification'
+    description = 'Checks Base/addon combinations, optional dependencies, and missing-Base rejection metadata.'
+    dependsOn 'releaseBuild'
+    workingDir projectDir
+    commandLine 'python', 'tools/audit_startup_matrix.py', '--root', projectDir.absolutePath,
+            '--version', project.version.toString()
+}

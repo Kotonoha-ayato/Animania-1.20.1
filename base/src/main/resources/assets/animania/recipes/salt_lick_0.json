@@ -1,0 +1,35 @@
+{
+  "result": {
+    "item": "animania:salt_lick"
+  },
+  "ingredients": [
+    {
+      "tag": "animania:salt"
+    },
+    {
+      "tag": "animania:salt"
+    },
+    {
+      "tag": "animania:salt"
+    },
+    {
+      "tag": "animania:salt"
+    },
+    {
+      "tag": "animania:salt"
+    },
+    {
+      "tag": "animania:salt"
+    },
+    {
+      "tag": "animania:salt"
+    },
+    {
+      "tag": "animania:salt"
+    },
+    {
+      "item": "minecraft:water_bucket"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless"
+}

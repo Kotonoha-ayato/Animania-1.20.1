@@ -1,0 +1,19 @@
+{
+  "result": {
+    "item": "animania_farm:riding_crop"
+  },
+  "pattern": [
+    "  l",
+    " s ",
+    "l  "
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "s": {
+      "tag": "minecraft:planks"
+    },
+    "l": {
+      "tag": "minecraft:leather"
+    }
+  }
+}

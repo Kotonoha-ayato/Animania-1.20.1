@@ -1,0 +1,68 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_extra:entity_egg_kit_dutch"
+    },
+    "title": {
+      "translate": "advancements.animania.dutch.title"
+    },
+    "description": {
+      "translate": "advancements.animania.dutch.description"
+    }
+  },
+  "parent": "animania_extra:animania/feed_rabbit_cottontail",
+  "criteria": {
+    "dutch_kit": {
+      "trigger": "minecraft:tick"
+    },
+    "dutch_doe": {
+      "trigger": "minecraft:tick"
+    },
+    "dutch_buck": {
+      "trigger": "minecraft:tick"
+    },
+    "dutch_kit1": {
+      "trigger": "minecraft:tick"
+    },
+    "dutch_doe1": {
+      "trigger": "minecraft:tick"
+    },
+    "dutch_buck1": {
+      "trigger": "minecraft:tick"
+    },
+    "dutch_kit2": {
+      "trigger": "minecraft:tick"
+    },
+    "dutch_doe2": {
+      "trigger": "minecraft:tick"
+    },
+    "dutch_buck2": {
+      "trigger": "minecraft:tick"
+    },
+    "dutch_kit3": {
+      "trigger": "minecraft:tick"
+    },
+    "dutch_doe3": {
+      "trigger": "minecraft:tick"
+    },
+    "dutch_buck3": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "requirements": [
+    [
+      "dutch_buck",
+      "dutch_doe",
+      "dutch_kit",
+      "dutch_buck1",
+      "dutch_doe1",
+      "dutch_kit1",
+      "dutch_buck2",
+      "dutch_doe2",
+      "dutch_kit2",
+      "dutch_buck3",
+      "dutch_doe3",
+      "dutch_kit3"
+    ]
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_catsdogs:entity_egg_puppy_greyhound"
+    },
+    "title": {
+      "translate": "advancements.animania.greyhound.title"
+    },
+    "description": {
+      "translate": "advancements.animania.greyhound.description"
+    }
+  },
+  "parent": "animania_catsdogs:animania/feed_dog_great_dane",
+  "criteria": {
+    "puppy": {
+      "trigger": "minecraft:tick"
+    },
+    "female": {
+      "trigger": "minecraft:tick"
+    },
+    "male": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "requirements": [
+    [
+      "male",
+      "female",
+      "puppy"
+    ]
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_farm:entity_egg_calf_hereford"
+    },
+    "title": {
+      "translate": "advancements.animania.hereford.title"
+    },
+    "description": {
+      "translate": "advancements.animania.hereford.description"
+    }
+  },
+  "parent": "animania_farm:animania/feed_cow_friesian",
+  "criteria": {
+    "hereford_calf": {
+      "trigger": "minecraft:tick"
+    },
+    "hereford_cow": {
+      "trigger": "minecraft:tick"
+    },
+    "hereford_bull": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "requirements": [
+    [
+      "hereford_bull",
+      "hereford_cow",
+      "hereford_calf"
+    ]
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_farm:entity_egg_chick_leghorn"
+    },
+    "title": {
+      "translate": "advancements.animania.leghorn.title"
+    },
+    "description": {
+      "translate": "advancements.animania.leghorn.description"
+    }
+  },
+  "parent": "animania_farm:animania/chickens",
+  "criteria": {
+    "leghorn_chick": {
+      "trigger": "minecraft:tick"
+    },
+    "leghorn_hen": {
+      "trigger": "minecraft:tick"
+    },
+    "leghorn_rooster": {
+      "trigger": "minecraft:tick"
+    },
+    "leghorn_chick1": {
+      "trigger": "minecraft:tick"
+    },
+    "leghorn_hen1": {
+      "trigger": "minecraft:tick"
+    },
+    "leghorn_rooster1": {
+      "trigger": "minecraft:tick"
+    },
+    "leghorn_chick2": {
+      "trigger": "minecraft:tick"
+    },
+    "leghorn_hen2": {
+      "trigger": "minecraft:tick"
+    },
+    "leghorn_rooster2": {
+      "trigger": "minecraft:tick"
+    },
+    "leghorn_chick3": {
+      "trigger": "minecraft:tick"
+    },
+    "leghorn_hen3": {
+      "trigger": "minecraft:tick"
+    },
+    "leghorn_rooster3": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "requirements": [
+    [
+      "leghorn_rooster",
+      "leghorn_hen",
+      "leghorn_chick",
+      "leghorn_rooster1",
+      "leghorn_hen1",
+      "leghorn_chick1",
+      "leghorn_rooster2",
+      "leghorn_hen2",
+      "leghorn_chick2",
+      "leghorn_rooster3",
+      "leghorn_hen3",
+      "leghorn_chick3"
+    ]
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_extra:entity_egg_peachick_blue"
+    },
+    "title": {
+      "translate": "advancements.animania.blue.title"
+    },
+    "description": {
+      "translate": "advancements.animania.blue.description"
+    }
+  },
+  "parent": "animania_extra:animania/peafowl",
+  "criteria": {
+    "blue_peachick": {
+      "trigger": "minecraft:tick"
+    },
+    "blue_peahen": {
+      "trigger": "minecraft:tick"
+    },
+    "blue_peacock": {
+      "trigger": "minecraft:tick"
+    },
+    "blue_peachick1": {
+      "trigger": "minecraft:tick"
+    },
+    "blue_peahen1": {
+      "trigger": "minecraft:tick"
+    },
+    "blue_peacock1": {
+      "trigger": "minecraft:tick"
+    },
+    "blue_peachick2": {
+      "trigger": "minecraft:tick"
+    },
+    "blue_peahen2": {
+      "trigger": "minecraft:tick"
+    },
+    "blue_peacock2": {
+      "trigger": "minecraft:tick"
+    },
+    "blue_peachick3": {
+      "trigger": "minecraft:tick"
+    },
+    "blue_peahen3": {
+      "trigger": "minecraft:tick"
+    },
+    "blue_peacock3": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "requirements": [
+    [
+      "blue_peacock",
+      "blue_peahen",
+      "blue_peachick",
+      "blue_peacock1",
+      "blue_peahen1",
+      "blue_peachick1",
+      "blue_peacock2",
+      "blue_peahen2",
+      "blue_peachick2",
+      "blue_peacock3",
+      "blue_peahen3",
+      "blue_peachick3"
+    ]
+  ]
+}

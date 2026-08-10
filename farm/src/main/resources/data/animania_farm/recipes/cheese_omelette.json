@@ -1,0 +1,14 @@
+{
+  "result": {
+    "item": "animania_farm:cheese_omelette"
+  },
+  "ingredients": [
+    {
+      "item": "animania_farm:plain_omelette"
+    },
+    {
+      "tag": "animania_farm:friesian_cheese_wedge"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless"
+}

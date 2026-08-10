@@ -1,0 +1,58 @@
+package com.animania.catsdogs;
+
+import com.animania.common.entity.AnimaniaAnimalEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+
+/**
+ * Lightweight modern replacement for the legacy CraftStudio pet props. The
+ * block keeps the original IDs while providing the gameplay-relevant sleep
+ * and litter interaction on the server.
+ */
+public final class CatsDogsPetFacilityBlock extends Block {
+    private final String id;
+
+    public CatsDogsPetFacilityBlock(String id, BlockBehaviour.Properties properties) {
+        super(properties);
+        this.id = id;
+    }
+
+    @Override
+    public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
+        if (!level.isClientSide && entity instanceof AnimaniaAnimalEntity animal && isPet(animal)) {
+            if (id.startsWith("cat_bed") || id.equals("cat_tower") || id.equals("dog_house") || id.equals("dog_pillow")) {
+                animal.setSleeping(true);
+                animal.setPlaying(false);
+            } else if (id.equals("litter_box") && isCat(animal)) {
+                animal.setThirst(100);
+                animal.setPlaying(false);
+            }
+        }
+    }
+
+    @Override
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+        if (!level.isClientSide && player.isShiftKeyDown()) {
+            player.displayClientMessage(net.minecraft.network.chat.Component.translatable("message.animania.pet_facility", id), true);
+        }
+        return InteractionResult.sidedSuccess(level.isClientSide);
+    }
+
+    private static boolean isPet(AnimaniaAnimalEntity animal) {
+        var id = net.minecraftforge.registries.ForgeRegistries.ENTITY_TYPES.getKey(animal.getType());
+        return id != null && "animania_catsdogs".equals(id.getNamespace());
+    }
+
+    private static boolean isCat(AnimaniaAnimalEntity animal) {
+        var id = net.minecraftforge.registries.ForgeRegistries.ENTITY_TYPES.getKey(animal.getType());
+        return id != null && (id.getPath().startsWith("queen_") || id.getPath().startsWith("tom_") || id.getPath().startsWith("kitten_"));
+    }
+}

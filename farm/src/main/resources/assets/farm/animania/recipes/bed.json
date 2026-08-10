@@ -1,0 +1,19 @@
+{
+  "result": {
+    "item": "minecraft:white_bed"
+  },
+  "pattern": [
+    "   ",
+    "www",
+    "ppp"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "p": {
+      "tag": "minecraft:planks"
+    },
+    "w": {
+      "tag": "minecraft:wool"
+    }
+  }
+}

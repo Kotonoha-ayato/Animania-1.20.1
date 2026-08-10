@@ -1,0 +1,68 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_extra:entity_egg_peachick_white"
+    },
+    "title": {
+      "translate": "advancements.animania.white.title"
+    },
+    "description": {
+      "translate": "advancements.animania.white.description"
+    }
+  },
+  "parent": "animania_extra:animania/feed_peafowl_taupe",
+  "criteria": {
+    "white_peachick": {
+      "trigger": "minecraft:tick"
+    },
+    "white_peahen": {
+      "trigger": "minecraft:tick"
+    },
+    "white_peacock": {
+      "trigger": "minecraft:tick"
+    },
+    "white_peachick1": {
+      "trigger": "minecraft:tick"
+    },
+    "white_peahen1": {
+      "trigger": "minecraft:tick"
+    },
+    "white_peacock1": {
+      "trigger": "minecraft:tick"
+    },
+    "white_peachick2": {
+      "trigger": "minecraft:tick"
+    },
+    "white_peahen2": {
+      "trigger": "minecraft:tick"
+    },
+    "white_peacock2": {
+      "trigger": "minecraft:tick"
+    },
+    "white_peachick3": {
+      "trigger": "minecraft:tick"
+    },
+    "white_peahen3": {
+      "trigger": "minecraft:tick"
+    },
+    "white_peacock3": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "requirements": [
+    [
+      "white_peacock",
+      "white_peahen",
+      "white_peachick",
+      "white_peacock1",
+      "white_peahen1",
+      "white_peachick1",
+      "white_peacock2",
+      "white_peahen2",
+      "white_peachick2",
+      "white_peacock3",
+      "white_peahen3",
+      "white_peachick3"
+    ]
+  ]
+}

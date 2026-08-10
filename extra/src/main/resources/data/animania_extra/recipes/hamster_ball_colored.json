@@ -1,0 +1,19 @@
+{
+  "result": {
+    "item": "animania_extra:hamster_ball_colored"
+  },
+  "pattern": [
+    "xxx",
+    "xdx",
+    "xxx"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "d": {
+      "tag": "minecraft:black_dye"
+    },
+    "x": {
+      "item": "minecraft:glass_pane"
+    }
+  }
+}

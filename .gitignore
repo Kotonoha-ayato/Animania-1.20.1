@@ -1,0 +1,14 @@
+/.gradle/
+/.idea/
+/.jdks/
+/build/
+/**/build/
+/run*/
+/**/run*/
+/upstream/
+/legacy-archive/
+README-upstream-1.12.md
+*.log
+**/src/generated/resources/.cache/
+__pycache__/
+*.pyc

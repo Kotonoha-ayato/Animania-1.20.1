@@ -1,0 +1,32 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_farm:entity_egg_calf_highland"
+    },
+    "title": {
+      "translate": "advancements.animania.highland.title"
+    },
+    "description": {
+      "translate": "advancements.animania.highland.description"
+    }
+  },
+  "parent": "animania_farm:animania/feed_cow_jersey",
+  "criteria": {
+    "highland_calf": {
+      "trigger": "minecraft:tick"
+    },
+    "highland_cow": {
+      "trigger": "minecraft:tick"
+    },
+    "highland_bull": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "requirements": [
+    [
+      "highland_bull",
+      "highland_cow",
+      "highland_calf"
+    ]
+  ]
+}

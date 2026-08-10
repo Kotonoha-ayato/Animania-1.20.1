@@ -1,0 +1,18 @@
+{
+  "replace": false,
+  "values": [
+    "animania_farm:truffle",
+    "animania_farm:plain_omelette",
+    "animania_farm:cheese_omelette",
+    "animania_farm:bacon_omelette",
+    "animania_farm:truffle_omelette",
+    "animania_farm:super_omelette",
+    "animania_farm:truffle_soup",
+    "animania_farm:chocolate_truffle",
+    "animania_farm:friesian_cheese_wedge",
+    "animania_farm:holstein_cheese_wedge",
+    "animania_farm:jersey_cheese_wedge",
+    "animania_farm:goat_cheese_wedge",
+    "animania_farm:sheep_cheese_wedge"
+  ]
+}

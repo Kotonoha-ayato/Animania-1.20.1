@@ -1,0 +1,32 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_farm:entity_egg_calf_jersey"
+    },
+    "title": {
+      "translate": "advancements.animania.jersey.title"
+    },
+    "description": {
+      "translate": "advancements.animania.jersey.description"
+    }
+  },
+  "parent": "animania_farm:animania/feed_cow_longhorn",
+  "criteria": {
+    "jersey_calf": {
+      "trigger": "minecraft:tick"
+    },
+    "jersey_cow": {
+      "trigger": "minecraft:tick"
+    },
+    "jersey_bull": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "requirements": [
+    [
+      "jersey_bull",
+      "jersey_cow",
+      "jersey_calf"
+    ]
+  ]
+}

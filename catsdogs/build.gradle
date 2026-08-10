@@ -1,0 +1,7 @@
+ext.mod_id = 'animania_catsdogs'
+ext.mod_name = 'Animania Cats & Dogs'
+ext.archive_name = 'animania-catsdogs-1.20.1'
+ext.mod_description = 'Complete Animania cats, dogs, breeding, taming, and pet facilities.'
+apply from: rootProject.file('gradle/forge-module.gradle')
+dependencies { implementation project(':base') }
+

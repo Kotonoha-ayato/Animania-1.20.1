@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "animania_farm:carving_knife"
+    },
+    {
+      "item": "minecraft:wheat"
+    }
+  ],
+  "result": {
+    "item": "animania:straw",
+    "count": 1
+  },
+  "group": "straw_cutting"
+}

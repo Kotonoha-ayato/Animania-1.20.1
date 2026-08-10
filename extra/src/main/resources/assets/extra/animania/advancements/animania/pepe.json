@@ -1,0 +1,21 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_extra:entity_egg_frog"
+    },
+    "title": {
+      "translate": "advancements.animania.pepe.title"
+    },
+    "description": {
+      "translate": "advancements.animania.pepe.description"
+    },
+    "frame": "challenge",
+    "hidden": true
+  },
+  "parent": "animania_extra:animania/root",
+  "criteria": {
+    "pepe": {
+      "trigger": "minecraft:tick"
+    }
+  }
+}

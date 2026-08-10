@@ -1,0 +1,68 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_extra:entity_egg_kit_cottontail"
+    },
+    "title": {
+      "translate": "advancements.animania.cottontail.title"
+    },
+    "description": {
+      "translate": "advancements.animania.cottontail.description"
+    }
+  },
+  "parent": "animania_extra:animania/feed_rabbit_chinchilla",
+  "criteria": {
+    "cottontail_kit": {
+      "trigger": "minecraft:tick"
+    },
+    "cottontail_doe": {
+      "trigger": "minecraft:tick"
+    },
+    "cottontail_buck": {
+      "trigger": "minecraft:tick"
+    },
+    "cottontail_kit1": {
+      "trigger": "minecraft:tick"
+    },
+    "cottontail_doe1": {
+      "trigger": "minecraft:tick"
+    },
+    "cottontail_buck1": {
+      "trigger": "minecraft:tick"
+    },
+    "cottontail_kit2": {
+      "trigger": "minecraft:tick"
+    },
+    "cottontail_doe2": {
+      "trigger": "minecraft:tick"
+    },
+    "cottontail_buck2": {
+      "trigger": "minecraft:tick"
+    },
+    "cottontail_kit3": {
+      "trigger": "minecraft:tick"
+    },
+    "cottontail_doe3": {
+      "trigger": "minecraft:tick"
+    },
+    "cottontail_buck3": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "requirements": [
+    [
+      "cottontail_buck",
+      "cottontail_doe",
+      "cottontail_kit",
+      "cottontail_buck1",
+      "cottontail_doe1",
+      "cottontail_kit1",
+      "cottontail_buck2",
+      "cottontail_doe2",
+      "cottontail_kit2",
+      "cottontail_buck3",
+      "cottontail_doe3",
+      "cottontail_kit3"
+    ]
+  ]
+}

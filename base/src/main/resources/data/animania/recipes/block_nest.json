@@ -1,0 +1,17 @@
+{
+  "result": {
+    "item": "animania:nest"
+  },
+  "ingredients": [
+    {
+      "tag": "minecraft:wool"
+    },
+    {
+      "tag": "minecraft:planks"
+    },
+    {
+      "tag": "minecraft:leaves"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless"
+}

@@ -1,0 +1,32 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_catsdogs:entity_egg_kitten_norwegian"
+    },
+    "title": {
+      "translate": "advancements.animania.norwegian.title"
+    },
+    "description": {
+      "translate": "advancements.animania.norwegian.description"
+    }
+  },
+  "parent": "animania_catsdogs:animania/feed_cat_exotic",
+  "criteria": {
+    "kitten": {
+      "trigger": "minecraft:tick"
+    },
+    "female": {
+      "trigger": "minecraft:tick"
+    },
+    "male": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "requirements": [
+    [
+      "male",
+      "female",
+      "kitten"
+    ]
+  ]
+}

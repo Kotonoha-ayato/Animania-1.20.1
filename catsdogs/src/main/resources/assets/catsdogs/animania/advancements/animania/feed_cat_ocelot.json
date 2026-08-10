@@ -1,0 +1,32 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_catsdogs:entity_egg_kitten_ocelot"
+    },
+    "title": {
+      "translate": "advancements.animania.ocelot.title"
+    },
+    "description": {
+      "translate": "advancements.animania.ocelot.description"
+    }
+  },
+  "parent": "animania_catsdogs:animania/feed_cat_tabby",
+  "criteria": {
+    "kitten": {
+      "trigger": "minecraft:tick"
+    },
+    "female": {
+      "trigger": "minecraft:tick"
+    },
+    "male": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "requirements": [
+    [
+      "male",
+      "female",
+      "kitten"
+    ]
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_farm:entity_egg_chicken_random"
+    },
+    "title": {
+      "translate": "advancements.animania.chickens.title"
+    },
+    "description": {
+      "translate": "advancements.animania.chickens.desc"
+    }
+  },
+  "parent": "animania_farm:animania/root",
+  "criteria": {
+    "impossible": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

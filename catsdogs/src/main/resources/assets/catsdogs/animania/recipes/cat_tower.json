@@ -1,0 +1,22 @@
+{
+  "result": {
+    "item": "animania_catsdogs:cat_tower"
+  },
+  "pattern": [
+    "sww",
+    "r w",
+    "www"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "w": {
+      "tag": "minecraft:planks"
+    },
+    "s": {
+      "tag": "minecraft:string"
+    },
+    "r": {
+      "tag": "minecraft:red_wool"
+    }
+  }
+}

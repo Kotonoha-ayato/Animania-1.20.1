@@ -1,0 +1,14 @@
+{
+  "result": {
+    "item": "animania_farm:bacon_omelette"
+  },
+  "ingredients": [
+    {
+      "item": "animania_farm:plain_omelette"
+    },
+    {
+      "tag": "minecraft:cooked_porkchop"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless"
+}

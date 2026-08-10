@@ -1,0 +1,32 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_catsdogs:entity_egg_puppy_wolf"
+    },
+    "title": {
+      "translate": "advancements.animania.wolf.title"
+    },
+    "description": {
+      "translate": "advancements.animania.wolf.description"
+    }
+  },
+  "parent": "animania_catsdogs:animania/feed_dog_fox",
+  "criteria": {
+    "puppy": {
+      "trigger": "minecraft:tick"
+    },
+    "female": {
+      "trigger": "minecraft:tick"
+    },
+    "male": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "requirements": [
+    [
+      "male",
+      "female",
+      "puppy"
+    ]
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_farm:entity_egg_chick_orpington"
+    },
+    "title": {
+      "translate": "advancements.animania.orpington.title"
+    },
+    "description": {
+      "translate": "advancements.animania.orpington.description"
+    }
+  },
+  "parent": "animania_farm:animania/feed_chicken_leghorn",
+  "criteria": {
+    "orpington_chick": {
+      "trigger": "minecraft:tick"
+    },
+    "orpington_hen": {
+      "trigger": "minecraft:tick"
+    },
+    "orpington_rooster": {
+      "trigger": "minecraft:tick"
+    },
+    "orpington_chick1": {
+      "trigger": "minecraft:tick"
+    },
+    "orpington_hen1": {
+      "trigger": "minecraft:tick"
+    },
+    "orpington_rooster1": {
+      "trigger": "minecraft:tick"
+    },
+    "orpington_chick2": {
+      "trigger": "minecraft:tick"
+    },
+    "orpington_hen2": {
+      "trigger": "minecraft:tick"
+    },
+    "orpington_rooster2": {
+      "trigger": "minecraft:tick"
+    },
+    "orpington_chick3": {
+      "trigger": "minecraft:tick"
+    },
+    "orpington_hen3": {
+      "trigger": "minecraft:tick"
+    },
+    "orpington_rooster3": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "requirements": [
+    [
+      "orpington_rooster",
+      "orpington_hen",
+      "orpington_chick",
+      "orpington_rooster1",
+      "orpington_hen1",
+      "orpington_chick1",
+      "orpington_rooster2",
+      "orpington_hen2",
+      "orpington_chick2",
+      "orpington_rooster3",
+      "orpington_hen3",
+      "orpington_chick3"
+    ]
+  ]
+}

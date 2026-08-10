@@ -1,0 +1,19 @@
+{
+  "result": {
+    "item": "animania_catsdogs:litter_box"
+  },
+  "pattern": [
+    "   ",
+    "isi",
+    "iii"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "s": {
+      "tag": "minecraft:sand"
+    },
+    "i": {
+      "tag": "minecraft:iron_ingots"
+    }
+  }
+}

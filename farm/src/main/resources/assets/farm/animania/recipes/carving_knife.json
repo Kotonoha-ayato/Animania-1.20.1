@@ -1,0 +1,19 @@
+{
+  "result": {
+    "item": "animania_farm:carving_knife"
+  },
+  "pattern": [
+    "   ",
+    "ii ",
+    "s  "
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "s": {
+      "tag": "minecraft:planks"
+    },
+    "i": {
+      "tag": "minecraft:iron_ingots"
+    }
+  }
+}

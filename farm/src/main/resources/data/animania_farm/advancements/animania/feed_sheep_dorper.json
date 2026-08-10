@@ -1,0 +1,32 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_farm:entity_egg_lamb_dorper"
+    },
+    "title": {
+      "translate": "advancements.animania.dorper.title"
+    },
+    "description": {
+      "translate": "advancements.animania.dorper.description"
+    }
+  },
+  "parent": "animania_farm:animania/sheep",
+  "criteria": {
+    "dorper_lamb": {
+      "trigger": "minecraft:tick"
+    },
+    "dorper_ewe": {
+      "trigger": "minecraft:tick"
+    },
+    "dorper_ram": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "requirements": [
+    [
+      "dorper_ram",
+      "dorper_ewe",
+      "dorper_lamb"
+    ]
+  ]
+}

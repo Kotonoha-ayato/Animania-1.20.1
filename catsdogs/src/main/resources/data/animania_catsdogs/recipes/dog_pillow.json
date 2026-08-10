@@ -1,0 +1,16 @@
+{
+  "result": {
+    "item": "animania_catsdogs:dog_pillow"
+  },
+  "pattern": [
+    "   ",
+    "www",
+    "www"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "w": {
+      "tag": "minecraft:wool"
+    }
+  }
+}

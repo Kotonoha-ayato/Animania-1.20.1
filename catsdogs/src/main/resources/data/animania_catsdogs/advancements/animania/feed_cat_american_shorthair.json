@@ -1,0 +1,32 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_catsdogs:entity_egg_kitten_american_shorthair"
+    },
+    "title": {
+      "translate": "advancements.animania.american_shorthair.title"
+    },
+    "description": {
+      "translate": "advancements.animania.american_shorthair.description"
+    }
+  },
+  "parent": "animania_catsdogs:animania/cats",
+  "criteria": {
+    "kitten": {
+      "trigger": "minecraft:tick"
+    },
+    "female": {
+      "trigger": "minecraft:tick"
+    },
+    "male": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "requirements": [
+    [
+      "male",
+      "female",
+      "kitten"
+    ]
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_catsdogs:entity_egg_puppy_dachshund"
+    },
+    "title": {
+      "translate": "advancements.animania.dachshund.title"
+    },
+    "description": {
+      "translate": "advancements.animania.dachshund.description"
+    }
+  },
+  "parent": "animania_catsdogs:animania/feed_dog_corgi",
+  "criteria": {
+    "puppy": {
+      "trigger": "minecraft:tick"
+    },
+    "female": {
+      "trigger": "minecraft:tick"
+    },
+    "male": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "requirements": [
+    [
+      "male",
+      "female",
+      "puppy"
+    ]
+  ]
+}

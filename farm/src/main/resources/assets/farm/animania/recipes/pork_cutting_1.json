@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "animania_farm:carving_knife"
+    },
+    {
+      "item": "animania_farm:raw_prime_pork"
+    }
+  ],
+  "result": {
+    "item": "animania_farm:raw_prime_bacon",
+    "count": 4
+  },
+  "group": "pork_cutting"
+}

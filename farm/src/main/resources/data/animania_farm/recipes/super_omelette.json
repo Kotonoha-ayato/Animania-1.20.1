@@ -1,0 +1,20 @@
+{
+  "result": {
+    "item": "animania_farm:super_omelette"
+  },
+  "ingredients": [
+    {
+      "item": "animania_farm:plain_omelette"
+    },
+    {
+      "tag": "minecraft:cooked_porkchop"
+    },
+    {
+      "item": "animania_farm:truffle"
+    },
+    {
+      "tag": "animania_farm:friesian_cheese_wedge"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless"
+}

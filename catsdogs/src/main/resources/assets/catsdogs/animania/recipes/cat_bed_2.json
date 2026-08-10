@@ -1,0 +1,16 @@
+{
+  "result": {
+    "item": "animania_catsdogs:cat_bed_2"
+  },
+  "pattern": [
+    "www",
+    "w w",
+    "www"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "w": {
+      "tag": "minecraft:wool"
+    }
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_farm:entity_egg_kid_fainting"
+    },
+    "title": {
+      "translate": "advancements.animania.fainting.title"
+    },
+    "description": {
+      "translate": "advancements.animania.fainting.description"
+    }
+  },
+  "parent": "animania_farm:animania/feed_goat_angora",
+  "criteria": {
+    "fainting_kid": {
+      "trigger": "minecraft:tick"
+    },
+    "fainting_doe": {
+      "trigger": "minecraft:tick"
+    },
+    "fainting_buck": {
+      "trigger": "minecraft:tick"
+    },
+    "fainting_kid1": {
+      "trigger": "minecraft:tick"
+    },
+    "fainting_doe1": {
+      "trigger": "minecraft:tick"
+    },
+    "fainting_buck1": {
+      "trigger": "minecraft:tick"
+    },
+    "fainting_kid2": {
+      "trigger": "minecraft:tick"
+    },
+    "fainting_doe2": {
+      "trigger": "minecraft:tick"
+    },
+    "fainting_buck2": {
+      "trigger": "minecraft:tick"
+    },
+    "fainting_kid3": {
+      "trigger": "minecraft:tick"
+    },
+    "fainting_doe3": {
+      "trigger": "minecraft:tick"
+    },
+    "fainting_buck3": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "requirements": [
+    [
+      "fainting_buck",
+      "fainting_doe",
+      "fainting_kid",
+      "fainting_buck1",
+      "fainting_doe1",
+      "fainting_kid1",
+      "fainting_buck2",
+      "fainting_doe2",
+      "fainting_kid2",
+      "fainting_buck3",
+      "fainting_doe3",
+      "fainting_kid3"
+    ]
+  ]
+}

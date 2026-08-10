@@ -1,0 +1,10 @@
+{
+  "name": "tile.animania_block_nest.name",
+  "contents": [
+    "@link@animania:manual/blocks/blocks.json#← manual.blocks.blocks.title",
+    "§ltile.animania_block_nest.name",
+    " ",
+    "manual.blocks.nest.1",
+    "@crafting@animania:block_nest"
+  ]
+}

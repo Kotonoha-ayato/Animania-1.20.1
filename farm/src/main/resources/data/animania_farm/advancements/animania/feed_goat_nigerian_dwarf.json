@@ -1,0 +1,68 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_farm:entity_egg_kid_nigerian_dwarf"
+    },
+    "title": {
+      "translate": "advancements.animania.nigerian_dwarf.title"
+    },
+    "description": {
+      "translate": "advancements.animania.nigerian_dwarf.description"
+    }
+  },
+  "parent": "animania_farm:animania/feed_goat_kinder",
+  "criteria": {
+    "nigerian_dwarf_kid": {
+      "trigger": "minecraft:tick"
+    },
+    "nigerian_dwarf_doe": {
+      "trigger": "minecraft:tick"
+    },
+    "nigerian_dwarf_buck": {
+      "trigger": "minecraft:tick"
+    },
+    "nigerian_dwarf_kid1": {
+      "trigger": "minecraft:tick"
+    },
+    "nigerian_dwarf_doe1": {
+      "trigger": "minecraft:tick"
+    },
+    "nigerian_dwarf_buck1": {
+      "trigger": "minecraft:tick"
+    },
+    "nigerian_dwarf_kid2": {
+      "trigger": "minecraft:tick"
+    },
+    "nigerian_dwarf_doe2": {
+      "trigger": "minecraft:tick"
+    },
+    "nigerian_dwarf_buck2": {
+      "trigger": "minecraft:tick"
+    },
+    "nigerian_dwarf_kid3": {
+      "trigger": "minecraft:tick"
+    },
+    "nigerian_dwarf_doe3": {
+      "trigger": "minecraft:tick"
+    },
+    "nigerian_dwarf_buck3": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "requirements": [
+    [
+      "nigerian_dwarf_buck",
+      "nigerian_dwarf_doe",
+      "nigerian_dwarf_kid",
+      "nigerian_dwarf_buck1",
+      "nigerian_dwarf_doe1",
+      "nigerian_dwarf_kid1",
+      "nigerian_dwarf_buck2",
+      "nigerian_dwarf_doe2",
+      "nigerian_dwarf_kid2",
+      "nigerian_dwarf_buck3",
+      "nigerian_dwarf_doe3",
+      "nigerian_dwarf_kid3"
+    ]
+  ]
+}

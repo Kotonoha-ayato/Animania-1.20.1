@@ -1,0 +1,11 @@
+{
+  "result": {
+    "item": "minecraft:white_wool"
+  },
+  "ingredients": [
+    {
+      "item": "animania_farm:animania_wool"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless"
+}

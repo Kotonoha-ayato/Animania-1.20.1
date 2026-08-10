@@ -1,0 +1,138 @@
+apply plugin: 'java-library'
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'maven-publish'
+
+base {
+    archivesName = project.archive_name
+}
+
+java {
+    toolchain.languageVersion = JavaLanguageVersion.of(17)
+    withSourcesJar()
+}
+
+tasks.named('sourcesJar', Jar).configure {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
+    from(rootProject.file('LICENSE')) { into 'META-INF' }
+    from(rootProject.file('docs/credits.md')) { into 'META-INF' }
+}
+
+minecraft {
+    mappings channel: rootProject.mapping_channel, version: rootProject.mapping_version
+    copyIdeResources = true
+
+    runs {
+        configureEach {
+            workingDirectory project.file("run/${name}")
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'info'
+            property 'forge.enabledGameTestNamespaces', project.mod_id
+            mods {
+                "${project.mod_id}" {
+                    source sourceSets.main
+                }
+                if (project.path != ':base') {
+                    animania {
+                        source project(':base').sourceSets.main
+                    }
+                }
+            }
+        }
+        client { }
+        server { args '--nogui' }
+        gameTestServer { }
+        data {
+            workingDirectory project.file('run/data')
+            args '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+        }
+    }
+}
+
+// Forge's dev GameTest launcher looks for fallback SNBT templates in the
+// working-directory `gameteststructures` folder.  Keep the canonical template
+// in source resources and copy it deterministically for every module's run.
+tasks.matching { it.name == 'prepareRunGameTestServer' }.configureEach {
+    doLast {
+        def source = project.file('src/main/resources/data/' + project.mod_id + '/gameteststructures/empty.snbt')
+        if (!source.exists()) {
+            source = rootProject.file('base/src/main/resources/data/animania/gameteststructures/empty.snbt')
+        }
+        def destination = project.file('run/gameTestServer/gameteststructures/empty.snbt')
+        destination.parentFile.mkdirs()
+        if (source.exists()) {
+            destination.bytes = source.bytes
+        }
+        // A clean Forge GameTest run otherwise emits a misleading settings
+        // error before the server starts.  Keep this generated file local to
+        // the ignored run directory and never overwrite a user's settings.
+        def serverProperties = project.file('run/gameTestServer/server.properties')
+        // Use a versioned, module-specific level name so registry changes
+        // never make a previous ignored GameTest world look like a failing
+        // migration test.  This remains entirely inside the ignored run dir.
+        def testWorldName = 'world_animania_' + project.mod_id + '_v4'
+        if (!serverProperties.exists() || !serverProperties.text.contains('level-name=' + testWorldName)) {
+            serverProperties.parentFile.mkdirs()
+            serverProperties.text = 'enable-command-block=true\nlevel-name=' + testWorldName + '\n'
+        }
+    }
+}
+
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+dependencies {
+    minecraft "net.minecraftforge:forge:${rootProject.minecraft_version}-${rootProject.forge_version}"
+    testImplementation platform('org.junit:junit-bom:5.10.2')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+tasks.named('processResources', ProcessResources).configure {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    def values = [
+        minecraft_version_range: rootProject.minecraft_version_range,
+        forge_version_range: rootProject.forge_version_range,
+        loader_version_range: rootProject.loader_version_range,
+        mod_id: project.mod_id,
+        mod_name: project.mod_name,
+        mod_version: project.version,
+        mod_description: project.mod_description,
+        base_dependency: project.path == ':base' ? '' : """\n[[dependencies.${project.mod_id}]]\nmodId=\"animania\"\nmandatory=true\nversionRange=\"[3.0.0,4.0.0)\"\nordering=\"BEFORE\"\nside=\"BOTH\""""
+    ]
+    inputs.properties values
+    filesMatching(['META-INF/mods.toml', 'pack.mcmeta']) { expand values }
+}
+
+tasks.named('jar', Jar).configure {
+    archiveClassifier = ''
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
+    from(rootProject.file('LICENSE')) { into 'META-INF' }
+    from(rootProject.file('docs/credits.md')) { into 'META-INF' }
+    manifest.attributes([
+        'Specification-Title': project.mod_id,
+        'Specification-Vendor': 'Animania Team',
+        'Specification-Version': '3',
+        'Implementation-Title': project.mod_name,
+        'Implementation-Version': project.version,
+        'Implementation-Vendor': 'Animania Team'
+    ])
+    finalizedBy 'reobfJar'
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.release = 17
+}
+
+tasks.withType(Test).configureEach {
+    useJUnitPlatform()
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+}
+
+publishing {
+    publications {
+        register('mavenJava', MavenPublication) { from components.java }
+    }
+}

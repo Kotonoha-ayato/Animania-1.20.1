@@ -1,0 +1,12 @@
+{
+  "name": "manual.startpage.content",
+  "contents": [
+    "@link@animania:manual/startpage.json#back manual.contents.mainpage",
+    "manual.startpage.content",
+    " ",
+    "@link@animania:manual/blocks/blocks.json#- manual.blocks.blocks.title",
+    "@link@animania:manual/items/items.json#- manual.items.items.title",
+    " ",
+    "@link@animania:manual/addons.json#- manual.addons"
+  ]
+}

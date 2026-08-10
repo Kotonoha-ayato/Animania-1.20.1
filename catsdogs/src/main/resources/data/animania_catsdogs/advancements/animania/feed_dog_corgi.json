@@ -1,0 +1,32 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_catsdogs:entity_egg_puppy_corgi"
+    },
+    "title": {
+      "translate": "advancements.animania.corgi.title"
+    },
+    "description": {
+      "translate": "advancements.animania.corgi.description"
+    }
+  },
+  "parent": "animania_catsdogs:animania/feed_dog_collie",
+  "criteria": {
+    "puppy": {
+      "trigger": "minecraft:tick"
+    },
+    "female": {
+      "trigger": "minecraft:tick"
+    },
+    "male": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "requirements": [
+    [
+      "male",
+      "female",
+      "puppy"
+    ]
+  ]
+}

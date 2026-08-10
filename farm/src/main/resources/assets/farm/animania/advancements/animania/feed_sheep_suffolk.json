@@ -1,0 +1,32 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_farm:entity_egg_lamb_suffolk"
+    },
+    "title": {
+      "translate": "advancements.animania.suffolk.title"
+    },
+    "description": {
+      "translate": "advancements.animania.suffolk.description"
+    }
+  },
+  "parent": "animania_farm:animania/feed_sheep_merino",
+  "criteria": {
+    "suffolk_lamb": {
+      "trigger": "minecraft:tick"
+    },
+    "suffolk_ewe": {
+      "trigger": "minecraft:tick"
+    },
+    "suffolk_ram": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "requirements": [
+    [
+      "suffolk_ram",
+      "suffolk_ewe",
+      "suffolk_lamb"
+    ]
+  ]
+}

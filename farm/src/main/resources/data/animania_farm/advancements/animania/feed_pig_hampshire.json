@@ -1,0 +1,80 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_farm:entity_egg_piglet_hampshire"
+    },
+    "title": {
+      "translate": "advancements.animania.hampshire.title"
+    },
+    "description": {
+      "translate": "advancements.animania.hampshire.description"
+    }
+  },
+  "parent": "animania_farm:animania/feed_pig_duroc",
+  "criteria": {
+    "hampshire_piglet": {
+      "trigger": "minecraft:tick"
+    },
+    "hampshire_sow": {
+      "trigger": "minecraft:tick"
+    },
+    "hampshire_hog": {
+      "trigger": "minecraft:tick"
+    },
+    "hampshire_piglet1": {
+      "trigger": "minecraft:tick"
+    },
+    "hampshire_sow1": {
+      "trigger": "minecraft:tick"
+    },
+    "hampshire_hog1": {
+      "trigger": "minecraft:tick"
+    },
+    "hampshire_piglet2": {
+      "trigger": "minecraft:tick"
+    },
+    "hampshire_sow2": {
+      "trigger": "minecraft:tick"
+    },
+    "hampshire_hog2": {
+      "trigger": "minecraft:tick"
+    },
+    "hampshire_piglet3": {
+      "trigger": "minecraft:tick"
+    },
+    "hampshire_sow3": {
+      "trigger": "minecraft:tick"
+    },
+    "hampshire_hog3": {
+      "trigger": "minecraft:tick"
+    },
+    "hampshire_piglet4": {
+      "trigger": "minecraft:tick"
+    },
+    "hampshire_sow4": {
+      "trigger": "minecraft:tick"
+    },
+    "hampshire_hog4": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "requirements": [
+    [
+      "hampshire_hog",
+      "hampshire_sow",
+      "hampshire_piglet",
+      "hampshire_hog1",
+      "hampshire_sow1",
+      "hampshire_piglet1",
+      "hampshire_hog2",
+      "hampshire_sow2",
+      "hampshire_piglet2",
+      "hampshire_hog3",
+      "hampshire_sow3",
+      "hampshire_piglet3",
+      "hampshire_hog4",
+      "hampshire_sow4",
+      "hampshire_piglet4"
+    ]
+  ]
+}

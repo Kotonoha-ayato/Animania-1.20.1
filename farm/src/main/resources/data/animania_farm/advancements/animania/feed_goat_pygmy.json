@@ -1,0 +1,68 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_farm:entity_egg_kid_pygmy"
+    },
+    "title": {
+      "translate": "advancements.animania.pygmy.title"
+    },
+    "description": {
+      "translate": "advancements.animania.pygmy.description"
+    }
+  },
+  "parent": "animania_farm:animania/feed_goat_nigerian_dwarf",
+  "criteria": {
+    "pygmy_kid": {
+      "trigger": "minecraft:tick"
+    },
+    "pygmy_doe": {
+      "trigger": "minecraft:tick"
+    },
+    "pygmy_buck": {
+      "trigger": "minecraft:tick"
+    },
+    "pygmy_kid1": {
+      "trigger": "minecraft:tick"
+    },
+    "pygmy_doe1": {
+      "trigger": "minecraft:tick"
+    },
+    "pygmy_buck1": {
+      "trigger": "minecraft:tick"
+    },
+    "pygmy_kid2": {
+      "trigger": "minecraft:tick"
+    },
+    "pygmy_doe2": {
+      "trigger": "minecraft:tick"
+    },
+    "pygmy_buck2": {
+      "trigger": "minecraft:tick"
+    },
+    "pygmy_kid3": {
+      "trigger": "minecraft:tick"
+    },
+    "pygmy_doe3": {
+      "trigger": "minecraft:tick"
+    },
+    "pygmy_buck3": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "requirements": [
+    [
+      "pygmy_buck",
+      "pygmy_doe",
+      "pygmy_kid",
+      "pygmy_buck1",
+      "pygmy_doe1",
+      "pygmy_kid1",
+      "pygmy_buck2",
+      "pygmy_doe2",
+      "pygmy_kid2",
+      "pygmy_buck3",
+      "pygmy_doe3",
+      "pygmy_kid3"
+    ]
+  ]
+}

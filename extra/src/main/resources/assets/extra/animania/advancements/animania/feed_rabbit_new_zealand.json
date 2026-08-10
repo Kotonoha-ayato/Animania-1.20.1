@@ -1,0 +1,68 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_extra:entity_egg_kit_new_zealand"
+    },
+    "title": {
+      "translate": "advancements.animania.new_zealand.title"
+    },
+    "description": {
+      "translate": "advancements.animania.new_zealand.description"
+    }
+  },
+  "parent": "animania_extra:animania/feed_rabbit_lop",
+  "criteria": {
+    "new_zealand_kit": {
+      "trigger": "minecraft:tick"
+    },
+    "new_zealand_doe": {
+      "trigger": "minecraft:tick"
+    },
+    "new_zealand_buck": {
+      "trigger": "minecraft:tick"
+    },
+    "new_zealand_kit1": {
+      "trigger": "minecraft:tick"
+    },
+    "new_zealand_doe1": {
+      "trigger": "minecraft:tick"
+    },
+    "new_zealand_buck1": {
+      "trigger": "minecraft:tick"
+    },
+    "new_zealand_kit2": {
+      "trigger": "minecraft:tick"
+    },
+    "new_zealand_doe2": {
+      "trigger": "minecraft:tick"
+    },
+    "new_zealand_buck2": {
+      "trigger": "minecraft:tick"
+    },
+    "new_zealand_kit3": {
+      "trigger": "minecraft:tick"
+    },
+    "new_zealand_doe3": {
+      "trigger": "minecraft:tick"
+    },
+    "new_zealand_buck3": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "requirements": [
+    [
+      "new_zealand_buck",
+      "new_zealand_doe",
+      "new_zealand_kit",
+      "new_zealand_buck1",
+      "new_zealand_doe1",
+      "new_zealand_kit1",
+      "new_zealand_buck2",
+      "new_zealand_doe2",
+      "new_zealand_kit2",
+      "new_zealand_buck3",
+      "new_zealand_doe3",
+      "new_zealand_kit3"
+    ]
+  ]
+}

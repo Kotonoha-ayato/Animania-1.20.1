@@ -1,0 +1,80 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_farm:entity_egg_piglet_yorkshire"
+    },
+    "title": {
+      "translate": "advancements.animania.yorkshire.title"
+    },
+    "description": {
+      "translate": "advancements.animania.yorkshire.description"
+    }
+  },
+  "parent": "animania_farm:animania/feed_pig_old_spot",
+  "criteria": {
+    "yorkshire_piglet": {
+      "trigger": "minecraft:tick"
+    },
+    "yorkshire_sow": {
+      "trigger": "minecraft:tick"
+    },
+    "yorkshire_hog": {
+      "trigger": "minecraft:tick"
+    },
+    "yorkshire_piglet1": {
+      "trigger": "minecraft:tick"
+    },
+    "yorkshire_sow1": {
+      "trigger": "minecraft:tick"
+    },
+    "yorkshire_hog1": {
+      "trigger": "minecraft:tick"
+    },
+    "yorkshire_piglet2": {
+      "trigger": "minecraft:tick"
+    },
+    "yorkshire_sow2": {
+      "trigger": "minecraft:tick"
+    },
+    "yorkshire_hog2": {
+      "trigger": "minecraft:tick"
+    },
+    "yorkshire_piglet3": {
+      "trigger": "minecraft:tick"
+    },
+    "yorkshire_sow3": {
+      "trigger": "minecraft:tick"
+    },
+    "yorkshire_hog3": {
+      "trigger": "minecraft:tick"
+    },
+    "yorkshire_piglet4": {
+      "trigger": "minecraft:tick"
+    },
+    "yorkshire_sow4": {
+      "trigger": "minecraft:tick"
+    },
+    "yorkshire_hog4": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "requirements": [
+    [
+      "yorkshire_hog",
+      "yorkshire_sow",
+      "yorkshire_piglet",
+      "yorkshire_hog1",
+      "yorkshire_sow1",
+      "yorkshire_piglet1",
+      "yorkshire_hog2",
+      "yorkshire_sow2",
+      "yorkshire_piglet2",
+      "yorkshire_hog3",
+      "yorkshire_sow3",
+      "yorkshire_piglet3",
+      "yorkshire_hog4",
+      "yorkshire_sow4",
+      "yorkshire_piglet4"
+    ]
+  ]
+}

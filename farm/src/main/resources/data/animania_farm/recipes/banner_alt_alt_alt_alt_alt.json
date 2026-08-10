@@ -1,0 +1,19 @@
+{
+  "result": {
+    "item": "minecraft:white_banner"
+  },
+  "pattern": [
+    "www",
+    "www",
+    " s "
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "s": {
+      "tag": "minecraft:planks"
+    },
+    "w": {
+      "item": "animania_farm:animania_wool"
+    }
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_farm:entity_egg_kid_alpine"
+    },
+    "title": {
+      "translate": "advancements.animania.alpine.title"
+    },
+    "description": {
+      "translate": "advancements.animania.alpine.description"
+    }
+  },
+  "parent": "animania_farm:animania/goats",
+  "criteria": {
+    "alpine_kid": {
+      "trigger": "minecraft:tick"
+    },
+    "alpine_doe": {
+      "trigger": "minecraft:tick"
+    },
+    "alpine_buck": {
+      "trigger": "minecraft:tick"
+    },
+    "alpine_kid1": {
+      "trigger": "minecraft:tick"
+    },
+    "alpine_doe1": {
+      "trigger": "minecraft:tick"
+    },
+    "alpine_buck1": {
+      "trigger": "minecraft:tick"
+    },
+    "alpine_kid2": {
+      "trigger": "minecraft:tick"
+    },
+    "alpine_doe2": {
+      "trigger": "minecraft:tick"
+    },
+    "alpine_buck2": {
+      "trigger": "minecraft:tick"
+    },
+    "alpine_kid3": {
+      "trigger": "minecraft:tick"
+    },
+    "alpine_doe3": {
+      "trigger": "minecraft:tick"
+    },
+    "alpine_buck3": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "requirements": [
+    [
+      "alpine_buck",
+      "alpine_doe",
+      "alpine_kid",
+      "alpine_buck1",
+      "alpine_doe1",
+      "alpine_kid1",
+      "alpine_buck2",
+      "alpine_doe2",
+      "alpine_kid2",
+      "alpine_buck3",
+      "alpine_doe3",
+      "alpine_kid3"
+    ]
+  ]
+}

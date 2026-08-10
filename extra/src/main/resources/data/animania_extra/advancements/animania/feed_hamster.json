@@ -1,0 +1,19 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_extra:entity_egg_hamster"
+    },
+    "title": {
+      "translate": "advancements.animania.hamster.title"
+    },
+    "description": {
+      "translate": "advancements.animania.hamster.description"
+    }
+  },
+  "parent": "animania_extra:animania/root",
+  "criteria": {
+    "hamster": {
+      "trigger": "minecraft:tick"
+    }
+  }
+}

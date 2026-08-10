@@ -1,0 +1,25 @@
+{
+  "result": {
+    "item": "animania_farm:cart"
+  },
+  "pattern": [
+    "spp",
+    "pip",
+    "w w"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "p": {
+      "tag": "minecraft:planks"
+    },
+    "s": {
+      "tag": "minecraft:planks"
+    },
+    "i": {
+      "tag": "minecraft:iron_ingots"
+    },
+    "w": {
+      "item": "animania_farm:wheel"
+    }
+  }
+}

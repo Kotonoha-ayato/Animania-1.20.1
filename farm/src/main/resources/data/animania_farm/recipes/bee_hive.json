@@ -1,0 +1,19 @@
+{
+  "result": {
+    "item": "animania_farm:hive"
+  },
+  "pattern": [
+    "www",
+    "whw",
+    "www"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "w": {
+      "tag": "minecraft:planks"
+    },
+    "h": {
+      "item": "animania_farm:wild_hive"
+    }
+  }
+}

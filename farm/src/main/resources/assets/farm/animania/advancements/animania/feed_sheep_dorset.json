@@ -1,0 +1,32 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_farm:entity_egg_lamb_dorset"
+    },
+    "title": {
+      "translate": "advancements.animania.dorset.title"
+    },
+    "description": {
+      "translate": "advancements.animania.dorset.description"
+    }
+  },
+  "parent": "animania_farm:animania/feed_sheep_dorper",
+  "criteria": {
+    "dorset_lamb": {
+      "trigger": "minecraft:tick"
+    },
+    "dorset_ewe": {
+      "trigger": "minecraft:tick"
+    },
+    "dorset_ram": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "requirements": [
+    [
+      "dorset_ram",
+      "dorset_ewe",
+      "dorset_lamb"
+    ]
+  ]
+}

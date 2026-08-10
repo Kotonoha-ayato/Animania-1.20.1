@@ -1,0 +1,12 @@
+{
+  "result": {
+    "item": "minecraft:sugar",
+    "count": 8
+  },
+  "ingredients": [
+    {
+      "item": "animania_farm:honey_jar"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless"
+}

@@ -1,0 +1,32 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_farm:entity_egg_lamb_jacob"
+    },
+    "title": {
+      "translate": "advancements.animania.jacob.title"
+    },
+    "description": {
+      "translate": "advancements.animania.jacob.description"
+    }
+  },
+  "parent": "animania_farm:animania/feed_sheep_friesian",
+  "criteria": {
+    "jacob_lamb": {
+      "trigger": "minecraft:tick"
+    },
+    "jacob_ewe": {
+      "trigger": "minecraft:tick"
+    },
+    "jacob_ram": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "requirements": [
+    [
+      "jacob_ram",
+      "jacob_ewe",
+      "jacob_lamb"
+    ]
+  ]
+}

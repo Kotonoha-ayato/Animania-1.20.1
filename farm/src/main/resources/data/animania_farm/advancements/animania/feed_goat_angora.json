@@ -1,0 +1,68 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_farm:entity_egg_kid_angora"
+    },
+    "title": {
+      "translate": "advancements.animania.angora.title"
+    },
+    "description": {
+      "translate": "advancements.animania.angora.description"
+    }
+  },
+  "parent": "animania_farm:animania/feed_goat_alpine",
+  "criteria": {
+    "angora_kid": {
+      "trigger": "minecraft:tick"
+    },
+    "angora_doe": {
+      "trigger": "minecraft:tick"
+    },
+    "angora_buck": {
+      "trigger": "minecraft:tick"
+    },
+    "angora_kid1": {
+      "trigger": "minecraft:tick"
+    },
+    "angora_doe1": {
+      "trigger": "minecraft:tick"
+    },
+    "angora_buck1": {
+      "trigger": "minecraft:tick"
+    },
+    "angora_kid2": {
+      "trigger": "minecraft:tick"
+    },
+    "angora_doe2": {
+      "trigger": "minecraft:tick"
+    },
+    "angora_buck2": {
+      "trigger": "minecraft:tick"
+    },
+    "angora_kid3": {
+      "trigger": "minecraft:tick"
+    },
+    "angora_doe3": {
+      "trigger": "minecraft:tick"
+    },
+    "angora_buck3": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "requirements": [
+    [
+      "angora_buck",
+      "angora_doe",
+      "angora_kid",
+      "angora_buck1",
+      "angora_doe1",
+      "angora_kid1",
+      "angora_buck2",
+      "angora_doe2",
+      "angora_kid2",
+      "angora_buck3",
+      "angora_doe3",
+      "angora_kid3"
+    ]
+  ]
+}

@@ -1,0 +1,42 @@
+name: Animania Forge 1.20.1
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Fetch pinned upstream baselines (read-only)
+        run: |
+          mkdir -p upstream
+          git clone --filter=blob:none --no-checkout https://github.com/capnkirok/animaniamod.git upstream/Animania-1.12
+          git -C upstream/Animania-1.12 fetch --depth 1 origin 32ae2b4c56cb84284e865dae0d3b78770992ba1d
+          git -C upstream/Animania-1.12 checkout --detach 32ae2b4c56cb84284e865dae0d3b78770992ba1d
+          git clone --filter=blob:none --no-checkout https://github.com/capnkirok/animaniamod.git upstream/Animania-1.18
+          git -C upstream/Animania-1.18 fetch --depth 1 origin 3b8909c5404d0bad8f3437562ca0c3924c0fa46d
+          git -C upstream/Animania-1.18 checkout --detach 3b8909c5404d0bad8f3437562ca0c3924c0fa46d
+          git -C upstream/Animania-1.12 rev-parse HEAD
+          git -C upstream/Animania-1.18 rev-parse HEAD
+      - name: Generate migration matrix
+        run: python3 tools/build_migration_matrix.py --source upstream/Animania-1.12 --output docs/migration-matrix.json
+      - name: Close migration matrix with target evidence
+        run: python3 tools/close_migration_matrix.py --root . --matrix docs/migration-matrix.json
+      - name: Build and verify modules
+        run: ./gradlew --no-daemon clean verifyRelease releaseBuild --max-workers=1
+      - name: Verify locale closure
+        run: python3 tools/ensure_locales.py --root .
+      - name: Audit release artifacts
+        run: python3 tools/audit_release.py --root . --version 3.0.0
+      - name: Audit startup dependency matrix
+        run: python3 tools/audit_startup_matrix.py --root . --version 3.0.0
+      - name: Audit resource closure
+        run: python3 tools/audit_resources.py --root .
+      - name: Audit ID mapping
+        run: python3 tools/build_id_mapping.py --root . --output docs/id-mapping.json

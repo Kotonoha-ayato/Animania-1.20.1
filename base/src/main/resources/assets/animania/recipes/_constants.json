@@ -1,0 +1,9 @@
+[
+  {
+    "name": "SLOP",
+    "ingredient": {
+      "type": "animania:filled_bucket",
+      "fluid": "slop"
+    }
+  }
+]

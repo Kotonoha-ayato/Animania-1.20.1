@@ -1,0 +1,19 @@
+{
+  "result": {
+    "item": "animania_catsdogs:pet_bowl"
+  },
+  "pattern": [
+    "   ",
+    "i i",
+    "nin"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "n": {
+      "tag": "minecraft:iron_nuggets"
+    },
+    "i": {
+      "tag": "minecraft:iron_ingots"
+    }
+  }
+}

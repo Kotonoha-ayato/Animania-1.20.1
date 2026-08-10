@@ -1,0 +1,32 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_farm:entity_egg_calf_mooshroom"
+    },
+    "title": {
+      "translate": "advancements.animania.mooshroom.title"
+    },
+    "description": {
+      "translate": "advancements.animania.mooshroom.description"
+    }
+  },
+  "parent": "animania_farm:animania/feed_cow_highland",
+  "criteria": {
+    "mooshroom_calf": {
+      "trigger": "minecraft:tick"
+    },
+    "mooshroom_cow": {
+      "trigger": "minecraft:tick"
+    },
+    "mooshroom_bull": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "requirements": [
+    [
+      "mooshroom_bull",
+      "mooshroom_cow",
+      "mooshroom_calf"
+    ]
+  ]
+}

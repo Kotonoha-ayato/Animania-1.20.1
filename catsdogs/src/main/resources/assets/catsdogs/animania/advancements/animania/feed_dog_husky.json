@@ -1,0 +1,32 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_catsdogs:entity_egg_puppy_husky"
+    },
+    "title": {
+      "translate": "advancements.animania.husky.title"
+    },
+    "description": {
+      "translate": "advancements.animania.husky.description"
+    }
+  },
+  "parent": "animania_catsdogs:animania/feed_dog_greyhound",
+  "criteria": {
+    "puppy": {
+      "trigger": "minecraft:tick"
+    },
+    "female": {
+      "trigger": "minecraft:tick"
+    },
+    "male": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "requirements": [
+    [
+      "male",
+      "female",
+      "puppy"
+    ]
+  ]
+}

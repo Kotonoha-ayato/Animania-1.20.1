@@ -1,0 +1,7 @@
+ext.mod_id = 'animania_farm'
+ext.mod_name = 'Animania Farm'
+ext.archive_name = 'animania-farm-1.20.1'
+ext.mod_description = 'Complete Animania farm animals, husbandry, produce, and pullable vehicles.'
+apply from: rootProject.file('gradle/forge-module.gradle')
+dependencies { implementation project(':base') }
+

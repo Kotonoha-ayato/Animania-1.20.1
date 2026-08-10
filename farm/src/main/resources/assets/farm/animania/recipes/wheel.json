@@ -1,0 +1,19 @@
+{
+  "result": {
+    "item": "animania_farm:wheel"
+  },
+  "pattern": [
+    " s ",
+    "sis",
+    " s "
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "s": {
+      "tag": "minecraft:planks"
+    },
+    "i": {
+      "tag": "minecraft:iron_nuggets"
+    }
+  }
+}

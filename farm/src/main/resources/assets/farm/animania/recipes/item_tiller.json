@@ -1,0 +1,22 @@
+{
+  "result": {
+    "item": "animania_farm:tiller"
+  },
+  "pattern": [
+    "iii",
+    "pip",
+    "w w"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "p": {
+      "tag": "minecraft:planks"
+    },
+    "i": {
+      "tag": "minecraft:iron_ingots"
+    },
+    "w": {
+      "item": "animania_farm:wheel"
+    }
+  }
+}

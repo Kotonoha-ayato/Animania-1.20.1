@@ -1,0 +1,15 @@
+{
+  "result": {
+    "item": "minecraft:white_carpet",
+    "count": 3
+  },
+  "ingredients": [
+    {
+      "item": "animania_farm:animania_wool"
+    },
+    {
+      "item": "animania_farm:animania_wool"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless"
+}

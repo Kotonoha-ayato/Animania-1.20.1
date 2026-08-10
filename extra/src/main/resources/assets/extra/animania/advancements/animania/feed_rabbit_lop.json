@@ -1,0 +1,68 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_extra:entity_egg_kit_lop"
+    },
+    "title": {
+      "translate": "advancements.animania.lop.title"
+    },
+    "description": {
+      "translate": "advancements.animania.lop.description"
+    }
+  },
+  "parent": "animania_extra:animania/feed_rabbit_jack",
+  "criteria": {
+    "lop_kit": {
+      "trigger": "minecraft:tick"
+    },
+    "lop_doe": {
+      "trigger": "minecraft:tick"
+    },
+    "lop_buck": {
+      "trigger": "minecraft:tick"
+    },
+    "lop_kit1": {
+      "trigger": "minecraft:tick"
+    },
+    "lop_doe1": {
+      "trigger": "minecraft:tick"
+    },
+    "lop_buck1": {
+      "trigger": "minecraft:tick"
+    },
+    "lop_kit2": {
+      "trigger": "minecraft:tick"
+    },
+    "lop_doe2": {
+      "trigger": "minecraft:tick"
+    },
+    "lop_buck2": {
+      "trigger": "minecraft:tick"
+    },
+    "lop_kit3": {
+      "trigger": "minecraft:tick"
+    },
+    "lop_doe3": {
+      "trigger": "minecraft:tick"
+    },
+    "lop_buck3": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "requirements": [
+    [
+      "lop_buck",
+      "lop_doe",
+      "lop_kit",
+      "lop_buck1",
+      "lop_doe1",
+      "lop_kit1",
+      "lop_buck2",
+      "lop_doe2",
+      "lop_kit2",
+      "lop_buck3",
+      "lop_doe3",
+      "lop_kit3"
+    ]
+  ]
+}

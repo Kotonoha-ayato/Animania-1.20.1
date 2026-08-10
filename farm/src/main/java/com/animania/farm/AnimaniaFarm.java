@@ -1,0 +1,312 @@
+package com.animania.farm;
+
+import com.animania.Animania;
+import com.animania.api.AnimaniaApi;
+import com.animania.api.data.AnimalGender;
+import com.animania.api.data.SpeciesDefinition;
+import com.animania.common.entity.AnimaniaAnimalEntity;
+import com.animania.common.entity.AnimaniaVehicleEntity;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.AgeableMob;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.animal.Cow;
+import net.minecraft.world.entity.animal.MushroomCow;
+import net.minecraft.world.entity.animal.Pig;
+import net.minecraft.world.entity.animal.Chicken;
+import net.minecraft.world.entity.animal.Sheep;
+import net.minecraft.world.entity.animal.horse.Horse;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
+import net.minecraftforge.event.entity.SpawnPlacementRegisterEvent;
+import net.minecraftforge.event.entity.EntityJoinLevelEvent;
+import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraftforge.event.RegisterGameTestsEvent;
+import net.minecraftforge.event.level.ChunkDataEvent;
+import net.minecraftforge.event.TickEvent;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.chunk.ChunkStatus;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.entity.SpawnPlacements;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
+@Mod(AnimaniaFarm.MOD_ID)
+public final class AnimaniaFarm {
+    public static final String MOD_ID = "animania_farm";
+    public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, MOD_ID);
+    public static final Map<String, RegistryObject<EntityType<?>>> ENTITIES = new LinkedHashMap<>();
+    private static final Queue<PendingHive> PENDING_HIVES = new ConcurrentLinkedQueue<>();
+
+    private record PendingHive(net.minecraft.server.level.ServerLevel level, ChunkPos chunk) { }
+
+    static {
+        FarmLegacyIds.ALL.forEach(AnimaniaFarm::register);
+    }
+
+    private static void register(String id) {
+        RegistryObject<EntityType<?>> registered = FarmLegacyIds.VEHICLE_IDS.contains(id)
+                ? ENTITY_TYPES.register(id, () -> EntityType.Builder.of(AnimaniaVehicleEntity::new, MobCategory.MISC)
+                .sized(sizeFor(id, true), sizeFor(id, false)).clientTrackingRange(8).updateInterval(3)
+                .build(MOD_ID + ":" + id))
+                : ENTITY_TYPES.register(id, () -> EntityType.Builder.of(AnimaniaAnimalEntity::new, MobCategory.CREATURE)
+                .sized(sizeFor(id, true), sizeFor(id, false)).clientTrackingRange(8).updateInterval(3)
+                .build(MOD_ID + ":" + id));
+        ENTITIES.put(id, registered);
+        if (!FarmLegacyIds.VEHICLE_IDS.contains(id)) {
+            AnimaniaApi.registerSpecies(new SpeciesDefinition(new ResourceLocation(MOD_ID, id), family(id), gender(id),
+                    sizeFor(id, true), sizeFor(id, false), 20000));
+        }
+    }
+
+    public AnimaniaFarm() {
+        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+        AnimaniaVehicleEntity.setWagonSleepRule(() -> configured(FarmConfig.SLEEP_ALLOWED_WAGON));
+        ENTITY_TYPES.register(bus);
+        FarmContent.ITEMS.register(bus);
+        FarmContent.BLOCKS.register(bus);
+        FarmContent.BLOCK_ENTITIES.register(bus);
+        FarmFluids.FLUID_TYPES.register(bus);
+        FarmFluids.FLUIDS.register(bus);
+        FarmFluids.BLOCKS.register(bus);
+        FarmFluids.ITEMS.register(bus);
+        FarmTab.TABS.register(bus);
+        AnimaniaApi.registerFoodMatcher(MOD_ID, (id, stack) -> FarmConfig.matchesSpeciesFood(id, stack));
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, FarmConfig.SPEC);
+        bus.addListener(this::attributes);
+        bus.addListener(this::spawnPlacements);
+        bus.addListener(this::registerGameTests);
+        // The 1.12 addon replaced vanilla farm animals at the world boundary.
+        // Keep that behavior server-side while preserving the vanilla UUID and
+        // age/name state on the modern registry entity.
+        MinecraftForge.EVENT_BUS.addListener(AnimaniaFarm::replaceVanillaFarmAnimal);
+        MinecraftForge.EVENT_BUS.addListener(AnimaniaFarm::farmAnimalTick);
+        MinecraftForge.EVENT_BUS.addListener(AnimaniaFarm::decorateHiveOnChunkLoad);
+        MinecraftForge.EVENT_BUS.addListener(AnimaniaFarm::processHiveQueue);
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> bus.addListener(AnimaniaFarmClient::onClientSetup));
+    }
+
+    private void attributes(EntityAttributeCreationEvent event) {
+        ENTITIES.forEach((id, type) -> {
+            if (!FarmLegacyIds.VEHICLE_IDS.contains(id)) {
+                event.put((EntityType<? extends LivingEntity>) type.get(), AnimaniaAnimalEntity.createAttributes().build());
+            }
+        });
+    }
+
+    private void spawnPlacements(SpawnPlacementRegisterEvent event) {
+        // Spawn placement registration can fire before Forge has loaded the common config
+        // (notably during GameTest bootstrap). Treat that early window as the configured
+        // default and let biome modifiers apply the runtime spawn toggle afterwards.
+        if (!spawnsEnabled()) return;
+        ENTITIES.forEach((id, type) -> {
+            if (!FarmLegacyIds.VEHICLE_IDS.contains(id) && familySpawnsEnabled(id)) {
+                event.register((EntityType<? extends AnimaniaAnimalEntity>) type.get(), SpawnPlacements.Type.ON_GROUND,
+                        Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, AnimaniaAnimalEntity::checkAnimalSpawnRules, SpawnPlacementRegisterEvent.Operation.OR);
+            }
+        });
+    }
+
+    private static boolean spawnsEnabled() {
+        try {
+            return FarmConfig.ENABLE_SPAWNS.get();
+        } catch (IllegalStateException ignored) {
+            return true;
+        }
+    }
+
+    private static void replaceVanillaFarmAnimal(EntityJoinLevelEvent event) {
+        if (event.getLevel().isClientSide()) return;
+        Entity vanilla = event.getEntity();
+        String family;
+        boolean enabled;
+        if (vanilla instanceof Cow || vanilla instanceof MushroomCow) {
+            family = "cow";
+            enabled = configured(FarmConfig.REPLACE_VANILLA_COWS);
+        } else if (vanilla instanceof Pig) {
+            family = "pig";
+            enabled = configured(FarmConfig.REPLACE_VANILLA_PIGS);
+        } else if (vanilla instanceof Chicken) {
+            family = "chicken";
+            enabled = configured(FarmConfig.REPLACE_VANILLA_CHICKENS);
+        } else if (vanilla instanceof Sheep) {
+            family = "sheep";
+            enabled = configured(FarmConfig.REPLACE_VANILLA_SHEEP);
+        } else if (vanilla instanceof Horse) {
+            family = "horse";
+            enabled = configured(FarmConfig.REPLACE_VANILLA_HORSES);
+        } else {
+            return;
+        }
+        if (!enabled) return;
+        boolean baby = vanilla instanceof AgeableMob ageable && ageable.isBaby();
+        String childPrefix = switch (family) {
+            case "cow" -> "calf_";
+            case "pig" -> "piglet_";
+            case "chicken" -> "chick_";
+            case "sheep" -> "lamb_";
+            case "horse" -> "foal_";
+            default -> "";
+        };
+        String femalePrefix = switch (family) {
+            case "cow" -> "cow_";
+            case "pig" -> "sow_";
+            case "chicken" -> "hen_";
+            case "sheep" -> "ewe_";
+            case "horse" -> "mare_";
+            default -> "";
+        };
+        String malePrefix = switch (family) {
+            case "cow" -> "bull_";
+            case "pig" -> "hog_";
+            case "chicken" -> "rooster_";
+            case "sheep" -> "ram_";
+            case "horse" -> "stallion_";
+            default -> "";
+        };
+        java.util.List<String> candidates = FarmLegacyIds.ALL.stream()
+                .filter(id -> baby ? id.startsWith(childPrefix) : (id.startsWith(femalePrefix) || id.startsWith(malePrefix)))
+                .toList();
+        if (candidates.isEmpty()) return;
+        String selected = candidates.get(event.getLevel().getRandom().nextInt(candidates.size()));
+        EntityType<?> type = ENTITIES.get(selected).get();
+        if (!(type.create(event.getLevel()) instanceof AnimaniaAnimalEntity replacement)) return;
+        replacement.moveTo(vanilla.getX(), vanilla.getY(), vanilla.getZ(), vanilla.getYRot(), vanilla.getXRot());
+        replacement.setUUID(vanilla.getUUID());
+        replacement.setCustomName(vanilla.getCustomName());
+        replacement.setCustomNameVisible(vanilla.isCustomNameVisible());
+        replacement.setPersistenceRequired();
+        if (baby) replacement.setAge(-Math.max(1, com.animania.common.config.AnimaniaConfig.BABY_GROWTH_TICKS.get()));
+        else replacement.setAge(0);
+        if (!baby && family.equals("cow") && replacement.getGender() == AnimalGender.FEMALE
+                && configured(FarmConfig.COWS_MILKABLE_AT_SPAWN)) replacement.setMilkReady(true);
+        event.getLevel().addFreshEntity(replacement);
+        event.setCanceled(true);
+    }
+
+    /** Apply addon-only legacy toggles without coupling Base to Farm config classes. */
+    private static void farmAnimalTick(LivingEvent.LivingTickEvent event) {
+        if (!(event.getEntity() instanceof AnimaniaAnimalEntity animal) || animal.level().isClientSide) return;
+        ResourceLocation id = ForgeRegistries.ENTITY_TYPES.getKey(animal.getType());
+        if (id == null || !MOD_ID.equals(id.getNamespace())) return;
+        String path = id.getPath();
+        if (path.startsWith("hen_")) animal.tryLayFarmEgg(configured(FarmConfig.CHICKENS_DROP_EGGS));
+        if (path.startsWith("rooster_")) animal.configureRoosterCombat(configured(FarmConfig.ROOSTERS_FIGHT));
+        if (path.startsWith("cow_") && animal.getGender() == AnimalGender.FEMALE && animal.isAdult()
+                && configured(FarmConfig.COWS_MILKABLE_AT_SPAWN)) animal.setMilkReady(true);
+    }
+
+    /**
+     * Forge 1.20.1 no longer exposes the 1.12 tree-decoration event.  A
+     * full-chunk data hook provides the same once-per-chunk semantics without
+     * touching vanilla worldgen registries: the marker is persisted in the
+     * chunk data, so unloading/reloading cannot duplicate wild hives.
+     */
+    private static void decorateHiveOnChunkLoad(ChunkDataEvent.Load event) {
+        if (!(event.getLevel() instanceof net.minecraft.server.level.ServerLevel level)
+                || event.getStatus() != ChunkStatus.ChunkType.LEVELCHUNK
+                || !configured(FarmConfig.HIVE_SPAWNING)
+                || event.getData().getBoolean("AnimaniaHiveDecorated")) return;
+        event.getData().putBoolean("AnimaniaHiveDecorated", true);
+        // ChunkDataEvent.Load may run while a generation worker owns the
+        // chunk lock.  Only enqueue immutable coordinates here; all level
+        // reads/writes happen during the server tick after publication.
+        PENDING_HIVES.add(new PendingHive(level, event.getChunk().getPos()));
+    }
+
+    private static void processHiveQueue(TickEvent.ServerTickEvent event) {
+        if (event.phase != TickEvent.Phase.END) return;
+        for (int count = 0; count < 8; count++) {
+            PendingHive pending = PENDING_HIVES.poll();
+            if (pending == null) return;
+            placeWildHive(pending.level(), pending.chunk());
+        }
+    }
+
+    private static void placeWildHive(net.minecraft.server.level.ServerLevel level, ChunkPos chunk) {
+        if (!configured(FarmConfig.HIVE_SPAWNING)) return;
+        int frequency = Math.max(0, Math.min(10, configured(FarmConfig.HIVE_SPAWNING_FREQUENCY, 3)));
+        if (frequency == 0 || level.random.nextInt(200) >= frequency) return;
+        if (!level.getChunkSource().hasChunk(chunk.x, chunk.z)) return;
+        net.minecraft.world.level.chunk.LevelChunk loaded = level.getChunkSource().getChunkNow(chunk.x, chunk.z);
+        if (loaded == null) return;
+        int x = chunk.getMinBlockX() + level.random.nextInt(16);
+        int z = chunk.getMinBlockZ() + level.random.nextInt(16);
+        // Read the heightmap owned by the event's already-loaded chunk.  A
+        // level.getHeight call here would synchronously request the same
+        // chunk while the server is preparing its spawn region.
+        int top = loaded.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x & 15, z & 15);
+        // Search a short vertical band for a safe air pocket on a tree or
+        // other sturdy surface, matching the old tree decorator's intent.
+        for (int offset = 0; offset <= 6; offset++) {
+            BlockPos candidate = new BlockPos(x, top + offset, z);
+            if (!level.isEmptyBlock(candidate) || !level.getBlockState(candidate.below()).isFaceSturdy(level, candidate.below(), net.minecraft.core.Direction.UP)) continue;
+            level.setBlock(candidate, FarmContent.WILD_HIVE.get().defaultBlockState(), 3);
+            break;
+        }
+    }
+
+    private static boolean configured(net.minecraftforge.common.ForgeConfigSpec.BooleanValue value) {
+        try {
+            return value.get();
+        } catch (IllegalStateException ignored) {
+            return true;
+        }
+    }
+
+    private static int configured(net.minecraftforge.common.ForgeConfigSpec.IntValue value, int fallback) {
+        try {
+            return value.get();
+        } catch (RuntimeException ignored) {
+            return fallback;
+        }
+    }
+
+    private static boolean familySpawnsEnabled(String id) {
+        if (id.startsWith("cow_") || id.startsWith("bull_") || id.startsWith("calf_")) return configured(FarmConfig.SPAWN_ANIMANIA_COWS);
+        if (id.startsWith("sow_") || id.startsWith("hog_") || id.startsWith("piglet_")) return configured(FarmConfig.SPAWN_ANIMANIA_PIGS);
+        if (id.startsWith("hen_") || id.startsWith("rooster_") || id.startsWith("chick_")) return configured(FarmConfig.SPAWN_ANIMANIA_CHICKENS);
+        if (id.startsWith("ewe_") || id.startsWith("ram_") || id.startsWith("lamb_")) return configured(FarmConfig.SPAWN_ANIMANIA_SHEEP);
+        if (id.startsWith("mare_") || id.startsWith("stallion_") || id.startsWith("foal_")) return configured(FarmConfig.SPAWN_ANIMANIA_HORSES);
+        if (id.startsWith("doe_") || id.startsWith("buck_") || id.startsWith("kid_")) return configured(FarmConfig.SPAWN_ANIMANIA_GOATS);
+        return true;
+    }
+
+    private void registerGameTests(RegisterGameTestsEvent event) {
+        event.register(com.animania.farm.gametest.AnimaniaFarmGameTests.class);
+    }
+
+    private static AnimalGender gender(String id) {
+        if (id.startsWith("chick_") || id.startsWith("calf_") || id.startsWith("kid_") || id.startsWith("lamb_")
+                || id.startsWith("piglet_") || id.startsWith("foal_")) return AnimalGender.CHILD;
+        if (id.startsWith("hen_") || id.startsWith("cow_") || id.startsWith("doe_") || id.startsWith("ewe_") || id.startsWith("sow_") || id.startsWith("mare_")) return AnimalGender.FEMALE;
+        return AnimalGender.MALE;
+    }
+
+    private static String family(String id) {
+        int underscore = id.indexOf('_');
+        return underscore > 0 ? id.substring(underscore + 1) : id;
+    }
+
+    private static float sizeFor(String id, boolean width) {
+        if (id.startsWith("chick_") || id.startsWith("calf_") || id.startsWith("kid_") || id.startsWith("lamb_") || id.startsWith("piglet_") || id.startsWith("foal_")) return width ? 0.45f : 0.55f;
+        if (id.equals("wagon") || id.equals("cart") || id.equals("tiller")) return width ? 1.2f : 1.0f;
+        return width ? 0.8f : 1.0f;
+    }
+}

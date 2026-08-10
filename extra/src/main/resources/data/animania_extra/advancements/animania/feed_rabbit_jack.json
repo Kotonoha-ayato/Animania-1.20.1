@@ -1,0 +1,68 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_extra:entity_egg_kit_jack"
+    },
+    "title": {
+      "translate": "advancements.animania.jack.title"
+    },
+    "description": {
+      "translate": "advancements.animania.jack.description"
+    }
+  },
+  "parent": "animania_extra:animania/feed_rabbit_havana",
+  "criteria": {
+    "jack_kit": {
+      "trigger": "minecraft:tick"
+    },
+    "jack_doe": {
+      "trigger": "minecraft:tick"
+    },
+    "jack_buck": {
+      "trigger": "minecraft:tick"
+    },
+    "jack_kit1": {
+      "trigger": "minecraft:tick"
+    },
+    "jack_doe1": {
+      "trigger": "minecraft:tick"
+    },
+    "jack_buck1": {
+      "trigger": "minecraft:tick"
+    },
+    "jack_kit2": {
+      "trigger": "minecraft:tick"
+    },
+    "jack_doe2": {
+      "trigger": "minecraft:tick"
+    },
+    "jack_buck2": {
+      "trigger": "minecraft:tick"
+    },
+    "jack_kit3": {
+      "trigger": "minecraft:tick"
+    },
+    "jack_doe3": {
+      "trigger": "minecraft:tick"
+    },
+    "jack_buck3": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "requirements": [
+    [
+      "jack_buck",
+      "jack_doe",
+      "jack_kit",
+      "jack_buck1",
+      "jack_doe1",
+      "jack_kit1",
+      "jack_buck2",
+      "jack_doe2",
+      "jack_kit2",
+      "jack_buck3",
+      "jack_doe3",
+      "jack_kit3"
+    ]
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "result": {
+    "item": "animania:manual"
+  },
+  "ingredients": [
+    {
+      "item": "minecraft:book"
+    },
+    {
+      "tag": "minecraft:seeds"
+    },
+    {
+      "item": "animania:straw"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless"
+}

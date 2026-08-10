@@ -1,0 +1,68 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_extra:entity_egg_kit_chinchilla"
+    },
+    "title": {
+      "translate": "advancements.animania.chinchilla.title"
+    },
+    "description": {
+      "translate": "advancements.animania.chinchilla.description"
+    }
+  },
+  "parent": "animania_extra:animania/rabbits",
+  "criteria": {
+    "chinchilla_kit": {
+      "trigger": "minecraft:tick"
+    },
+    "chinchilla_doe": {
+      "trigger": "minecraft:tick"
+    },
+    "chinchilla_buck": {
+      "trigger": "minecraft:tick"
+    },
+    "chinchilla_kit1": {
+      "trigger": "minecraft:tick"
+    },
+    "chinchilla_doe1": {
+      "trigger": "minecraft:tick"
+    },
+    "chinchilla_buck1": {
+      "trigger": "minecraft:tick"
+    },
+    "chinchilla_kit2": {
+      "trigger": "minecraft:tick"
+    },
+    "chinchilla_doe2": {
+      "trigger": "minecraft:tick"
+    },
+    "chinchilla_buck2": {
+      "trigger": "minecraft:tick"
+    },
+    "chinchilla_kit3": {
+      "trigger": "minecraft:tick"
+    },
+    "chinchilla_doe3": {
+      "trigger": "minecraft:tick"
+    },
+    "chinchilla_buck3": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "requirements": [
+    [
+      "chinchilla_buck",
+      "chinchilla_doe",
+      "chinchilla_kit",
+      "chinchilla_buck1",
+      "chinchilla_doe1",
+      "chinchilla_kit1",
+      "chinchilla_buck2",
+      "chinchilla_doe2",
+      "chinchilla_kit2",
+      "chinchilla_buck3",
+      "chinchilla_doe3",
+      "chinchilla_kit3"
+    ]
+  ]
+}

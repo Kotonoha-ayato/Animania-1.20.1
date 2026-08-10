@@ -1,0 +1,32 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_catsdogs:entity_egg_kitten_exotic"
+    },
+    "title": {
+      "translate": "advancements.animania.exotic.title"
+    },
+    "description": {
+      "translate": "advancements.animania.exotic.description"
+    }
+  },
+  "parent": "animania_catsdogs:animania/feed_cat_asiatic",
+  "criteria": {
+    "kitten": {
+      "trigger": "minecraft:tick"
+    },
+    "female": {
+      "trigger": "minecraft:tick"
+    },
+    "male": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "requirements": [
+    [
+      "male",
+      "female",
+      "kitten"
+    ]
+  ]
+}

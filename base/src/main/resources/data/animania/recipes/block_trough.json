@@ -1,0 +1,22 @@
+{
+  "result": {
+    "item": "animania:trough"
+  },
+  "pattern": [
+    "p p",
+    "pip",
+    "s s"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "p": {
+      "tag": "minecraft:planks"
+    },
+    "s": {
+      "tag": "minecraft:planks"
+    },
+    "i": {
+      "tag": "minecraft:iron_ingots"
+    }
+  }
+}

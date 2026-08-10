@@ -1,0 +1,19 @@
+{
+  "result": {
+    "item": "animania_catsdogs:dog_house"
+  },
+  "pattern": [
+    " w ",
+    "rrr",
+    "r r"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "r": {
+      "item": "minecraft:white_terracotta"
+    },
+    "w": {
+      "item": "minecraft:white_terracotta"
+    }
+  }
+}

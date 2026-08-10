@@ -1,0 +1,10 @@
+{
+  "name": "manual.items.items.title",
+  "contents": [
+    "@link@animania:manual/contents.json#← manual.startpage.content",
+    "§lmanual.items.items.title",
+    " ",
+    "@link@animania:manual/items/animalfood.json#- manual.animalfood",
+    "@link@animania:manual/items/specialrecipes.json#- manual.specialrecipes"
+  ]
+}

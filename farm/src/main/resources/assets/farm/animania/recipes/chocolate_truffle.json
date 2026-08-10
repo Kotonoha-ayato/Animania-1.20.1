@@ -1,0 +1,17 @@
+{
+  "result": {
+    "item": "animania_farm:chocolate_truffle"
+  },
+  "ingredients": [
+    {
+      "item": "animania_farm:truffle"
+    },
+    {
+      "item": "minecraft:white_dye"
+    },
+    {
+      "tag": "minecraft:sugar"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless"
+}

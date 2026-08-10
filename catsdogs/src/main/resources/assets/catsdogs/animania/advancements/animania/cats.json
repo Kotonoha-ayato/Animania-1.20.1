@@ -1,0 +1,19 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_catsdogs:entity_egg_cat_random"
+    },
+    "title": {
+      "translate": "manual.cats"
+    },
+    "description": {
+      "translate": "advancements.animania.cats.description"
+    }
+  },
+  "parent": "animania_catsdogs:animania/root",
+  "criteria": {
+    "impossible": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

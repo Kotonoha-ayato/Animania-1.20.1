@@ -1,0 +1,30 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_extra:entity_egg_hedgehog"
+    },
+    "title": {
+      "translate": "advancements.animania.sonic.title"
+    },
+    "description": {
+      "translate": "advancements.animania.sonic.description"
+    },
+    "frame": "challenge",
+    "hidden": true
+  },
+  "parent": "animania_extra:animania/feed_hedgehog",
+  "criteria": {
+    "normal": {
+      "trigger": "minecraft:tick"
+    },
+    "albino": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "requirements": [
+    [
+      "albino",
+      "normal"
+    ]
+  ]
+}

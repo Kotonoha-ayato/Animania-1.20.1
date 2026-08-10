@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "animania_farm:items/sheep_cheese_wedge"
+  }
+}

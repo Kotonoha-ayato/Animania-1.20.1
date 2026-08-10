@@ -1,0 +1,68 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_extra:entity_egg_peachick_peach"
+    },
+    "title": {
+      "translate": "advancements.animania.peach.title"
+    },
+    "description": {
+      "translate": "advancements.animania.peach.description"
+    }
+  },
+  "parent": "animania_extra:animania/feed_peafowl_opal",
+  "criteria": {
+    "peach_peachick": {
+      "trigger": "minecraft:tick"
+    },
+    "peach_peahen": {
+      "trigger": "minecraft:tick"
+    },
+    "peach_peacock": {
+      "trigger": "minecraft:tick"
+    },
+    "peach_peachick1": {
+      "trigger": "minecraft:tick"
+    },
+    "peach_peahen1": {
+      "trigger": "minecraft:tick"
+    },
+    "peach_peacock1": {
+      "trigger": "minecraft:tick"
+    },
+    "peach_peachick2": {
+      "trigger": "minecraft:tick"
+    },
+    "peach_peahen2": {
+      "trigger": "minecraft:tick"
+    },
+    "peach_peacock2": {
+      "trigger": "minecraft:tick"
+    },
+    "peach_peachick3": {
+      "trigger": "minecraft:tick"
+    },
+    "peach_peahen3": {
+      "trigger": "minecraft:tick"
+    },
+    "peach_peacock3": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "requirements": [
+    [
+      "peach_peacock",
+      "peach_peahen",
+      "peach_peachick",
+      "peach_peacock1",
+      "peach_peahen1",
+      "peach_peachick1",
+      "peach_peacock2",
+      "peach_peahen2",
+      "peach_peachick2",
+      "peach_peacock3",
+      "peach_peahen3",
+      "peach_peachick3"
+    ]
+  ]
+}

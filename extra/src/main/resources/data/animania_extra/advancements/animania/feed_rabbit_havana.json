@@ -1,0 +1,68 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_extra:entity_egg_kit_havana"
+    },
+    "title": {
+      "translate": "advancements.animania.havana.title"
+    },
+    "description": {
+      "translate": "advancements.animania.havana.description"
+    }
+  },
+  "parent": "animania_extra:animania/feed_rabbit_dutch",
+  "criteria": {
+    "havana_kit": {
+      "trigger": "minecraft:tick"
+    },
+    "havana_doe": {
+      "trigger": "minecraft:tick"
+    },
+    "havana_buck": {
+      "trigger": "minecraft:tick"
+    },
+    "havana_kit1": {
+      "trigger": "minecraft:tick"
+    },
+    "havana_doe1": {
+      "trigger": "minecraft:tick"
+    },
+    "havana_buck1": {
+      "trigger": "minecraft:tick"
+    },
+    "havana_kit2": {
+      "trigger": "minecraft:tick"
+    },
+    "havana_doe2": {
+      "trigger": "minecraft:tick"
+    },
+    "havana_buck2": {
+      "trigger": "minecraft:tick"
+    },
+    "havana_kit3": {
+      "trigger": "minecraft:tick"
+    },
+    "havana_doe3": {
+      "trigger": "minecraft:tick"
+    },
+    "havana_buck3": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "requirements": [
+    [
+      "havana_buck",
+      "havana_doe",
+      "havana_kit",
+      "havana_buck1",
+      "havana_doe1",
+      "havana_kit1",
+      "havana_buck2",
+      "havana_doe2",
+      "havana_kit2",
+      "havana_buck3",
+      "havana_doe3",
+      "havana_kit3"
+    ]
+  ]
+}

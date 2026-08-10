@@ -1,0 +1,17 @@
+{
+  "result": {
+    "item": "animania_farm:truffle_soup"
+  },
+  "ingredients": [
+    {
+      "item": "animania_farm:truffle"
+    },
+    {
+      "item": "animania_farm:truffle"
+    },
+    {
+      "item": "minecraft:bowl"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless"
+}

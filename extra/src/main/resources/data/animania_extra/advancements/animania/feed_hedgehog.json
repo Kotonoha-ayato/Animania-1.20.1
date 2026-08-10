@@ -1,0 +1,44 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_extra:entity_egg_hedgehog"
+    },
+    "title": {
+      "translate": "advancements.animania.hedgehog.title"
+    },
+    "description": {
+      "translate": "advancements.animania.hedgehog.description"
+    }
+  },
+  "parent": "animania_extra:animania/root",
+  "criteria": {
+    "hedgehog1": {
+      "trigger": "minecraft:tick"
+    },
+    "hedgehog2": {
+      "trigger": "minecraft:tick"
+    },
+    "hedgehog3": {
+      "trigger": "minecraft:tick"
+    },
+    "hedgehog4": {
+      "trigger": "minecraft:tick"
+    },
+    "hedgehog5": {
+      "trigger": "minecraft:tick"
+    },
+    "hedgehog6": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "requirements": [
+    [
+      "hedgehog1",
+      "hedgehog2",
+      "hedgehog3",
+      "hedgehog4",
+      "hedgehog5",
+      "hedgehog6"
+    ]
+  ]
+}

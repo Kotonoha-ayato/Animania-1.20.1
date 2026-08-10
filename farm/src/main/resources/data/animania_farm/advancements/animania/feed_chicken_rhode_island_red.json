@@ -1,0 +1,68 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_farm:entity_egg_chick_rhode_island_red"
+    },
+    "title": {
+      "translate": "advancements.animania.rhode_island_red.title"
+    },
+    "description": {
+      "translate": "advancements.animania.rhode_island_red.description"
+    }
+  },
+  "parent": "animania_farm:animania/feed_chicken_plymouth_rock",
+  "criteria": {
+    "rhode_island_red_chick": {
+      "trigger": "minecraft:tick"
+    },
+    "rhode_island_red_hen": {
+      "trigger": "minecraft:tick"
+    },
+    "rhode_island_red_rooster": {
+      "trigger": "minecraft:tick"
+    },
+    "rhode_island_red_chick1": {
+      "trigger": "minecraft:tick"
+    },
+    "rhode_island_red_hen1": {
+      "trigger": "minecraft:tick"
+    },
+    "rhode_island_red_rooster1": {
+      "trigger": "minecraft:tick"
+    },
+    "rhode_island_red_chick2": {
+      "trigger": "minecraft:tick"
+    },
+    "rhode_island_red_hen2": {
+      "trigger": "minecraft:tick"
+    },
+    "rhode_island_red_rooster2": {
+      "trigger": "minecraft:tick"
+    },
+    "rhode_island_red_chick3": {
+      "trigger": "minecraft:tick"
+    },
+    "rhode_island_red_hen3": {
+      "trigger": "minecraft:tick"
+    },
+    "rhode_island_red_rooster3": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "requirements": [
+    [
+      "rhode_island_red_rooster",
+      "rhode_island_red_hen",
+      "rhode_island_red_chick",
+      "rhode_island_red_rooster1",
+      "rhode_island_red_hen1",
+      "rhode_island_red_chick1",
+      "rhode_island_red_rooster2",
+      "rhode_island_red_hen2",
+      "rhode_island_red_chick2",
+      "rhode_island_red_rooster3",
+      "rhode_island_red_hen3",
+      "rhode_island_red_chick3"
+    ]
+  ]
+}

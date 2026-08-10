@@ -1,0 +1,19 @@
+{
+  "result": {
+    "item": "animania_extra:hamster_wheel"
+  },
+  "pattern": [
+    " I ",
+    "I I",
+    "SIS"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "S": {
+      "item": "minecraft:stone_slab"
+    },
+    "I": {
+      "tag": "minecraft:iron_ingots"
+    }
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_farm:entity_egg_lamb_friesian"
+    },
+    "title": {
+      "translate": "advancements.animania.sheep_friesian.title"
+    },
+    "description": {
+      "translate": "advancements.animania.sheep_friesian.description"
+    }
+  },
+  "parent": "animania_farm:animania/feed_sheep_dorset",
+  "criteria": {
+    "friesian_lamb": {
+      "trigger": "minecraft:tick"
+    },
+    "friesian_ewe": {
+      "trigger": "minecraft:tick"
+    },
+    "friesian_ram": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "requirements": [
+    [
+      "friesian_ram",
+      "friesian_ewe",
+      "friesian_lamb"
+    ]
+  ]
+}

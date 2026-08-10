@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "animania_farm:carving_knife"
+    },
+    {
+      "item": "animania_farm:goat_cheese_wheel"
+    }
+  ],
+  "result": {
+    "item": "animania_farm:goat_cheese_wedge",
+    "count": 4
+  },
+  "group": "cheese_cutting"
+}

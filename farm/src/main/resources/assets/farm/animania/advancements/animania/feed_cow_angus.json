@@ -1,0 +1,32 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_farm:entity_egg_calf_angus"
+    },
+    "title": {
+      "translate": "advancements.animania.angus.title"
+    },
+    "description": {
+      "translate": "advancements.animania.angus.description"
+    }
+  },
+  "parent": "animania_farm:animania/cows",
+  "criteria": {
+    "angus_calf": {
+      "trigger": "minecraft:tick"
+    },
+    "angus_cow": {
+      "trigger": "minecraft:tick"
+    },
+    "angus_bull": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "requirements": [
+    [
+      "angus_bull",
+      "angus_cow",
+      "angus_calf"
+    ]
+  ]
+}

@@ -1,0 +1,39 @@
+plugins {
+    id 'application'
+}
+
+repositories { mavenCentral() }
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.10.2')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+application.mainClass = 'com.animania.migrator.ConfigMigrator'
+java {
+    toolchain.languageVersion = JavaLanguageVersion.of(17)
+    withSourcesJar()
+}
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.release = 17
+}
+tasks.named('jar', Jar).configure {
+    archiveBaseName = 'animania-config-migrator'
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
+    from(rootProject.file('LICENSE')) { into 'META-INF' }
+    from(rootProject.file('docs/credits.md')) { into 'META-INF' }
+    manifest.attributes('Main-Class': application.mainClass.get())
+}
+tasks.named('sourcesJar', Jar).configure {
+    archiveBaseName = 'animania-config-migrator'
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
+    from(rootProject.file('LICENSE')) { into 'META-INF' }
+    from(rootProject.file('docs/credits.md')) { into 'META-INF' }
+}
+tasks.withType(Test).configureEach {
+    useJUnitPlatform()
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+}

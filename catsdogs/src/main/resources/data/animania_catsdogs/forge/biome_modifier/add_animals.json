@@ -1,0 +1,282 @@
+{
+  "type": "forge:add_spawns",
+  "biomes": "#minecraft:is_overworld",
+  "spawners": [
+    {
+      "type": "animania_catsdogs:female_blood_hound",
+      "weight": 5,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_catsdogs:female_chihuahua",
+      "weight": 5,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_catsdogs:female_collie",
+      "weight": 5,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_catsdogs:female_corgi",
+      "weight": 5,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_catsdogs:female_dachshund",
+      "weight": 5,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_catsdogs:female_fox",
+      "weight": 5,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_catsdogs:female_german_shepherd",
+      "weight": 5,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_catsdogs:female_great_dane",
+      "weight": 5,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_catsdogs:female_greyhound",
+      "weight": 5,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_catsdogs:female_husky",
+      "weight": 5,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_catsdogs:female_labrador",
+      "weight": 5,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_catsdogs:female_pomeranian",
+      "weight": 5,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_catsdogs:female_poodle",
+      "weight": 5,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_catsdogs:female_pug",
+      "weight": 5,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_catsdogs:female_wolf",
+      "weight": 5,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_catsdogs:male_blood_hound",
+      "weight": 5,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_catsdogs:male_chihuahua",
+      "weight": 5,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_catsdogs:male_collie",
+      "weight": 5,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_catsdogs:male_corgi",
+      "weight": 5,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_catsdogs:male_dachshund",
+      "weight": 5,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_catsdogs:male_fox",
+      "weight": 5,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_catsdogs:male_german_shepherd",
+      "weight": 5,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_catsdogs:male_great_dane",
+      "weight": 5,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_catsdogs:male_greyhound",
+      "weight": 5,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_catsdogs:male_husky",
+      "weight": 5,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_catsdogs:male_labrador",
+      "weight": 5,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_catsdogs:male_pomeranian",
+      "weight": 5,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_catsdogs:male_poodle",
+      "weight": 5,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_catsdogs:male_pug",
+      "weight": 5,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_catsdogs:male_wolf",
+      "weight": 5,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_catsdogs:queen_american_shorthair",
+      "weight": 4,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_catsdogs:queen_asiatic",
+      "weight": 4,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_catsdogs:queen_exotic",
+      "weight": 4,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_catsdogs:queen_norwegian",
+      "weight": 4,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_catsdogs:queen_ocelot",
+      "weight": 4,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_catsdogs:queen_ragdoll",
+      "weight": 4,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_catsdogs:queen_siamese",
+      "weight": 4,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_catsdogs:queen_tabby",
+      "weight": 4,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_catsdogs:tom_american_shorthair",
+      "weight": 4,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_catsdogs:tom_asiatic",
+      "weight": 4,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_catsdogs:tom_exotic",
+      "weight": 4,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_catsdogs:tom_norwegian",
+      "weight": 4,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_catsdogs:tom_ocelot",
+      "weight": 4,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_catsdogs:tom_ragdoll",
+      "weight": 4,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_catsdogs:tom_siamese",
+      "weight": 4,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_catsdogs:tom_tabby",
+      "weight": 4,
+      "minCount": 1,
+      "maxCount": 3
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_farm:entity_egg_chick_plymouth_rock"
+    },
+    "title": {
+      "translate": "advancements.animania.plymouth_rock.title"
+    },
+    "description": {
+      "translate": "advancements.animania.plymouth_rock.description"
+    }
+  },
+  "parent": "animania_farm:animania/feed_chicken_orpington",
+  "criteria": {
+    "plymouth_rock_chick": {
+      "trigger": "minecraft:tick"
+    },
+    "plymouth_rock_hen": {
+      "trigger": "minecraft:tick"
+    },
+    "plymouth_rock_rooster": {
+      "trigger": "minecraft:tick"
+    },
+    "plymouth_rock_chick1": {
+      "trigger": "minecraft:tick"
+    },
+    "plymouth_rock_hen1": {
+      "trigger": "minecraft:tick"
+    },
+    "plymouth_rock_rooster1": {
+      "trigger": "minecraft:tick"
+    },
+    "plymouth_rock_chick2": {
+      "trigger": "minecraft:tick"
+    },
+    "plymouth_rock_hen2": {
+      "trigger": "minecraft:tick"
+    },
+    "plymouth_rock_rooster2": {
+      "trigger": "minecraft:tick"
+    },
+    "plymouth_rock_chick3": {
+      "trigger": "minecraft:tick"
+    },
+    "plymouth_rock_hen3": {
+      "trigger": "minecraft:tick"
+    },
+    "plymouth_rock_rooster3": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "requirements": [
+    [
+      "plymouth_rock_rooster",
+      "plymouth_rock_hen",
+      "plymouth_rock_chick",
+      "plymouth_rock_rooster1",
+      "plymouth_rock_hen1",
+      "plymouth_rock_chick1",
+      "plymouth_rock_rooster2",
+      "plymouth_rock_hen2",
+      "plymouth_rock_chick2",
+      "plymouth_rock_rooster3",
+      "plymouth_rock_hen3",
+      "plymouth_rock_chick3"
+    ]
+  ]
+}

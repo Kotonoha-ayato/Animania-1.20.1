@@ -1,0 +1,19 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_farm:entity_egg_sheep_random"
+    },
+    "title": {
+      "translate": "advancements.animania.sheep.title"
+    },
+    "description": {
+      "translate": "advancements.animania.sheep.description"
+    }
+  },
+  "parent": "animania_farm:animania/root",
+  "criteria": {
+    "impossible": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

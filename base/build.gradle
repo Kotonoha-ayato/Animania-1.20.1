@@ -1,0 +1,13 @@
+ext.mod_id = 'animania'
+ext.mod_name = 'Animania Base'
+ext.archive_name = 'animania-base-1.20.1'
+ext.mod_description = 'Shared systems, API, blocks, items, manual, and compatibility foundation for Animania.'
+apply from: rootProject.file('gradle/forge-module.gradle')
+
+dependencies {
+    // Compile-only API surfaces: runtime remains optional and is never bundled.
+    compileOnly 'mezz.jei:jei-1.20.1-common-api:15.20.0.106'
+    compileOnly 'mezz.jei:jei-1.20.1-forge-api:15.20.0.106'
+    compileOnly 'maven.modrinth:jade:bzWVE2db'
+    compileOnly fg.deobf('curse.maven:the-one-probe-245211:6106996')
+}

@@ -1,0 +1,22 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_farm:entity_egg_cow_random"
+    },
+    "title": {
+      "translate": "advancements.animania.root.title"
+    },
+    "description": {
+      "translate": "advancements.animania.root.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "impossible": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

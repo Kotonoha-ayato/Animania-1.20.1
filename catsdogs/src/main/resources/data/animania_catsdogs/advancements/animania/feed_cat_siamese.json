@@ -1,0 +1,32 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_catsdogs:entity_egg_kitten_siamese"
+    },
+    "title": {
+      "translate": "advancements.animania.siamese.title"
+    },
+    "description": {
+      "translate": "advancements.animania.siamese.description"
+    }
+  },
+  "parent": "animania_catsdogs:animania/feed_cat_ragdoll",
+  "criteria": {
+    "kitten": {
+      "trigger": "minecraft:tick"
+    },
+    "female": {
+      "trigger": "minecraft:tick"
+    },
+    "male": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "requirements": [
+    [
+      "male",
+      "female",
+      "kitten"
+    ]
+  ]
+}

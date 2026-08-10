@@ -1,0 +1,32 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_farm:entity_egg_calf_friesian"
+    },
+    "title": {
+      "translate": "advancements.animania.friesian.title"
+    },
+    "description": {
+      "translate": "advancements.animania.friesian.description"
+    }
+  },
+  "parent": "animania_farm:animania/feed_cow_angus",
+  "criteria": {
+    "friesian_calf": {
+      "trigger": "minecraft:tick"
+    },
+    "friesian_cow": {
+      "trigger": "minecraft:tick"
+    },
+    "friesian_bull": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "requirements": [
+    [
+      "friesian_bull",
+      "friesian_cow",
+      "friesian_calf"
+    ]
+  ]
+}

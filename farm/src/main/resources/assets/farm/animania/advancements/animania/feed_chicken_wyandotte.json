@@ -1,0 +1,68 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_farm:entity_egg_chick_wyandotte"
+    },
+    "title": {
+      "translate": "advancements.animania.wyandotte.title"
+    },
+    "description": {
+      "translate": "advancements.animania.wyandotte.description"
+    }
+  },
+  "parent": "animania_farm:animania/feed_chicken_rhode_island_red",
+  "criteria": {
+    "wyandotte_chick": {
+      "trigger": "minecraft:tick"
+    },
+    "wyandotte_hen": {
+      "trigger": "minecraft:tick"
+    },
+    "wyandotte_rooster": {
+      "trigger": "minecraft:tick"
+    },
+    "wyandotte_chick1": {
+      "trigger": "minecraft:tick"
+    },
+    "wyandotte_hen1": {
+      "trigger": "minecraft:tick"
+    },
+    "wyandotte_rooster1": {
+      "trigger": "minecraft:tick"
+    },
+    "wyandotte_chick2": {
+      "trigger": "minecraft:tick"
+    },
+    "wyandotte_hen2": {
+      "trigger": "minecraft:tick"
+    },
+    "wyandotte_rooster2": {
+      "trigger": "minecraft:tick"
+    },
+    "wyandotte_chick3": {
+      "trigger": "minecraft:tick"
+    },
+    "wyandotte_hen3": {
+      "trigger": "minecraft:tick"
+    },
+    "wyandotte_rooster3": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "requirements": [
+    [
+      "wyandotte_rooster",
+      "wyandotte_hen",
+      "wyandotte_chick",
+      "wyandotte_rooster1",
+      "wyandotte_hen1",
+      "wyandotte_chick1",
+      "wyandotte_rooster2",
+      "wyandotte_hen2",
+      "wyandotte_chick2",
+      "wyandotte_rooster3",
+      "wyandotte_hen3",
+      "wyandotte_chick3"
+    ]
+  ]
+}

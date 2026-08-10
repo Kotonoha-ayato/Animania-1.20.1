@@ -1,0 +1,20 @@
+{
+  "result": {
+    "item": "minecraft:lead"
+  },
+  "ingredients": [
+    {
+      "tag": "minecraft:leather"
+    },
+    {
+      "tag": "minecraft:leather"
+    },
+    {
+      "tag": "minecraft:string"
+    },
+    {
+      "tag": "minecraft:string"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless"
+}

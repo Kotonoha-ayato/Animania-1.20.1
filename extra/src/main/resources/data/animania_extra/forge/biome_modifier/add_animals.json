@@ -1,0 +1,234 @@
+{
+  "type": "forge:add_spawns",
+  "biomes": "#minecraft:is_overworld",
+  "spawners": [
+    {
+      "type": "animania_extra:buck_chinchilla",
+      "weight": 8,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_extra:buck_cottontail",
+      "weight": 8,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_extra:buck_dutch",
+      "weight": 4,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_extra:buck_havana",
+      "weight": 8,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_extra:buck_jack",
+      "weight": 8,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_extra:buck_lop",
+      "weight": 4,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_extra:buck_new_zealand",
+      "weight": 8,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_extra:buck_rex",
+      "weight": 8,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_extra:dartfrog",
+      "weight": 18,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_extra:doe_chinchilla",
+      "weight": 8,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_extra:doe_cottontail",
+      "weight": 8,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_extra:doe_dutch",
+      "weight": 4,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_extra:doe_havana",
+      "weight": 8,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_extra:doe_jack",
+      "weight": 8,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_extra:doe_lop",
+      "weight": 4,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_extra:doe_new_zealand",
+      "weight": 8,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_extra:doe_rex",
+      "weight": 8,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_extra:ferret_grey",
+      "weight": 8,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_extra:ferret_white",
+      "weight": 8,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_extra:frog",
+      "weight": 18,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_extra:hamster",
+      "weight": 8,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_extra:hedgehog",
+      "weight": 8,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_extra:hedgehog_albino",
+      "weight": 8,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_extra:peacock_blue",
+      "weight": 8,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_extra:peacock_charcoal",
+      "weight": 8,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_extra:peacock_opal",
+      "weight": 8,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_extra:peacock_peach",
+      "weight": 8,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_extra:peacock_purple",
+      "weight": 8,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_extra:peacock_taupe",
+      "weight": 8,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_extra:peacock_white",
+      "weight": 8,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_extra:peahen_blue",
+      "weight": 8,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_extra:peahen_charcoal",
+      "weight": 8,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_extra:peahen_opal",
+      "weight": 8,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_extra:peahen_peach",
+      "weight": 8,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_extra:peahen_purple",
+      "weight": 8,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_extra:peahen_taupe",
+      "weight": 8,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_extra:peahen_white",
+      "weight": 8,
+      "minCount": 1,
+      "maxCount": 3
+    },
+    {
+      "type": "animania_extra:toad",
+      "weight": 18,
+      "minCount": 1,
+      "maxCount": 3
+    }
+  ]
+}

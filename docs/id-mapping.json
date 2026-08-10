@@ -1,0 +1,2517 @@
+{
+  "schema_version": 1,
+  "source_baseline": "Animania 1.12",
+  "target": {
+    "minecraft": "1.20.1",
+    "forge": "47.4.22",
+    "release": "3.0.0"
+  },
+  "entries": [
+    {
+      "legacy_id": "animania:animania_honey",
+      "modern_id": "animania_farm:animania_honey",
+      "module": "animania_farm",
+      "kind": "alias",
+      "status": "converted"
+    },
+    {
+      "legacy_id": "animania:animania_manual",
+      "modern_id": "animania:manual",
+      "module": "animania",
+      "kind": "alias",
+      "status": "converted"
+    },
+    {
+      "legacy_id": "animania:animania_wool",
+      "modern_id": "animania_farm:animania_wool",
+      "module": "farm",
+      "kind": "block",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:animania_wool",
+      "modern_id": "animania_farm:animania_wool",
+      "module": "animania_farm",
+      "kind": "alias",
+      "status": "converted"
+    },
+    {
+      "legacy_id": "animania:bacon_omelette",
+      "modern_id": "animania_farm:bacon_omelette",
+      "module": "farm",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:bee_hive",
+      "modern_id": "animania_farm:hive",
+      "module": "animania_farm",
+      "kind": "alias",
+      "status": "converted"
+    },
+    {
+      "legacy_id": "animania:block_hamster_wheel",
+      "modern_id": "animania_extra:hamster_wheel",
+      "module": "animania_extra",
+      "kind": "alias",
+      "status": "converted"
+    },
+    {
+      "legacy_id": "animania:block_mud",
+      "modern_id": "animania:mud",
+      "module": "animania",
+      "kind": "alias",
+      "status": "converted"
+    },
+    {
+      "legacy_id": "animania:block_nest",
+      "modern_id": "animania:nest",
+      "module": "animania",
+      "kind": "alias",
+      "status": "converted"
+    },
+    {
+      "legacy_id": "animania:block_straw",
+      "modern_id": "animania:straw",
+      "module": "animania",
+      "kind": "alias",
+      "status": "converted"
+    },
+    {
+      "legacy_id": "animania:block_trough",
+      "modern_id": "animania:trough",
+      "module": "animania",
+      "kind": "alias",
+      "status": "converted"
+    },
+    {
+      "legacy_id": "animania:blue_peacock_feather",
+      "modern_id": "animania_extra:blue_peacock_feather",
+      "module": "extra",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:brown_egg",
+      "modern_id": "animania_farm:brown_egg",
+      "module": "farm",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:buck_alpine",
+      "modern_id": "animania_farm:buck_alpine",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:buck_angora",
+      "modern_id": "animania_farm:buck_angora",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:buck_chinchilla",
+      "modern_id": "animania_extra:buck_chinchilla",
+      "module": "extra",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:buck_cottontail",
+      "modern_id": "animania_extra:buck_cottontail",
+      "module": "extra",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:buck_dutch",
+      "modern_id": "animania_extra:buck_dutch",
+      "module": "extra",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:buck_fainting",
+      "modern_id": "animania_farm:buck_fainting",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:buck_havana",
+      "modern_id": "animania_extra:buck_havana",
+      "module": "extra",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:buck_jack",
+      "modern_id": "animania_extra:buck_jack",
+      "module": "extra",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:buck_kiko",
+      "modern_id": "animania_farm:buck_kiko",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:buck_kinder",
+      "modern_id": "animania_farm:buck_kinder",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:buck_lop",
+      "modern_id": "animania_extra:buck_lop",
+      "module": "extra",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:buck_new_zealand",
+      "modern_id": "animania_extra:buck_new_zealand",
+      "module": "extra",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:buck_nigerian_dwarf",
+      "modern_id": "animania_farm:buck_nigerian_dwarf",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:buck_pygmy",
+      "modern_id": "animania_farm:buck_pygmy",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:buck_rex",
+      "modern_id": "animania_extra:buck_rex",
+      "module": "extra",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:bucket_slop",
+      "modern_id": "animania:bucket_slop",
+      "module": "animania",
+      "kind": "alias",
+      "status": "converted"
+    },
+    {
+      "legacy_id": "animania:bull_angus",
+      "modern_id": "animania_farm:bull_angus",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:bull_friesian",
+      "modern_id": "animania_farm:bull_friesian",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:bull_hereford",
+      "modern_id": "animania_farm:bull_hereford",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:bull_highland",
+      "modern_id": "animania_farm:bull_highland",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:bull_holstein",
+      "modern_id": "animania_farm:bull_holstein",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:bull_jersey",
+      "modern_id": "animania_farm:bull_jersey",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:bull_longhorn",
+      "modern_id": "animania_farm:bull_longhorn",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:bull_mooshroom",
+      "modern_id": "animania_farm:bull_mooshroom",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:calf_angus",
+      "modern_id": "animania_farm:calf_angus",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:calf_friesian",
+      "modern_id": "animania_farm:calf_friesian",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:calf_hereford",
+      "modern_id": "animania_farm:calf_hereford",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:calf_highland",
+      "modern_id": "animania_farm:calf_highland",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:calf_holstein",
+      "modern_id": "animania_farm:calf_holstein",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:calf_jersey",
+      "modern_id": "animania_farm:calf_jersey",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:calf_longhorn",
+      "modern_id": "animania_farm:calf_longhorn",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:calf_mooshroom",
+      "modern_id": "animania_farm:calf_mooshroom",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:cart",
+      "modern_id": "animania_farm:cart",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:cart",
+      "modern_id": "animania_farm:cart",
+      "module": "farm",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:carving_knife",
+      "modern_id": "animania_farm:carving_knife",
+      "module": "farm",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:cat_bed_1",
+      "modern_id": "animania_catsdogs:cat_bed_1",
+      "module": "catsdogs",
+      "kind": "block",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:cat_bed_2",
+      "modern_id": "animania_catsdogs:cat_bed_2",
+      "module": "catsdogs",
+      "kind": "block",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:cat_random",
+      "modern_id": "animania_catsdogs:cat_random",
+      "module": "animania_catsdogs",
+      "kind": "alias",
+      "status": "converted"
+    },
+    {
+      "legacy_id": "animania:cat_tower",
+      "modern_id": "animania_catsdogs:cat_tower",
+      "module": "catsdogs",
+      "kind": "block",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:charcoal_peacock_feather",
+      "modern_id": "animania_extra:charcoal_peacock_feather",
+      "module": "extra",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:cheese_friesian",
+      "modern_id": "animania_farm:cheese_friesian",
+      "module": "animania_farm",
+      "kind": "alias",
+      "status": "converted"
+    },
+    {
+      "legacy_id": "animania:cheese_goat",
+      "modern_id": "animania_farm:cheese_goat",
+      "module": "animania_farm",
+      "kind": "alias",
+      "status": "converted"
+    },
+    {
+      "legacy_id": "animania:cheese_holstein",
+      "modern_id": "animania_farm:cheese_holstein",
+      "module": "animania_farm",
+      "kind": "alias",
+      "status": "converted"
+    },
+    {
+      "legacy_id": "animania:cheese_jersey",
+      "modern_id": "animania_farm:cheese_jersey",
+      "module": "animania_farm",
+      "kind": "alias",
+      "status": "converted"
+    },
+    {
+      "legacy_id": "animania:cheese_mold",
+      "modern_id": "animania_farm:cheese_mold",
+      "module": "animania_farm",
+      "kind": "alias",
+      "status": "converted"
+    },
+    {
+      "legacy_id": "animania:cheese_omelette",
+      "modern_id": "animania_farm:cheese_omelette",
+      "module": "farm",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:cheese_sheep",
+      "modern_id": "animania_farm:cheese_sheep",
+      "module": "animania_farm",
+      "kind": "alias",
+      "status": "converted"
+    },
+    {
+      "legacy_id": "animania:chick_leghorn",
+      "modern_id": "animania_farm:chick_leghorn",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:chick_orpington",
+      "modern_id": "animania_farm:chick_orpington",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:chick_plymouth_rock",
+      "modern_id": "animania_farm:chick_plymouth_rock",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:chick_rhode_island_red",
+      "modern_id": "animania_farm:chick_rhode_island_red",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:chick_wyandotte",
+      "modern_id": "animania_farm:chick_wyandotte",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:chicken_random",
+      "modern_id": "animania_farm:chicken_random",
+      "module": "animania_farm",
+      "kind": "alias",
+      "status": "converted"
+    },
+    {
+      "legacy_id": "animania:chocolate_truffle",
+      "modern_id": "animania_farm:chocolate_truffle",
+      "module": "farm",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:cooked_chevon",
+      "modern_id": "animania_farm:cooked_chevon",
+      "module": "farm",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:cooked_frog_legs",
+      "modern_id": "animania_extra:cooked_frog_legs",
+      "module": "extra",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:cooked_horse",
+      "modern_id": "animania_farm:cooked_horse",
+      "module": "farm",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:cooked_peacock",
+      "modern_id": "animania_extra:cooked_peacock",
+      "module": "extra",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:cooked_prime_bacon",
+      "modern_id": "animania_farm:cooked_prime_bacon",
+      "module": "farm",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:cooked_prime_beef",
+      "modern_id": "animania_farm:cooked_prime_beef",
+      "module": "farm",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:cooked_prime_chevon",
+      "modern_id": "animania_farm:cooked_prime_chevon",
+      "module": "farm",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:cooked_prime_chicken",
+      "modern_id": "animania_farm:cooked_prime_chicken",
+      "module": "farm",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:cooked_prime_mutton",
+      "modern_id": "animania_farm:cooked_prime_mutton",
+      "module": "farm",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:cooked_prime_peacock",
+      "modern_id": "animania_extra:cooked_prime_peacock",
+      "module": "extra",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:cooked_prime_pork",
+      "modern_id": "animania_farm:cooked_prime_pork",
+      "module": "farm",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:cooked_prime_rabbit",
+      "modern_id": "animania_extra:cooked_prime_rabbit",
+      "module": "extra",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:cooked_prime_steak",
+      "modern_id": "animania_farm:cooked_prime_steak",
+      "module": "farm",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:cow_angus",
+      "modern_id": "animania_farm:cow_angus",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:cow_bucket_milk",
+      "modern_id": "animania_farm:milk_friesian_bucket",
+      "module": "animania_farm",
+      "kind": "alias",
+      "status": "converted"
+    },
+    {
+      "legacy_id": "animania:cow_friesian",
+      "modern_id": "animania_farm:cow_friesian",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:cow_hereford",
+      "modern_id": "animania_farm:cow_hereford",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:cow_highland",
+      "modern_id": "animania_farm:cow_highland",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:cow_holstein",
+      "modern_id": "animania_farm:cow_holstein",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:cow_jersey",
+      "modern_id": "animania_farm:cow_jersey",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:cow_longhorn",
+      "modern_id": "animania_farm:cow_longhorn",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:cow_mooshroom",
+      "modern_id": "animania_farm:cow_mooshroom",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:cow_random",
+      "modern_id": "animania_farm:cow_random",
+      "module": "animania_farm",
+      "kind": "alias",
+      "status": "converted"
+    },
+    {
+      "legacy_id": "animania:dart_frog",
+      "modern_id": "animania_extra:dart_frog",
+      "module": "animania_extra",
+      "kind": "alias",
+      "status": "converted"
+    },
+    {
+      "legacy_id": "animania:dartfrog",
+      "modern_id": "animania_extra:dartfrog",
+      "module": "extra",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:doe_alpine",
+      "modern_id": "animania_farm:doe_alpine",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:doe_angora",
+      "modern_id": "animania_farm:doe_angora",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:doe_chinchilla",
+      "modern_id": "animania_extra:doe_chinchilla",
+      "module": "extra",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:doe_cottontail",
+      "modern_id": "animania_extra:doe_cottontail",
+      "module": "extra",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:doe_dutch",
+      "modern_id": "animania_extra:doe_dutch",
+      "module": "extra",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:doe_fainting",
+      "modern_id": "animania_farm:doe_fainting",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:doe_havana",
+      "modern_id": "animania_extra:doe_havana",
+      "module": "extra",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:doe_jack",
+      "modern_id": "animania_extra:doe_jack",
+      "module": "extra",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:doe_kiko",
+      "modern_id": "animania_farm:doe_kiko",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:doe_kinder",
+      "modern_id": "animania_farm:doe_kinder",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:doe_lop",
+      "modern_id": "animania_extra:doe_lop",
+      "module": "extra",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:doe_new_zealand",
+      "modern_id": "animania_extra:doe_new_zealand",
+      "module": "extra",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:doe_nigerian_dwarf",
+      "modern_id": "animania_farm:doe_nigerian_dwarf",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:doe_pygmy",
+      "modern_id": "animania_farm:doe_pygmy",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:doe_rex",
+      "modern_id": "animania_extra:doe_rex",
+      "module": "extra",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:dog_house",
+      "modern_id": "animania_catsdogs:dog_house",
+      "module": "catsdogs",
+      "kind": "block",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:dog_pillow",
+      "modern_id": "animania_catsdogs:dog_pillow",
+      "module": "catsdogs",
+      "kind": "block",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:dog_random",
+      "modern_id": "animania_catsdogs:dog_random",
+      "module": "animania_catsdogs",
+      "kind": "alias",
+      "status": "converted"
+    },
+    {
+      "legacy_id": "animania:entity_egg_cat_random",
+      "modern_id": "animania_catsdogs:entity_egg_cat_random",
+      "module": "catsdogs",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:entity_egg_chicken_random",
+      "modern_id": "animania_farm:entity_egg_chicken_random",
+      "module": "farm",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:entity_egg_cow_random",
+      "modern_id": "animania_farm:entity_egg_cow_random",
+      "module": "farm",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:entity_egg_dart_frog",
+      "modern_id": "animania_extra:entity_egg_dart_frog",
+      "module": "extra",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:entity_egg_dog_random",
+      "modern_id": "animania_catsdogs:entity_egg_dog_random",
+      "module": "catsdogs",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:entity_egg_goat_random",
+      "modern_id": "animania_farm:entity_egg_goat_random",
+      "module": "farm",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:entity_egg_peacock_random",
+      "modern_id": "animania_extra:entity_egg_peacock_random",
+      "module": "extra",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:entity_egg_pig_random",
+      "modern_id": "animania_farm:entity_egg_pig_random",
+      "module": "farm",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:entity_egg_rabbit_random",
+      "modern_id": "animania_extra:entity_egg_rabbit_random",
+      "module": "extra",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:entity_egg_random",
+      "modern_id": "animania:entity_egg_random",
+      "module": "animania",
+      "kind": "alias",
+      "status": "converted"
+    },
+    {
+      "legacy_id": "animania:entity_egg_sheep_random",
+      "modern_id": "animania_farm:entity_egg_sheep_random",
+      "module": "farm",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:ewe_dorper",
+      "modern_id": "animania_farm:ewe_dorper",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:ewe_dorset",
+      "modern_id": "animania_farm:ewe_dorset",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:ewe_friesian",
+      "modern_id": "animania_farm:ewe_friesian",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:ewe_jacob",
+      "modern_id": "animania_farm:ewe_jacob",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:ewe_merino",
+      "modern_id": "animania_farm:ewe_merino",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:ewe_suffolk",
+      "modern_id": "animania_farm:ewe_suffolk",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:female_blood_hound",
+      "modern_id": "animania_catsdogs:female_blood_hound",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:female_chihuahua",
+      "modern_id": "animania_catsdogs:female_chihuahua",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:female_collie",
+      "modern_id": "animania_catsdogs:female_collie",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:female_corgi",
+      "modern_id": "animania_catsdogs:female_corgi",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:female_dachshund",
+      "modern_id": "animania_catsdogs:female_dachshund",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:female_fox",
+      "modern_id": "animania_catsdogs:female_fox",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:female_german_shepherd",
+      "modern_id": "animania_catsdogs:female_german_shepherd",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:female_great_dane",
+      "modern_id": "animania_catsdogs:female_great_dane",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:female_greyhound",
+      "modern_id": "animania_catsdogs:female_greyhound",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:female_husky",
+      "modern_id": "animania_catsdogs:female_husky",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:female_labrador",
+      "modern_id": "animania_catsdogs:female_labrador",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:female_pomeranian",
+      "modern_id": "animania_catsdogs:female_pomeranian",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:female_poodle",
+      "modern_id": "animania_catsdogs:female_poodle",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:female_pug",
+      "modern_id": "animania_catsdogs:female_pug",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:female_wolf",
+      "modern_id": "animania_catsdogs:female_wolf",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:ferret_grey",
+      "modern_id": "animania_extra:ferret_grey",
+      "module": "extra",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:ferret_white",
+      "modern_id": "animania_extra:ferret_white",
+      "module": "extra",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:foal_draft",
+      "modern_id": "animania_farm:foal_draft",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:friesian_bucket_milk",
+      "modern_id": "animania_farm:milk_friesian_bucket",
+      "module": "animania_farm",
+      "kind": "alias",
+      "status": "converted"
+    },
+    {
+      "legacy_id": "animania:friesian_cheese_wedge",
+      "modern_id": "animania_farm:friesian_cheese_wedge",
+      "module": "farm",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:friesian_cheese_wheel",
+      "modern_id": "animania_farm:friesian_cheese_wheel",
+      "module": "farm",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:frog",
+      "modern_id": "animania_extra:frog",
+      "module": "extra",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:goat_bucket_milk",
+      "modern_id": "animania_farm:milk_goat_bucket",
+      "module": "animania_farm",
+      "kind": "alias",
+      "status": "converted"
+    },
+    {
+      "legacy_id": "animania:goat_cheese_wedge",
+      "modern_id": "animania_farm:goat_cheese_wedge",
+      "module": "farm",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:goat_cheese_wheel",
+      "modern_id": "animania_farm:goat_cheese_wheel",
+      "module": "farm",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:goat_random",
+      "modern_id": "animania_farm:goat_random",
+      "module": "animania_farm",
+      "kind": "alias",
+      "status": "converted"
+    },
+    {
+      "legacy_id": "animania:hamster",
+      "modern_id": "animania_extra:hamster",
+      "module": "extra",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:hamster_ball_clear",
+      "modern_id": "animania_extra:hamster_ball_clear",
+      "module": "extra",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:hamster_ball_clear",
+      "modern_id": "animania_extra:hamster_ball_clear",
+      "module": "animania_extra",
+      "kind": "alias",
+      "status": "converted"
+    },
+    {
+      "legacy_id": "animania:hamster_ball_colored",
+      "modern_id": "animania_extra:hamster_ball_colored",
+      "module": "extra",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:hamster_ball_colored",
+      "modern_id": "animania_extra:hamster_ball_colored",
+      "module": "animania_extra",
+      "kind": "alias",
+      "status": "converted"
+    },
+    {
+      "legacy_id": "animania:hamster_food",
+      "modern_id": "animania_extra:hamster_food",
+      "module": "extra",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:hamster_food",
+      "modern_id": "animania_extra:hamster_food",
+      "module": "animania_extra",
+      "kind": "alias",
+      "status": "converted"
+    },
+    {
+      "legacy_id": "animania:hedgehog",
+      "modern_id": "animania_extra:hedgehog",
+      "module": "extra",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:hedgehog_albino",
+      "modern_id": "animania_extra:hedgehog_albino",
+      "module": "extra",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:hen_leghorn",
+      "modern_id": "animania_farm:hen_leghorn",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:hen_orpington",
+      "modern_id": "animania_farm:hen_orpington",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:hen_plymouth_rock",
+      "modern_id": "animania_farm:hen_plymouth_rock",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:hen_rhode_island_red",
+      "modern_id": "animania_farm:hen_rhode_island_red",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:hen_wyandotte",
+      "modern_id": "animania_farm:hen_wyandotte",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:hog_duroc",
+      "modern_id": "animania_farm:hog_duroc",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:hog_hampshire",
+      "modern_id": "animania_farm:hog_hampshire",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:hog_large_black",
+      "modern_id": "animania_farm:hog_large_black",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:hog_large_white",
+      "modern_id": "animania_farm:hog_large_white",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:hog_old_spot",
+      "modern_id": "animania_farm:hog_old_spot",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:hog_yorkshire",
+      "modern_id": "animania_farm:hog_yorkshire",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:holstein_bucket_milk",
+      "modern_id": "animania_farm:milk_holstein_bucket",
+      "module": "animania_farm",
+      "kind": "alias",
+      "status": "converted"
+    },
+    {
+      "legacy_id": "animania:holstein_cheese_wedge",
+      "modern_id": "animania_farm:holstein_cheese_wedge",
+      "module": "farm",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:holstein_cheese_wheel",
+      "modern_id": "animania_farm:holstein_cheese_wheel",
+      "module": "farm",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:honey_bottle",
+      "modern_id": "animania_farm:honey_bottle",
+      "module": "farm",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:honey_jar",
+      "modern_id": "animania_farm:honey_jar",
+      "module": "farm",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:item_cart",
+      "modern_id": "animania_farm:cart",
+      "module": "animania_farm",
+      "kind": "alias",
+      "status": "converted"
+    },
+    {
+      "legacy_id": "animania:item_tiller",
+      "modern_id": "animania_farm:tiller",
+      "module": "animania_farm",
+      "kind": "alias",
+      "status": "converted"
+    },
+    {
+      "legacy_id": "animania:item_wagon",
+      "modern_id": "animania_farm:wagon",
+      "module": "animania_farm",
+      "kind": "alias",
+      "status": "converted"
+    },
+    {
+      "legacy_id": "animania:jersey_bucket_milk",
+      "modern_id": "animania_farm:milk_jersey_bucket",
+      "module": "animania_farm",
+      "kind": "alias",
+      "status": "converted"
+    },
+    {
+      "legacy_id": "animania:jersey_cheese_wedge",
+      "modern_id": "animania_farm:jersey_cheese_wedge",
+      "module": "farm",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:jersey_cheese_wheel",
+      "modern_id": "animania_farm:jersey_cheese_wheel",
+      "module": "farm",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:kid_alpine",
+      "modern_id": "animania_farm:kid_alpine",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:kid_angora",
+      "modern_id": "animania_farm:kid_angora",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:kid_fainting",
+      "modern_id": "animania_farm:kid_fainting",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:kid_kiko",
+      "modern_id": "animania_farm:kid_kiko",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:kid_kinder",
+      "modern_id": "animania_farm:kid_kinder",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:kid_nigerian_dwarf",
+      "modern_id": "animania_farm:kid_nigerian_dwarf",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:kid_pygmy",
+      "modern_id": "animania_farm:kid_pygmy",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:kit_chinchilla",
+      "modern_id": "animania_extra:kit_chinchilla",
+      "module": "extra",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:kit_cottontail",
+      "modern_id": "animania_extra:kit_cottontail",
+      "module": "extra",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:kit_dutch",
+      "modern_id": "animania_extra:kit_dutch",
+      "module": "extra",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:kit_havana",
+      "modern_id": "animania_extra:kit_havana",
+      "module": "extra",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:kit_jack",
+      "modern_id": "animania_extra:kit_jack",
+      "module": "extra",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:kit_lop",
+      "modern_id": "animania_extra:kit_lop",
+      "module": "extra",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:kit_new_zealand",
+      "modern_id": "animania_extra:kit_new_zealand",
+      "module": "extra",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:kit_rex",
+      "modern_id": "animania_extra:kit_rex",
+      "module": "extra",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:kitten_american_shorthair",
+      "modern_id": "animania_catsdogs:kitten_american_shorthair",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:kitten_asiatic",
+      "modern_id": "animania_catsdogs:kitten_asiatic",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:kitten_exotic",
+      "modern_id": "animania_catsdogs:kitten_exotic",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:kitten_norwegian",
+      "modern_id": "animania_catsdogs:kitten_norwegian",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:kitten_ocelot",
+      "modern_id": "animania_catsdogs:kitten_ocelot",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:kitten_ragdoll",
+      "modern_id": "animania_catsdogs:kitten_ragdoll",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:kitten_siamese",
+      "modern_id": "animania_catsdogs:kitten_siamese",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:kitten_tabby",
+      "modern_id": "animania_catsdogs:kitten_tabby",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:lamb_dorper",
+      "modern_id": "animania_farm:lamb_dorper",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:lamb_dorset",
+      "modern_id": "animania_farm:lamb_dorset",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:lamb_friesian",
+      "modern_id": "animania_farm:lamb_friesian",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:lamb_jacob",
+      "modern_id": "animania_farm:lamb_jacob",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:lamb_merino",
+      "modern_id": "animania_farm:lamb_merino",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:lamb_suffolk",
+      "modern_id": "animania_farm:lamb_suffolk",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:litter_box",
+      "modern_id": "animania_catsdogs:litter_box",
+      "module": "catsdogs",
+      "kind": "block",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:male_blood_hound",
+      "modern_id": "animania_catsdogs:male_blood_hound",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:male_chihuahua",
+      "modern_id": "animania_catsdogs:male_chihuahua",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:male_collie",
+      "modern_id": "animania_catsdogs:male_collie",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:male_corgi",
+      "modern_id": "animania_catsdogs:male_corgi",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:male_dachshund",
+      "modern_id": "animania_catsdogs:male_dachshund",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:male_fox",
+      "modern_id": "animania_catsdogs:male_fox",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:male_german_shepherd",
+      "modern_id": "animania_catsdogs:male_german_shepherd",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:male_great_dane",
+      "modern_id": "animania_catsdogs:male_great_dane",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:male_greyhound",
+      "modern_id": "animania_catsdogs:male_greyhound",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:male_husky",
+      "modern_id": "animania_catsdogs:male_husky",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:male_labrador",
+      "modern_id": "animania_catsdogs:male_labrador",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:male_pomeranian",
+      "modern_id": "animania_catsdogs:male_pomeranian",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:male_poodle",
+      "modern_id": "animania_catsdogs:male_poodle",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:male_pug",
+      "modern_id": "animania_catsdogs:male_pug",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:male_wolf",
+      "modern_id": "animania_catsdogs:male_wolf",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:mare_draft",
+      "modern_id": "animania_farm:mare_draft",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:milk_bottle",
+      "modern_id": "animania_farm:milk_bottle",
+      "module": "farm",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:milk_friesian",
+      "modern_id": "animania_farm:milk_friesian",
+      "module": "animania_farm",
+      "kind": "alias",
+      "status": "converted"
+    },
+    {
+      "legacy_id": "animania:milk_friesian_bucket",
+      "modern_id": "animania_farm:milk_friesian_bucket",
+      "module": "animania_farm",
+      "kind": "alias",
+      "status": "converted"
+    },
+    {
+      "legacy_id": "animania:milk_goat",
+      "modern_id": "animania_farm:milk_goat",
+      "module": "animania_farm",
+      "kind": "alias",
+      "status": "converted"
+    },
+    {
+      "legacy_id": "animania:milk_goat_bucket",
+      "modern_id": "animania_farm:milk_goat_bucket",
+      "module": "animania_farm",
+      "kind": "alias",
+      "status": "converted"
+    },
+    {
+      "legacy_id": "animania:milk_holstein",
+      "modern_id": "animania_farm:milk_holstein",
+      "module": "animania_farm",
+      "kind": "alias",
+      "status": "converted"
+    },
+    {
+      "legacy_id": "animania:milk_holstein_bucket",
+      "modern_id": "animania_farm:milk_holstein_bucket",
+      "module": "animania_farm",
+      "kind": "alias",
+      "status": "converted"
+    },
+    {
+      "legacy_id": "animania:milk_jersey",
+      "modern_id": "animania_farm:milk_jersey",
+      "module": "animania_farm",
+      "kind": "alias",
+      "status": "converted"
+    },
+    {
+      "legacy_id": "animania:milk_jersey_bucket",
+      "modern_id": "animania_farm:milk_jersey_bucket",
+      "module": "animania_farm",
+      "kind": "alias",
+      "status": "converted"
+    },
+    {
+      "legacy_id": "animania:milk_sheep",
+      "modern_id": "animania_farm:milk_sheep",
+      "module": "animania_farm",
+      "kind": "alias",
+      "status": "converted"
+    },
+    {
+      "legacy_id": "animania:milk_sheep_bucket",
+      "modern_id": "animania_farm:milk_sheep_bucket",
+      "module": "animania_farm",
+      "kind": "alias",
+      "status": "converted"
+    },
+    {
+      "legacy_id": "animania:opal_peacock_feather",
+      "modern_id": "animania_extra:opal_peacock_feather",
+      "module": "extra",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:peach_peacock_feather",
+      "modern_id": "animania_extra:peach_peacock_feather",
+      "module": "extra",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:peachick_blue",
+      "modern_id": "animania_extra:peachick_blue",
+      "module": "extra",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:peachick_charcoal",
+      "modern_id": "animania_extra:peachick_charcoal",
+      "module": "extra",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:peachick_opal",
+      "modern_id": "animania_extra:peachick_opal",
+      "module": "extra",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:peachick_peach",
+      "modern_id": "animania_extra:peachick_peach",
+      "module": "extra",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:peachick_purple",
+      "modern_id": "animania_extra:peachick_purple",
+      "module": "extra",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:peachick_taupe",
+      "modern_id": "animania_extra:peachick_taupe",
+      "module": "extra",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:peachick_white",
+      "modern_id": "animania_extra:peachick_white",
+      "module": "extra",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:peacock_blue",
+      "modern_id": "animania_extra:peacock_blue",
+      "module": "extra",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:peacock_charcoal",
+      "modern_id": "animania_extra:peacock_charcoal",
+      "module": "extra",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:peacock_egg_blue",
+      "modern_id": "animania_extra:peacock_egg_blue",
+      "module": "extra",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:peacock_egg_white",
+      "modern_id": "animania_extra:peacock_egg_white",
+      "module": "extra",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:peacock_opal",
+      "modern_id": "animania_extra:peacock_opal",
+      "module": "extra",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:peacock_peach",
+      "modern_id": "animania_extra:peacock_peach",
+      "module": "extra",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:peacock_purple",
+      "modern_id": "animania_extra:peacock_purple",
+      "module": "extra",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:peacock_random",
+      "modern_id": "animania_extra:peacock_random",
+      "module": "animania_extra",
+      "kind": "alias",
+      "status": "converted"
+    },
+    {
+      "legacy_id": "animania:peacock_taupe",
+      "modern_id": "animania_extra:peacock_taupe",
+      "module": "extra",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:peacock_white",
+      "modern_id": "animania_extra:peacock_white",
+      "module": "extra",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:peahen_blue",
+      "modern_id": "animania_extra:peahen_blue",
+      "module": "extra",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:peahen_charcoal",
+      "modern_id": "animania_extra:peahen_charcoal",
+      "module": "extra",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:peahen_opal",
+      "modern_id": "animania_extra:peahen_opal",
+      "module": "extra",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:peahen_peach",
+      "modern_id": "animania_extra:peahen_peach",
+      "module": "extra",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:peahen_purple",
+      "modern_id": "animania_extra:peahen_purple",
+      "module": "extra",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:peahen_taupe",
+      "modern_id": "animania_extra:peahen_taupe",
+      "module": "extra",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:peahen_white",
+      "modern_id": "animania_extra:peahen_white",
+      "module": "extra",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:pig_random",
+      "modern_id": "animania_farm:pig_random",
+      "module": "animania_farm",
+      "kind": "alias",
+      "status": "converted"
+    },
+    {
+      "legacy_id": "animania:piglet_duroc",
+      "modern_id": "animania_farm:piglet_duroc",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:piglet_hampshire",
+      "modern_id": "animania_farm:piglet_hampshire",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:piglet_large_black",
+      "modern_id": "animania_farm:piglet_large_black",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:piglet_large_white",
+      "modern_id": "animania_farm:piglet_large_white",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:piglet_old_spot",
+      "modern_id": "animania_farm:piglet_old_spot",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:piglet_yorkshire",
+      "modern_id": "animania_farm:piglet_yorkshire",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:plain_omelette",
+      "modern_id": "animania_farm:plain_omelette",
+      "module": "farm",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:puppy_blood_hound",
+      "modern_id": "animania_catsdogs:puppy_blood_hound",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:puppy_chihuahua",
+      "modern_id": "animania_catsdogs:puppy_chihuahua",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:puppy_collie",
+      "modern_id": "animania_catsdogs:puppy_collie",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:puppy_corgi",
+      "modern_id": "animania_catsdogs:puppy_corgi",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:puppy_dachshund",
+      "modern_id": "animania_catsdogs:puppy_dachshund",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:puppy_fox",
+      "modern_id": "animania_catsdogs:puppy_fox",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:puppy_german_shepherd",
+      "modern_id": "animania_catsdogs:puppy_german_shepherd",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:puppy_great_dane",
+      "modern_id": "animania_catsdogs:puppy_great_dane",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:puppy_greyhound",
+      "modern_id": "animania_catsdogs:puppy_greyhound",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:puppy_husky",
+      "modern_id": "animania_catsdogs:puppy_husky",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:puppy_labrador",
+      "modern_id": "animania_catsdogs:puppy_labrador",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:puppy_pomeranian",
+      "modern_id": "animania_catsdogs:puppy_pomeranian",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:puppy_poodle",
+      "modern_id": "animania_catsdogs:puppy_poodle",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:puppy_pug",
+      "modern_id": "animania_catsdogs:puppy_pug",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:puppy_wolf",
+      "modern_id": "animania_catsdogs:puppy_wolf",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:purple_peacock_feather",
+      "modern_id": "animania_extra:purple_peacock_feather",
+      "module": "extra",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:queen_american_shorthair",
+      "modern_id": "animania_catsdogs:queen_american_shorthair",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:queen_asiatic",
+      "modern_id": "animania_catsdogs:queen_asiatic",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:queen_exotic",
+      "modern_id": "animania_catsdogs:queen_exotic",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:queen_norwegian",
+      "modern_id": "animania_catsdogs:queen_norwegian",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:queen_ocelot",
+      "modern_id": "animania_catsdogs:queen_ocelot",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:queen_ragdoll",
+      "modern_id": "animania_catsdogs:queen_ragdoll",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:queen_siamese",
+      "modern_id": "animania_catsdogs:queen_siamese",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:queen_tabby",
+      "modern_id": "animania_catsdogs:queen_tabby",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:rabbit_random",
+      "modern_id": "animania_extra:rabbit_random",
+      "module": "animania_extra",
+      "kind": "alias",
+      "status": "converted"
+    },
+    {
+      "legacy_id": "animania:ram_dorper",
+      "modern_id": "animania_farm:ram_dorper",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:ram_dorset",
+      "modern_id": "animania_farm:ram_dorset",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:ram_friesian",
+      "modern_id": "animania_farm:ram_friesian",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:ram_jacob",
+      "modern_id": "animania_farm:ram_jacob",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:ram_merino",
+      "modern_id": "animania_farm:ram_merino",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:ram_suffolk",
+      "modern_id": "animania_farm:ram_suffolk",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:raw_chevon",
+      "modern_id": "animania_farm:raw_chevon",
+      "module": "farm",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:raw_frog_legs",
+      "modern_id": "animania_extra:raw_frog_legs",
+      "module": "extra",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:raw_horse",
+      "modern_id": "animania_farm:raw_horse",
+      "module": "farm",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:raw_peacock",
+      "modern_id": "animania_extra:raw_peacock",
+      "module": "extra",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:raw_prime_bacon",
+      "modern_id": "animania_farm:raw_prime_bacon",
+      "module": "farm",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:raw_prime_beef",
+      "modern_id": "animania_farm:raw_prime_beef",
+      "module": "farm",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:raw_prime_chevon",
+      "modern_id": "animania_farm:raw_prime_chevon",
+      "module": "farm",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:raw_prime_chicken",
+      "modern_id": "animania_farm:raw_prime_chicken",
+      "module": "farm",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:raw_prime_mutton",
+      "modern_id": "animania_farm:raw_prime_mutton",
+      "module": "farm",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:raw_prime_peacock",
+      "modern_id": "animania_extra:raw_prime_peacock",
+      "module": "extra",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:raw_prime_pork",
+      "modern_id": "animania_farm:raw_prime_pork",
+      "module": "farm",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:raw_prime_rabbit",
+      "modern_id": "animania_extra:raw_prime_rabbit",
+      "module": "extra",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:raw_prime_steak",
+      "modern_id": "animania_farm:raw_prime_steak",
+      "module": "farm",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:riding_crop",
+      "modern_id": "animania_farm:riding_crop",
+      "module": "farm",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:rooster_leghorn",
+      "modern_id": "animania_farm:rooster_leghorn",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:rooster_orpington",
+      "modern_id": "animania_farm:rooster_orpington",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:rooster_plymouth_rock",
+      "modern_id": "animania_farm:rooster_plymouth_rock",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:rooster_rhode_island_red",
+      "modern_id": "animania_farm:rooster_rhode_island_red",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:rooster_wyandotte",
+      "modern_id": "animania_farm:rooster_wyandotte",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:salt",
+      "modern_id": "animania_farm:salt",
+      "module": "farm",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:sheep_bucket_milk",
+      "modern_id": "animania_farm:milk_sheep_bucket",
+      "module": "animania_farm",
+      "kind": "alias",
+      "status": "converted"
+    },
+    {
+      "legacy_id": "animania:sheep_cheese_wedge",
+      "modern_id": "animania_farm:sheep_cheese_wedge",
+      "module": "farm",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:sheep_cheese_wheel",
+      "modern_id": "animania_farm:sheep_cheese_wheel",
+      "module": "farm",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:sheep_random",
+      "modern_id": "animania_farm:sheep_random",
+      "module": "animania_farm",
+      "kind": "alias",
+      "status": "converted"
+    },
+    {
+      "legacy_id": "animania:sow_duroc",
+      "modern_id": "animania_farm:sow_duroc",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:sow_hampshire",
+      "modern_id": "animania_farm:sow_hampshire",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:sow_large_black",
+      "modern_id": "animania_farm:sow_large_black",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:sow_large_white",
+      "modern_id": "animania_farm:sow_large_white",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:sow_old_spot",
+      "modern_id": "animania_farm:sow_old_spot",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:sow_yorkshire",
+      "modern_id": "animania_farm:sow_yorkshire",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:stallion_draft",
+      "modern_id": "animania_farm:stallion_draft",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:super_omelette",
+      "modern_id": "animania_farm:super_omelette",
+      "module": "farm",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:taupe_peacock_feather",
+      "modern_id": "animania_extra:taupe_peacock_feather",
+      "module": "extra",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:tiller",
+      "modern_id": "animania_farm:tiller",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:tiller",
+      "modern_id": "animania_farm:tiller",
+      "module": "farm",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:toad",
+      "modern_id": "animania_extra:toad",
+      "module": "extra",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:tom_american_shorthair",
+      "modern_id": "animania_catsdogs:tom_american_shorthair",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:tom_asiatic",
+      "modern_id": "animania_catsdogs:tom_asiatic",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:tom_exotic",
+      "modern_id": "animania_catsdogs:tom_exotic",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:tom_norwegian",
+      "modern_id": "animania_catsdogs:tom_norwegian",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:tom_ocelot",
+      "modern_id": "animania_catsdogs:tom_ocelot",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:tom_ragdoll",
+      "modern_id": "animania_catsdogs:tom_ragdoll",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:tom_siamese",
+      "modern_id": "animania_catsdogs:tom_siamese",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:tom_tabby",
+      "modern_id": "animania_catsdogs:tom_tabby",
+      "module": "catsdogs",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:truffle",
+      "modern_id": "animania_farm:truffle",
+      "module": "farm",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:truffle_omelette",
+      "modern_id": "animania_farm:truffle_omelette",
+      "module": "farm",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:truffle_soup",
+      "modern_id": "animania_farm:truffle_soup",
+      "module": "farm",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:wagon",
+      "modern_id": "animania_farm:wagon",
+      "module": "farm",
+      "kind": "entity",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:wagon",
+      "modern_id": "animania_farm:wagon",
+      "module": "farm",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:wheel",
+      "modern_id": "animania_farm:wheel",
+      "module": "farm",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:white_peacock_feather",
+      "modern_id": "animania_extra:white_peacock_feather",
+      "module": "extra",
+      "kind": "item",
+      "status": "registered"
+    },
+    {
+      "legacy_id": "animania:wild_hive",
+      "modern_id": "animania_farm:wild_hive",
+      "module": "animania_farm",
+      "kind": "alias",
+      "status": "converted"
+    }
+  ]
+}

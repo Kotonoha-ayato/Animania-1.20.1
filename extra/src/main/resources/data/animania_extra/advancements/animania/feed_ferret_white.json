@@ -1,0 +1,48 @@
+{
+  "display": {
+    "icon": {
+      "item": "animania_extra:entity_egg_ferret_white"
+    },
+    "title": {
+      "translate": "advancements.animania.ferret_white.title"
+    },
+    "description": {
+      "translate": "advancements.animania.ferret_white.description"
+    }
+  },
+  "parent": "animania_extra:animania/feed_ferret_grey",
+  "criteria": {
+    "ferret": {
+      "trigger": "minecraft:tick"
+    },
+    "ferret2": {
+      "trigger": "minecraft:tick"
+    },
+    "ferret3": {
+      "trigger": "minecraft:tick"
+    },
+    "ferret4": {
+      "trigger": "minecraft:tick"
+    },
+    "ferret5": {
+      "trigger": "minecraft:tick"
+    },
+    "ferret6": {
+      "trigger": "minecraft:tick"
+    },
+    "ferret7": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "requirements": [
+    [
+      "ferret",
+      "ferret2",
+      "ferret3",
+      "ferret4",
+      "ferret5",
+      "ferret6",
+      "ferret7"
+    ]
+  ]
+}
