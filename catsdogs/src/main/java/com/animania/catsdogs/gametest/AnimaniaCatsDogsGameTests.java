@@ -392,6 +392,8 @@ public final class AnimaniaCatsDogsGameTests {
                 "pet bowl base model would overlap its native block-entity renderer");
         helper.assertTrue(raw instanceof CatsDogsPetBowlBlockEntity, "pet bowl block entity was not registered: " + raw);
         CatsDogsPetBowlBlockEntity bowl = (CatsDogsPetBowlBlockEntity) raw;
+        helper.assertTrue(bowl.getContainerSize() == 1 && bowl.getMaxStackSize() == 3,
+                "pet bowl did not retain its legacy one-slot, three-food capacity");
         helper.assertTrue(bowl.tryInsertFood(new ItemStack(Items.COD)), "pet bowl rejected fish food");
         helper.assertTrue(bowl.getItem(0).getCount() == 1, "pet bowl food count is not one");
         helper.assertTrue(bowl.getCapability(ForgeCapabilities.FLUID_HANDLER, null).map(handler ->
@@ -402,7 +404,13 @@ public final class AnimaniaCatsDogsGameTests {
         helper.assertTrue(bowl.getCapability(ForgeCapabilities.FLUID_HANDLER, null).map(handler ->
                 handler.fill(new FluidStack(Fluids.LAVA, FluidType.BUCKET_VOLUME), IFluidHandler.FluidAction.SIMULATE) == 0)
                 .orElse(false), "pet bowl accepted a non-water automation fluid");
-        helper.assertTrue(bowl.getCapability(ForgeCapabilities.ITEM_HANDLER, null).isPresent(), "pet bowl item capability missing");
+        var itemHandler = bowl.getCapability(ForgeCapabilities.ITEM_HANDLER, null).orElse(null);
+        helper.assertTrue(itemHandler != null, "pet bowl item capability missing");
+        bowl.clearContent();
+        ItemStack overflow = itemHandler.insertItem(0, new ItemStack(Items.COD, 64), false);
+        helper.assertTrue(itemHandler.getSlots() == 1 && itemHandler.getSlotLimit(0) == 3
+                        && bowl.getItem(0).getCount() == 3 && overflow.getCount() == 61,
+                "pet bowl automation exceeded its legacy three-food capacity");
         int facilityOffset = 2;
         for (String id : CatsDogsContent.BLOCK_IDS) {
             BlockPos facilityPos = helper.absolutePos(new BlockPos(facilityOffset++, 1, 1));

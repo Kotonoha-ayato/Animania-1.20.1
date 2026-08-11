@@ -2,6 +2,7 @@ package com.animania.catsdogs;
 
 import com.animania.common.block.AnimaniaStorageBlockEntity;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidStack;
@@ -13,7 +14,26 @@ import net.minecraft.world.level.material.Fluids;
  */
 public final class CatsDogsPetBowlBlockEntity extends AnimaniaStorageBlockEntity {
     public CatsDogsPetBowlBlockEntity(BlockPos pos, BlockState state) {
-        super(CatsDogsContent.PET_BOWL_BE.get(), pos, state);
+        super(CatsDogsContent.PET_BOWL_BE.get(), pos, state, 1, 1000);
+    }
+
+    @Override
+    public int getMaxStackSize() {
+        return 3;
+    }
+
+    @Override
+    protected boolean isItemValid(int slot, ItemStack stack) {
+        return slot == 0 && CatsDogsPetBowlBlock.isFoodItem(stack);
+    }
+
+    @Override
+    public void load(CompoundTag tag) {
+        super.load(tag);
+        ItemStack food = getItem(0);
+        if (!food.isEmpty() && food.getCount() > getMaxStackSize()) {
+            setItem(0, food.copyWithCount(getMaxStackSize()));
+        }
     }
 
     @Override

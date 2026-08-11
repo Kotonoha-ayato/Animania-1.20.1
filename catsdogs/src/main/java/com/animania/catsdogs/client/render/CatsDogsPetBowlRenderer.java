@@ -37,9 +37,10 @@ public final class CatsDogsPetBowlRenderer implements BlockEntityRenderer<CatsDo
             float red = ((color >> 16) & 255) / 255.0F;
             float green = ((color >> 8) & 255) / 255.0F;
             float blue = (color & 255) / 255.0F;
+            int displayedCount = Math.min(entity.getMaxStackSize(), Math.max(1, food.getCount()));
             pose.pushPose();
             pose.scale(1.2F, 1.2F, 1.2F);
-            pose.translate(0.0F, -0.12F - (food.getCount() - 1) * 0.04F, 0.0F);
+            pose.translate(0.0F, -0.12F - (displayedCount - 1) * 0.04F, 0.0F);
             model.renderFood(pose, consumer, packedLight, OverlayTexture.NO_OVERLAY, red, green, blue);
             pose.popPose();
         }
