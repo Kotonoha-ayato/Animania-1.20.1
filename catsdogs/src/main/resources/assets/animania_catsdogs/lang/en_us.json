@@ -308,5 +308,9 @@
   "manual.canids.fox.1": "Foxes look like this:",
   "manual.canids.wolf.1": "Wolves look like this:",
   "manual.felids.general.1": "All Felids behave in a similar way. They attack small Animals like chicks, peachicks, frogs, hamsters, ferrets and hedgehogs. Tamed animals will not attack. Felids spawn naturally in the world. These are their food items:",
-  "manual.felids.ocelot.1": "Ocelots look like this:"
+  "manual.felids.ocelot.1": "Ocelots look like this:",
+  "manual.blocks.blocks.title": "Title",
+  "tile.animania_pet_bowl.name": "Name",
+  "manual.entities.entities.title": "Title",
+  "manual.biometypes": "Biometypes"
 }
