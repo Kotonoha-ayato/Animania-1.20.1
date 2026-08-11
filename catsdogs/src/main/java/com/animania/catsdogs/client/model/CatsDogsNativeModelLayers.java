@@ -52,17 +52,17 @@ public final class CatsDogsNativeModelLayers {
         PartDefinition root = mesh.getRoot();
         PartDefinition root_node = root.addOrReplaceChild("root_node", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 22.5F, 0.0F, 0.0F, 0.0F, 0.0F));
         PartDefinition side = root_node.addOrReplaceChild("side", CubeListBuilder.create().texOffs(7, 0).addBox(-3.5F, -1.0F, -1.0F, 7.0F, 2.0F, 2.0F), PartPose.offsetAndRotation(-7.0F, -1.5F, 0.0F, 0.0F, -1.570796F, 0.0F));
-        PartDefinition side_2 = side.addOrReplaceChild("side_2", CubeListBuilder.create().texOffs(5, 0).addBox(-3.5F, -1.0F, -1.0F, 7.0F, 2.0F, 2.0F), PartPose.offsetAndRotation(7.0F, 0.0F, -7.0F, 3.141593F, 1.570796F, 3.141593F));
+        PartDefinition side_2 = side.addOrReplaceChild("side_2", CubeListBuilder.create().texOffs(5, 0).addBox(-3.5F, -1.0F, -1.0F, 7.0F, 2.0F, 2.0F), PartPose.offsetAndRotation(7.0F, 0.0F, -7.0F, 0.0F, 1.570796F, 0.0F));
         PartDefinition side_3 = side.addOrReplaceChild("side_3", CubeListBuilder.create().texOffs(5, 0).addBox(-3.5F, -1.0F, -8.0F, 7.0F, 2.0F, 2.0F), PartPose.offsetAndRotation(0.0F, 0.0F, -7.0F, 0.0F, 0.785398F, 0.0F));
         PartDefinition side_4 = side.addOrReplaceChild("side_4", CubeListBuilder.create().texOffs(5, 0).addBox(-3.5F, -1.0F, -8.0F, 7.0F, 2.0F, 2.0F), PartPose.offsetAndRotation(0.0F, 0.0F, -7.0F, 3.141593F, 0.785398F, 3.141593F));
         PartDefinition side_5 = side.addOrReplaceChild("side_5", CubeListBuilder.create().texOffs(5, 0).addBox(-3.5F, -1.0F, 6.0F, 7.0F, 2.0F, 2.0F), PartPose.offsetAndRotation(0.0F, 0.0F, -7.0F, 0.0F, 0.785398F, 0.0F));
-        PartDefinition side_6 = side.addOrReplaceChild("side_6", CubeListBuilder.create().texOffs(5, 0).addBox(-3.5F, -1.0F, -1.0F, 7.0F, 2.0F, 2.0F), PartPose.offsetAndRotation(-7.0F, 0.0F, -6.999999F, 3.141593F, 1.570796F, 3.141593F));
+        PartDefinition side_6 = side.addOrReplaceChild("side_6", CubeListBuilder.create().texOffs(5, 0).addBox(-3.5F, -1.0F, -1.0F, 7.0F, 2.0F, 2.0F), PartPose.offsetAndRotation(-7.0F, 0.0F, -6.999999F, 0.0F, 1.570796F, 0.0F));
         PartDefinition side_7 = side.addOrReplaceChild("side_7", CubeListBuilder.create().texOffs(5, 0).addBox(-3.5F, -1.0F, -1.0F, 7.0F, 2.0F, 2.0F), PartPose.offsetAndRotation(-0.000002F, 0.0F, -14.0F, -3.141593F, 0.0F, 3.141593F));
         PartDefinition side_8 = side.addOrReplaceChild("side_8", CubeListBuilder.create().texOffs(5, 0).addBox(-3.5F, -1.0F, 6.0F, 7.0F, 2.0F, 2.0F), PartPose.offsetAndRotation(0.0F, 0.0F, -7.0F, 3.141593F, 0.785398F, 3.141593F));
         PartDefinition bottom = root_node.addOrReplaceChild("bottom", CubeListBuilder.create().texOffs(0, 14).addBox(-3.5F, -1.0F, -8.0F, 7.0F, 2.0F, 16.0F), PartPose.offsetAndRotation(0.0F, 0.5F, 0.0F, 0.0F, 0.0F, 0.0F));
         PartDefinition bottom_2 = bottom.addOrReplaceChild("bottom_2", CubeListBuilder.create().texOffs(0, 14).addBox(-3.5F, -1.0F, -8.0F, 7.0F, 2.0F, 16.0F), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, -1.570796F, 0.0F));
         PartDefinition bottom_3 = bottom_2.addOrReplaceChild("bottom_3", CubeListBuilder.create().texOffs(0, 14).addBox(-3.5F, -1.0F, -8.0F, 7.0F, 2.0F, 16.0F), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, 0.785398F, 0.0F));
-        PartDefinition bottom_4 = bottom_3.addOrReplaceChild("bottom_4", CubeListBuilder.create().texOffs(0, 14).addBox(-3.5F, -1.0F, -8.0F, 7.0F, 2.0F, 16.0F), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 3.141593F, 1.570796F, 3.141593F));
+        PartDefinition bottom_4 = bottom_3.addOrReplaceChild("bottom_4", CubeListBuilder.create().texOffs(0, 14).addBox(-3.5F, -1.0F, -8.0F, 7.0F, 2.0F, 16.0F), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, 1.570796F, 0.0F));
         return LayerDefinition.create(mesh, 64, 32);
     }
     private static LayerDefinition model_cat_tower() {
@@ -79,7 +79,7 @@ public final class CatsDogsNativeModelLayers {
         PartDefinition box_one__door = box_one_1.addOrReplaceChild("box_one__door", CubeListBuilder.create().texOffs(15, 40).addBox(-0.5F, -1.0F, -3.5F, 1.0F, 2.0F, 7.0F), PartPose.offsetAndRotation(9.0F, 0.0F, -3.0F, 1.570796F, 0.0F, 0.0F));
         PartDefinition box_one__door2 = box_one__door.addOrReplaceChild("box_one__door2", CubeListBuilder.create().texOffs(24, 42).addBox(-0.5F, -1.0F, -3.5F, 1.0F, 2.0F, 7.0F), PartPose.offsetAndRotation(0.0F, 6.0F, 0.000001F, 0.0F, 0.0F, 0.0F));
         PartDefinition box_one__door3 = box_one__door.addOrReplaceChild("box_one__door3", CubeListBuilder.create().texOffs(33, 19).addBox(-0.5F, -2.0F, -1.0F, 1.0F, 4.0F, 2.0F), PartPose.offsetAndRotation(0.0F, 3.0F, 2.5F, 0.0F, 0.0F, 0.0F));
-        PartDefinition box_one__door_2 = box_one_1.addOrReplaceChild("box_one__door_2", CubeListBuilder.create().texOffs(27, 33).addBox(-0.5F, -1.0F, -3.5F, 1.0F, 2.0F, 7.0F), PartPose.offsetAndRotation(1.0F, 0.0F, -4.5F, 3.141593F, 1.570796F, 3.141593F));
+        PartDefinition box_one__door_2 = box_one_1.addOrReplaceChild("box_one__door_2", CubeListBuilder.create().texOffs(27, 33).addBox(-0.5F, -1.0F, -3.5F, 1.0F, 2.0F, 7.0F), PartPose.offsetAndRotation(1.0F, 0.0F, -4.5F, 1.570796F, 1.570796F, 0.0F));
         PartDefinition box_one__door2_2 = box_one__door_2.addOrReplaceChild("box_one__door2_2", CubeListBuilder.create().texOffs(24, 51).addBox(-0.5F, -1.0F, -3.5F, 1.0F, 2.0F, 7.0F), PartPose.offsetAndRotation(0.0F, 6.5F, 0.0F, 0.0F, 0.0F, 0.0F));
         PartDefinition box_one__door4 = box_one__door_2.addOrReplaceChild("box_one__door4", CubeListBuilder.create().texOffs(36, 33).addBox(-0.5F, -2.5F, -1.0F, 1.0F, 5.0F, 2.0F), PartPose.offsetAndRotation(0.0F, 3.25F, 2.5F, -0.0F, -0.0F, 0.0F));
         PartDefinition leg1 = base.addOrReplaceChild("leg1", CubeListBuilder.create().texOffs(25, 94).addBox(-1.0F, -15.0F, -1.0F, 2.0F, 30.0F, 2.0F), PartPose.offsetAndRotation(-6.0F, -4.0F, 5.0F, 0.0F, 0.0F, 0.0F));

@@ -13,6 +13,43 @@ SPEC.loader.exec_module(CONVERTER)
 
 
 class CraftStudioConversionTest(unittest.TestCase):
+    @staticmethod
+    def matrix_from_quaternion(qw: float, qx: float, qy: float, qz: float) -> list[list[float]]:
+        return [
+            [1 - 2 * (qy * qy + qz * qz), 2 * (qx * qy - qz * qw), 2 * (qx * qz + qy * qw)],
+            [2 * (qx * qy + qz * qw), 1 - 2 * (qx * qx + qz * qz), 2 * (qy * qz - qx * qw)],
+            [2 * (qx * qz - qy * qw), 2 * (qy * qz + qx * qw), 1 - 2 * (qx * qx + qy * qy)],
+        ]
+
+    @classmethod
+    def craftstudio_matrix(cls, rx: float, ry: float, rz: float) -> list[list[float]]:
+        cx, cy, cz = math.cos(rx / 2), math.cos(ry / 2), math.cos(rz / 2)
+        sx, sy, sz = math.sin(rx / 2), math.sin(ry / 2), math.sin(rz / 2)
+        qw = cx * cy * cz + sx * sy * sz
+        qx = sx * cy * cz + cx * sy * sz
+        qy = cx * sy * cz - sx * cy * sz
+        qz = cx * cy * sz - sx * sy * cz
+        return cls.matrix_from_quaternion(qw, qx, qy, qz)
+
+    @classmethod
+    def modelpart_matrix(cls, rx: float, ry: float, rz: float) -> list[list[float]]:
+        cx, cy, cz = math.cos(rx / 2), math.cos(ry / 2), math.cos(rz / 2)
+        sx, sy, sz = math.sin(rx / 2), math.sin(ry / 2), math.sin(rz / 2)
+        # Quaternionf.rotationZYX(z, y, x), used by ModelPart.
+        qw = cx * cy * cz + sx * sy * sz
+        qx = sx * cy * cz - cx * sy * sz
+        qy = cx * sy * cz + sx * cy * sz
+        qz = cx * cy * sz - sx * sy * cz
+        return cls.matrix_from_quaternion(qw, qx, qy, qz)
+
+    def assert_rotation_preserved(self, source: tuple[float, float, float]) -> None:
+        converted = CONVERTER.legacy_euler_to_modelpart(*source)
+        expected = self.craftstudio_matrix(*source)
+        actual = self.modelpart_matrix(*converted)
+        for expected_row, actual_row in zip(expected, actual):
+            for expected_value, actual_value in zip(expected_row, actual_row):
+                self.assertAlmostEqual(expected_value, actual_value, places=6)
+
     def test_zero_thickness_spoke_is_preserved(self) -> None:
         lines = []
         CONVERTER.emit_node(lines, {
@@ -47,6 +84,18 @@ class CraftStudioConversionTest(unittest.TestCase):
         converted = CONVERTER.legacy_euler_to_modelpart(*raw)
         self.assertNotEqual(tuple(round(value, 6) for value in raw),
                             tuple(round(value, 6) for value in converted))
+        self.assert_rotation_preserved(raw)
+
+    def test_craftstudio_positive_gimbal_rotation_preserves_source_quaternion(self) -> None:
+        source = tuple(math.radians(value) for value in (90, 90, 0))
+        self.assert_rotation_preserved(source)
+        converted = CONVERTER.legacy_euler_to_modelpart(*source)
+        self.assertAlmostEqual(converted[0], math.pi / 2, places=6)
+        self.assertAlmostEqual(converted[1], math.pi / 2, places=6)
+        self.assertAlmostEqual(converted[2], 0.0, places=6)
+
+    def test_craftstudio_negative_gimbal_rotation_preserves_source_quaternion(self) -> None:
+        self.assert_rotation_preserved(tuple(math.radians(value) for value in (35, -90, 0)))
 
     def test_plain_runtime_cube_preserves_negative_y_and_z_extents(self) -> None:
         vertices = CONVERTER.legacy_vertices({

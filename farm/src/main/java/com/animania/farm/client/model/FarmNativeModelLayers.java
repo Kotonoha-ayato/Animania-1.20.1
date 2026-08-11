@@ -41,10 +41,10 @@ public final class FarmNativeModelLayers {
         PartDefinition side2 = side1.addOrReplaceChild("side2", CubeListBuilder.create().texOffs(0, 5).addBox(-0.5F, -1.5F, -4.0F, 1.0F, 3.0F, 8.0F), PartPose.offsetAndRotation(0.157008F, 2.995887F, 0.0F, 0.0F, 0.0F, 0.0F));
         PartDefinition side3 = side1.addOrReplaceChild("side3", CubeListBuilder.create().texOffs(0, 5).addBox(-0.5F, -1.5F, -4.0F, 1.0F, 3.0F, 8.0F), PartPose.offsetAndRotation(0.31F, 5.99F, 0.0F, 0.0F, 0.0F, 0.0F));
         PartDefinition side4 = side1.addOrReplaceChild("side4", CubeListBuilder.create().texOffs(0, 5).addBox(-0.5F, -1.5F, -4.0F, 1.0F, 3.0F, 8.0F), PartPose.offsetAndRotation(0.471023F, 8.987664F, 0.0F, 0.0F, 0.0F, 0.0F));
-        PartDefinition roof1 = hive_main.addOrReplaceChild("roof1", CubeListBuilder.create().texOffs(0, 23).addBox(-0.5F, -1.5F, -3.5F, 1.0F, 3.0F, 7.0F), PartPose.offsetAndRotation(1.0F, -8.0F, 3.0F, 0.562439F, -1.570796F, 0.222959F));
+        PartDefinition roof1 = hive_main.addOrReplaceChild("roof1", CubeListBuilder.create().texOffs(0, 23).addBox(-0.5F, -1.5F, -3.5F, 1.0F, 3.0F, 7.0F), PartPose.offsetAndRotation(1.0F, -8.0F, 3.0F, 0.785398F, -1.570796F, 0.0F));
         PartDefinition roof2 = roof1.addOrReplaceChild("roof2", CubeListBuilder.create().texOffs(1, 24).addBox(-0.5F, -1.5F, -3.0F, 1.0F, 3.0F, 6.0F), PartPose.offsetAndRotation(0.0F, 1.41F, 0.25F, 0.0F, 0.0F, 0.0F));
         PartDefinition roof3 = roof1.addOrReplaceChild("roof3", CubeListBuilder.create().texOffs(0, 23).addBox(-0.5F, -2.0F, -3.0F, 1.0F, 4.0F, 6.0F), PartPose.offsetAndRotation(0.0F, 3.25F, 0.25F, 0.0F, 0.0F, 0.0F));
-        PartDefinition roof4 = hive_main.addOrReplaceChild("roof4", CubeListBuilder.create().texOffs(0, 23).addBox(-0.5F, -1.5F, -3.5F, 1.0F, 3.0F, 7.0F), PartPose.offsetAndRotation(1.0F, -8.0F, -2.99F, 0.562439F, -1.570796F, 0.222959F));
+        PartDefinition roof4 = hive_main.addOrReplaceChild("roof4", CubeListBuilder.create().texOffs(0, 23).addBox(-0.5F, -1.5F, -3.5F, 1.0F, 3.0F, 7.0F), PartPose.offsetAndRotation(1.0F, -8.0F, -2.99F, 0.785398F, -1.570796F, 0.0F));
         PartDefinition roof5 = roof4.addOrReplaceChild("roof5", CubeListBuilder.create().texOffs(0, 24).addBox(-0.5F, -1.5F, -3.0F, 1.0F, 3.0F, 6.0F), PartPose.offsetAndRotation(0.0F, 1.414214F, -0.000002F, 0.0F, 0.0F, 0.0F));
         PartDefinition roof6 = roof4.addOrReplaceChild("roof6", CubeListBuilder.create().texOffs(0, 24).addBox(-0.5F, -2.0F, -3.0F, 1.0F, 4.0F, 6.0F), PartPose.offsetAndRotation(0.0F, 3.25F, 0.25F, 0.0F, 0.0F, 0.0F));
         PartDefinition side5 = hive_main.addOrReplaceChild("side5", CubeListBuilder.create().texOffs(0, 1).addBox(-0.5F, -1.5F, -4.0F, 1.0F, 3.0F, 8.0F), PartPose.offsetAndRotation(5.0F, -5.0F, 0.0F, 0.0F, 0.0F, -0.05236F));
@@ -56,7 +56,7 @@ public final class FarmNativeModelLayers {
         PartDefinition feet3 = feet1.addOrReplaceChild("feet3", CubeListBuilder.create().texOffs(124, 0).addBox(-0.5F, -1.0F, -0.5F, 1.0F, 2.0F, 1.0F), PartPose.offsetAndRotation(10.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F));
         PartDefinition feet4 = feet1.addOrReplaceChild("feet4", CubeListBuilder.create().texOffs(124, 0).addBox(-0.5F, -1.0F, -0.5F, 1.0F, 2.0F, 1.0F), PartPose.offsetAndRotation(0.0F, 0.0F, 8.0F, 0.0F, 0.0F, 0.0F));
         PartDefinition roof7 = hive_main.addOrReplaceChild("roof7", CubeListBuilder.create().texOffs(45, 11).addBox(0.0F, -4.5F, -1.0F, 11.0F, 9.0F, 1.0F), PartPose.offsetAndRotation(-0.4F, -12.5F, 0.0F, -1.570796F, -0.0F, 2.356194F));
-        PartDefinition roof8 = roof7.addOrReplaceChild("roof8", CubeListBuilder.create().texOffs(45, 11).addBox(0.0F, -4.5F, -1.0F, 11.0F, 9.0F, 1.0F), PartPose.offsetAndRotation(-5.500001F, 0.0F, 0.499999F, 0.0F, 1.570796F, 3.141593F));
+        PartDefinition roof8 = roof7.addOrReplaceChild("roof8", CubeListBuilder.create().texOffs(45, 11).addBox(0.0F, -4.5F, -1.0F, 11.0F, 9.0F, 1.0F), PartPose.offsetAndRotation(-5.500001F, 0.0F, 0.499999F, -3.141593F, 1.570796F, 0.0F));
         PartDefinition bee_node1 = root.addOrReplaceChild("bee_node1", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 16.0F, 0.0F, -0.087266F, 0.0F, 0.0F));
         PartDefinition bee_d = bee_node1.addOrReplaceChild("bee_d", CubeListBuilder.create().texOffs(4, 40).addBox(-2.0F, -1.5F, -1.5F, 4.0F, 3.0F, 3.0F), PartPose.offsetAndRotation(9.0F, -4.0F, 0.0F, 0.0F, 1.570796F, 0.0F));
         PartDefinition bee_d_stinger = bee_d.addOrReplaceChild("bee_d_stinger", CubeListBuilder.create().texOffs(2, 43).addBox(-1.0F, -0.5F, -0.5F, 2.0F, 1.0F, 1.0F), PartPose.offsetAndRotation(0.55F, 0.003283F, 0.0F, 0.0F, 0.0F, 0.0F));
@@ -145,7 +145,7 @@ public final class FarmNativeModelLayers {
     private static LayerDefinition model_cart() {
         MeshDefinition mesh = new MeshDefinition();
         PartDefinition root = mesh.getRoot();
-        PartDefinition root_node = root.addOrReplaceChild("root_node", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 23.75F, 0.0F, 3.141593F, 1.570796F, 3.141593F));
+        PartDefinition root_node = root.addOrReplaceChild("root_node", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 23.75F, 0.0F, 0.0F, 1.570796F, 0.0F));
         PartDefinition axle = root_node.addOrReplaceChild("axle", CubeListBuilder.create().texOffs(0, 64).addBox(-0.5F, -0.5F, -15.5F, 1.0F, 1.0F, 31.0F), PartPose.offsetAndRotation(0.0F, -10.5F, 0.0F, 0.0F, 0.0F, 0.0F));
         PartDefinition wheel1 = axle.addOrReplaceChild("wheel1", CubeListBuilder.create().texOffs(0, 3).addBox(-4.5F, -10.5F, -1.5F, 9.0F, 2.0F, 3.0F), PartPose.offsetAndRotation(0.0F, 0.0F, -14.0F, 3.141593F, 0.0F, 3.141593F));
         PartDefinition wheel1m1 = wheel1.addOrReplaceChild("wheel1m1", CubeListBuilder.create().texOffs(0, 3).addBox(-4.5F, -10.5F, -1.5F, 9.0F, 2.0F, 3.0F), PartPose.offsetAndRotation(0.0F, 9.5F, 0.0F, 0.0F, 0.0F, 0.785398F));
@@ -184,7 +184,7 @@ public final class FarmNativeModelLayers {
     private static LayerDefinition model_cart_chest() {
         MeshDefinition mesh = new MeshDefinition();
         PartDefinition root = mesh.getRoot();
-        PartDefinition root_node = root.addOrReplaceChild("root_node", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 23.75F, 0.0F, 3.141593F, 1.570796F, 3.141593F));
+        PartDefinition root_node = root.addOrReplaceChild("root_node", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 23.75F, 0.0F, 0.0F, 1.570796F, 0.0F));
         PartDefinition axle = root_node.addOrReplaceChild("axle", CubeListBuilder.create().texOffs(0, 64).addBox(-0.5F, -0.5F, -15.5F, 1.0F, 1.0F, 31.0F), PartPose.offsetAndRotation(0.0F, -10.5F, 0.0F, 0.0F, 0.0F, 0.0F));
         PartDefinition wheel1 = axle.addOrReplaceChild("wheel1", CubeListBuilder.create().texOffs(0, 3).addBox(-4.5F, -10.5F, -1.5F, 9.0F, 2.0F, 3.0F), PartPose.offsetAndRotation(0.0F, 0.0F, -14.0F, 3.141593F, 0.0F, 3.141593F));
         PartDefinition wheel1m1 = wheel1.addOrReplaceChild("wheel1m1", CubeListBuilder.create().texOffs(0, 3).addBox(-4.5F, -10.5F, -1.5F, 9.0F, 2.0F, 3.0F), PartPose.offsetAndRotation(0.0F, 9.5F, 0.0F, 0.0F, 0.0F, 0.785398F));
@@ -492,7 +492,7 @@ public final class FarmNativeModelLayers {
         PartDefinition pillow = bed.addOrReplaceChild("pillow", CubeListBuilder.create().texOffs(158, 27).addBox(-3.0F, -1.0F, -5.0F, 6.0F, 2.0F, 10.0F), PartPose.offsetAndRotation(12.0F, -5.0F, -0.000001F, 0.0F, -0.0F, 0.0F));
         PartDefinition pillow2 = bed.addOrReplaceChild("pillow2", CubeListBuilder.create().texOffs(156, 39).addBox(-3.5F, -0.5F, -5.5F, 7.0F, 1.0F, 11.0F), PartPose.offsetAndRotation(12.0F, -4.75F, -0.000001F, 0.0F, -0.0F, 0.0F));
         PartDefinition chest = bed.addOrReplaceChild("chest", CubeListBuilder.create().texOffs(195, 27).addBox(-5.0F, -4.5F, -8.0F, 10.0F, 9.0F, 16.0F), PartPose.offsetAndRotation(-22.0F, -1.0F, 0.000001F, 0.0F, -0.0F, 0.0F));
-        PartDefinition latch = chest.addOrReplaceChild("latch", CubeListBuilder.create().texOffs(200, 37).addBox(-1.0F, -1.5F, -0.5F, 2.0F, 3.0F, 1.0F), PartPose.offsetAndRotation(-5.0F, -0.5F, 0.0F, 3.141593F, 1.570796F, 3.141593F));
+        PartDefinition latch = chest.addOrReplaceChild("latch", CubeListBuilder.create().texOffs(200, 37).addBox(-1.0F, -1.5F, -0.5F, 2.0F, 3.0F, 1.0F), PartPose.offsetAndRotation(-5.0F, -0.5F, 0.0F, 0.0F, 1.570796F, 0.0F));
         return LayerDefinition.create(mesh, 256, 128);
     }
 }

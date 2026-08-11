@@ -55,9 +55,20 @@ def legacy_euler_to_modelpart(rx: float, ry: float, rz: float) -> tuple[float, f
     qx = sx * cy * cz + cx * sy * sz
     qy = cx * sy * cz - sx * cy * sz
     qz = cx * cy * sz - sx * sy * cz
-    x = math.atan2(2 * (qw * qx + qy * qz), 1 - 2 * (qx * qx + qy * qy))
     sin_y = max(-1.0, min(1.0, 2 * (qw * qy - qz * qx)))
     y = math.asin(sin_y)
+    # ModelPart uses Quaternionf.rotationZYX(z, y, x).  The ordinary Euler
+    # extraction below loses the x/z relationship at y = +/- 90 degrees;
+    # atan2(0, 0) then selected PI for both axes and split multi-axis legacy
+    # parts apart.  Preserve the source quaternion with a deterministic
+    # singular solution (z = 0) instead.
+    if abs(abs(sin_y) - 1.0) < 1.0e-6:
+        matrix_01 = 2 * (qx * qy - qz * qw)
+        matrix_11 = 1 - 2 * (qx * qx + qz * qz)
+        if sin_y > 0:
+            return math.atan2(matrix_01, matrix_11), math.copysign(math.pi / 2, sin_y), 0.0
+        return math.atan2(-matrix_01, matrix_11), math.copysign(math.pi / 2, sin_y), 0.0
+    x = math.atan2(2 * (qw * qx + qy * qz), 1 - 2 * (qx * qx + qy * qy))
     z = math.atan2(2 * (qw * qz + qx * qy), 1 - 2 * (qy * qy + qz * qz))
     return x, y, z
 
