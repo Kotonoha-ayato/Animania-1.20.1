@@ -1871,6 +1871,9 @@ public final class AnimaniaFarmGameTests {
                     "foodValueOverrides did not replace the registered saturation modifier");
 
             bonusEffects.set(false);
+            player.removeEffect(net.minecraft.world.effect.MobEffects.DAMAGE_BOOST);
+            helper.assertFalse(player.hasEffect(net.minecraft.world.effect.MobEffects.DAMAGE_BOOST),
+                    "food bonus-effect test did not start from an isolated player state");
             ItemStack omelette = new ItemStack(FarmContent.ITEM_ENTRIES.get("bacon_omelette").get());
             omelette.getItem().finishUsingItem(omelette, helper.getLevel(), player);
             helper.assertFalse(player.hasEffect(net.minecraft.world.effect.MobEffects.DAMAGE_BOOST),
