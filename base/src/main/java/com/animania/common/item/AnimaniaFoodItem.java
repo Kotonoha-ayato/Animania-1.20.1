@@ -45,11 +45,8 @@ public class AnimaniaFoodItem extends Item {
             foodBefore = player.getFoodData().getFoodLevel();
             saturationBefore = player.getFoodData().getSaturationLevel();
             if (!AnimaniaConfig.foodsGiveBonusEffects()) {
-                food.getEffects().forEach(pair -> {
-                    MobEffect effect = pair.getFirst().getEffect();
-                    MobEffectInstance previous = player.getEffect(effect);
-                    effectsBefore.put(effect, previous == null ? null : new MobEffectInstance(previous));
-                });
+                player.getActiveEffects().forEach(previous ->
+                        effectsBefore.put(previous.getEffect(), new MobEffectInstance(previous)));
             }
         }
 
@@ -63,10 +60,8 @@ public class AnimaniaFoodItem extends Item {
                 player.getFoodData().setSaturation(targetSaturation);
             }
             if (!AnimaniaConfig.foodsGiveBonusEffects()) {
-                effectsBefore.forEach((effect, previous) -> {
-                    player.removeEffect(effect);
-                    if (previous != null) player.addEffect(previous);
-                });
+                player.removeAllEffects();
+                effectsBefore.values().forEach(player::addEffect);
             }
         }
         // Item.Properties#craftRemainder is otherwise only honored by crafting
