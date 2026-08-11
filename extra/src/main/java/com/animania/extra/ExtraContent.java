@@ -48,7 +48,7 @@ public final class ExtraContent {
         });
         ExtraLegacyIds.ALL.forEach(id -> registerGenericItem("entity_egg_" + id));
         BLOCK_ENTRIES.put("hamster_wheel", HAMSTER_WHEEL);
-        ITEM_ENTRIES.put("hamster_wheel", ITEMS.register("hamster_wheel", () -> new net.minecraft.world.item.BlockItem(HAMSTER_WHEEL.get(), new Item.Properties())));
+        ITEM_ENTRIES.put("hamster_wheel", ITEMS.register("hamster_wheel", () -> new ExtraHamsterWheelItem(new Item.Properties())));
     }
 
     private static void registerGenericItem(String id) {

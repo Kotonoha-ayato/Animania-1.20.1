@@ -1,3 +1,4 @@
 {
-  "parent": "animania_extra:block/hamster_wheel"
+  "parent": "minecraft:builtin/entity",
+  "gui_light": "side"
 }
