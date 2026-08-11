@@ -24,7 +24,7 @@ JAR_NAMES = {
 
 
 def jar_for(root: Path, module: str, version: str) -> Path:
-    candidates = sorted((root / module / "build" / "libs").glob(f"{JAR_NAMES[module]}-*-{version}.jar"))
+    candidates = sorted((root / module / "build" / "release").glob(f"{JAR_NAMES[module]}-*-{version}.jar"))
     candidates = [path for path in candidates if not path.name.endswith("-sources.jar")]
     if len(candidates) != 1:
         raise FileNotFoundError(f"expected one {module} jar, found {len(candidates)}")

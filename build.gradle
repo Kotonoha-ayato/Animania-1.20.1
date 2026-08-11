@@ -23,7 +23,8 @@ tasks.register('releaseBuild') {
     // can otherwise produce a JAR that fails at mod construction with a
     // NoSuchMethodError/NoSuchFieldError.
     dependsOn ':base:build', ':farm:build', ':extra:build', ':catsdogs:build', ':config-migrator:build',
-            ':base:reobfJar', ':farm:reobfJar', ':extra:reobfJar', ':catsdogs:reobfJar'
+            ':base:verifyProductionJar', ':farm:verifyProductionJar', ':extra:verifyProductionJar',
+            ':catsdogs:verifyProductionJar'
 }
 
 tasks.register('runDataAll') {

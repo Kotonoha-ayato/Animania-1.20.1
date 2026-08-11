@@ -92,7 +92,8 @@ def main() -> None:
     missing = []
     content_errors = []
     for name in EXPECTED:
-        candidates = sorted((args.root / name.removeprefix("animania-") / "build" / "libs").glob(f"{name}-*.jar"))
+        module_root = args.root / name.removeprefix("animania-") / "build"
+        candidates = sorted((module_root / "release").glob(f"{name}-*.jar"))
         candidates = [path for path in candidates if not path.name.endswith("-sources.jar") and args.version in path.name]
         if not candidates:
             missing.append(name)
@@ -101,7 +102,7 @@ def main() -> None:
         digest = sha256(jar)
         sha_file = jar.with_suffix(jar.suffix + ".sha256")
         sha_file.write_text(f"{digest}  {jar.name}\n", encoding="utf-8")
-        source_candidates = sorted((jar.parent).glob(f"{name}-*-sources.jar"))
+        source_candidates = sorted((module_root / "libs").glob(f"{name}-*-sources.jar"))
         source_candidates = [path for path in source_candidates if args.version in path.name]
         if not source_candidates:
             missing.append(f"{name}-sources")

@@ -171,6 +171,25 @@ tasks.named('jar', Jar).configure {
 // hold the Base JAR while another task tries to replace it on Windows.
 tasks.named('build').configure { dependsOn 'reobfJar' }
 
+// build/libs is a development artifact and can be recreated with Mojang-
+// mapped symbols by later userdev/GameTest tasks. Release consumers must only
+// receive the immutable output of ForgeGradle's reobfuscation task.
+tasks.register('stageReleaseJar', Copy) {
+    dependsOn 'reobfJar'
+    from(layout.buildDirectory.file('reobfJar/output.jar'))
+    into(layout.buildDirectory.dir('release'))
+    rename { tasks.named('jar', Jar).get().archiveFileName.get() }
+}
+
+tasks.register('verifyProductionJar', Exec) {
+    dependsOn 'stageReleaseJar'
+    def releaseName = tasks.named('jar', Jar).flatMap { it.archiveFileName }
+    def releaseJar = layout.buildDirectory.file(releaseName.map { "release/${it}" })
+    inputs.file(releaseJar)
+    commandLine 'python', rootProject.file('tools/audit_production_bytecode.py').absolutePath,
+            '--jar', releaseJar.get().asFile.absolutePath
+}
+
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
     options.release = 17
