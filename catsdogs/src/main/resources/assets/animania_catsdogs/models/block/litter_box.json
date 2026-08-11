@@ -1,6 +1,5 @@
 {
-  "parent": "minecraft:block/cube_all",
   "textures": {
-    "all": "animania_catsdogs:block/litter_box"
+    "particle": "animania_catsdogs:block/litter_box"
   }
 }

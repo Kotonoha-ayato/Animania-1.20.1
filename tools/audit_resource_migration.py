@@ -233,23 +233,22 @@ def prove(root: Path, entry: dict[str, Any]) -> tuple[Proof | None, str]:
 
     # Two 1.12 model JSONs intentionally referenced the stone placeholder.  In
     # 1.20.1 they are semantic model fixes, not byte-for-byte data migrations:
-    # the salt lick resolves its preserved block texture and the fancy egg
-    # resolves the animated egg item renderer's real preview texture.
+    # the salt lick is rendered only by its native block entity and the fancy
+    # egg resolves the animated egg item renderer's real preview texture.
     if (module == "base" and resource_type == "json"
             and resource_id.endswith("assets/animania/models/block/salt_lick.json")):
         try:
             actual = json.loads(target.read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError) as exc:
             return None, f"salt lick model is invalid JSON: {exc}"
-        expected = {"parent": "minecraft:block/cube_all",
-                    "textures": {"all": "animania:block/salt_lick", "particle": "animania:block/salt_lick"}}
+        expected = {"textures": {"particle": "animania:block/salt_lick"}}
         if actual != expected:
-            return None, "salt lick model does not resolve the preserved modern texture"
+            return None, "salt lick model does not suppress duplicate block geometry"
         texture = root / "base/src/main/resources/assets/animania/textures/block/salt_lick.png"
         if not texture.exists():
             return None, "salt lick texture is missing"
         return Proof(target, "intentional-modern-model-replacement",
-                     "Legacy stone placeholder is replaced by the preserved Animania salt-lick texture.", (texture,)), ""
+                     "Legacy stone placeholder is replaced by the native block-entity model while preserving break particles.", (texture,)), ""
 
     if (module == "base" and resource_type == "json"
             and resource_id.endswith("assets/animania/models/item/fancy_egg.json")):

@@ -1,6 +1,5 @@
 {
-  "parent": "minecraft:block/cube_all",
   "textures": {
-    "all": "animania_farm:block/bee_hive"
+    "particle": "animania_farm:block/bee_hive"
   }
 }
