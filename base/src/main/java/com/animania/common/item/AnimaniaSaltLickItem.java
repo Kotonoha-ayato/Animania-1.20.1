@@ -25,11 +25,13 @@ public final class AnimaniaSaltLickItem extends BlockItem {
     }
 
     public static int remainingUses(int damage, int maximum) {
-        return SaltLickDurability.remainingUses(damage, maximum);
+        int safeMaximum = Math.max(1, maximum);
+        return safeMaximum - Math.max(0, Math.min(safeMaximum, damage));
     }
 
     public static int damageForRemainingUses(int uses, int maximum) {
-        return SaltLickDurability.damageForRemainingUses(uses, maximum);
+        int safeMaximum = Math.max(1, maximum);
+        return safeMaximum - Math.max(0, Math.min(safeMaximum, uses));
     }
 
     @Override

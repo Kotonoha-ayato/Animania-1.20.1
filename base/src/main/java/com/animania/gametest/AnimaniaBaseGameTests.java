@@ -246,13 +246,15 @@ public final class AnimaniaBaseGameTests {
         helper.assertTrue(before == lick.usesLeft(), "unused salt lick changed durability");
         int maximum = AnimaniaSaltLickItem.configuredMaxUses();
         ItemStack partlyUsed = new ItemStack(AnimaniaBlocks.SALT_LICK.get().asItem());
-        partlyUsed.setDamageValue(20);
+        // Six reproduces the client crash report's first-use value. This call
+        // must not trigger a late helper-class load from the installed JAR.
+        partlyUsed.setDamageValue(6);
         ((AnimaniaSaltLickBlock) AnimaniaBlocks.SALT_LICK.get()).setPlacedBy(
                 helper.getLevel(), pos, helper.getLevel().getBlockState(pos), null, partlyUsed);
-        helper.assertTrue(lick.usesLeft() == maximum - 20, "placed salt lick lost its item damage/remaining-use state");
+        helper.assertTrue(lick.usesLeft() == maximum - 6, "placed salt lick lost its item damage/remaining-use state");
         helper.assertTrue(partlyUsed.getItem() instanceof AnimaniaSaltLickItem item
                         && item.isBarVisible(partlyUsed)
-                        && item.getBarWidth(partlyUsed) == Math.round(13.0F * (maximum - 20) / maximum),
+                        && item.getBarWidth(partlyUsed) == Math.round(13.0F * (maximum - 6) / maximum),
                 "salt lick durability bar did not use the configured maximum");
         lick.setUsesLeft(125);
         AnimaniaSaltLickBlockEntity loaded = new AnimaniaSaltLickBlockEntity(
