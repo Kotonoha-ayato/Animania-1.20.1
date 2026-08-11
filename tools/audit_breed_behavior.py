@@ -14,6 +14,13 @@ import shutil
 from pathlib import Path
 
 from closure_common import SCHEMA_VERSION, sha256, write_json
+from audit_special_breed_colors import (
+    FEATURES as SPECIAL_COLOR_FEATURES,
+    TARGET as COLOR_TARGET,
+    TEST_CODE as COLOR_TEST_CODE,
+    TEST_METHOD as COLOR_TEST_METHOD,
+    TEST_XML as COLOR_TEST_XML,
+)
 
 
 MODULE = {
@@ -145,18 +152,42 @@ def main() -> None:
         for path in (cfg["ids"], cfg["test"]):
             absolute = root / path
             target_paths.append({"path": path, "sha256": sha256(absolute)})
+        tests = [{"selector": selector, "result": "pass",
+                  "artifact": cfg["log"], "artifact_sha256": sha256(log_file)} for selector in selectors]
+        notes = ["Every child ID referenced by this legacy wrapper/type source has an independent runtime marker in the green breed GameTest loop."]
+        special_ids = SPECIAL_COLOR_FEATURES.get(entry["source"])
+        if special_ids:
+            color_test = root / COLOR_TEST_CODE
+            color_xml = root / COLOR_TEST_XML
+            color_target = root / COLOR_TARGET
+            color_text = color_test.read_text(encoding="utf-8", errors="replace") if color_test.is_file() else ""
+            xml_text = color_xml.read_text(encoding="utf-8", errors="replace") if color_xml.is_file() else ""
+            if (not color_target.is_file() or COLOR_TEST_METHOD not in color_text
+                    or 'failures="0"' not in xml_text or 'errors="0"' not in xml_text
+                    or any(identifier not in xml_text for identifier in special_ids)):
+                skipped.append({"source": entry["source"], "reason": "exact breed-color prerequisite is not green"})
+                continue
+            target_paths.extend([
+                {"path": COLOR_TARGET, "sha256": sha256(color_target)},
+                {"path": COLOR_TEST_CODE, "sha256": sha256(color_test)},
+                {"path": "tools/audit_special_breed_colors.py",
+                 "sha256": sha256(root / "tools/audit_special_breed_colors.py")},
+            ])
+            tests.extend({"selector": f"LegacyEggColorsTest#{COLOR_TEST_METHOD}[{identifier}]",
+                          "result": "pass", "artifact": COLOR_TEST_XML,
+                          "artifact_sha256": sha256(color_xml)} for identifier in special_ids)
+            notes.append("The same owner also binds the green per-ID legacy egg-color regression for this special breed.")
         results.append({
             "entry_id": entry["entry_id"],
             "requirement_id": "behavior",
             "result": "pass",
             "source_sha256": entry["sha256"],
             "target_paths": target_paths,
-            "tests": [{"selector": selector, "result": "pass",
-                        "artifact": cfg["log"], "artifact_sha256": sha256(log_file)} for selector in selectors],
+            "tests": tests,
             "evidence_kind": "executed_test",
             "test_code_path": cfg["test"],
             "test_code_sha256": sha256(test_file),
-            "notes": ["Every child ID referenced by this legacy wrapper/type source has an independent runtime marker in the green breed GameTest loop."],
+            "notes": notes,
         })
 
     report_path = evidence_dir / "breed-behavior-v1-report.json"

@@ -72,18 +72,13 @@ def main() -> None:
         tests = [{"selector": f"LegacyEggColorsTest#{TEST_METHOD}[{id_}]", "result": "pass",
                   "artifact": TEST_XML, "artifact_sha256": sha256(xml_file)} for id_ in ids]
         notes = [f"[special-breed-colors-v1] {source}: one parameterized JUnit selector executed independently for every legacy role ID {ids}; target LegacyEggColors preserves the 1.12 constants."]
-        # Breed behavior ownership stays with the parameterized breed auditor
-        # when that source has a child-transition selector.  This auditor owns
-        # only the exact color/implementation contract, avoiding duplicate
-        # requirement ownership in the central writer.
-        for requirement in ["implementation"]:
-            results.append({"entry_id": entry["entry_id"], "requirement_id": requirement,
-                            "result": "pass", "source_sha256": entry["sha256"],
-                            "target_paths": target_paths, "tests": tests,
-                            "evidence_kind": "executed_test", "test_code_path": TEST_CODE,
-                            "test_code_sha256": sha256(test_file), "notes": notes})
+        # This audit is a required read-only prerequisite for the breed
+        # behavior owner. It emits no competing closure record; the breed
+        # manifest binds these exact per-ID results into its single behavior
+        # requirement record.
         rows.append({"source": source, "ids": ids, "selector": TEST_METHOD,
-                     "requirements": entry.get("requirements", []), "result": "pass"})
+                     "requirements": ["behavior"], "result": "pass",
+                     "target_paths": target_paths, "tests": tests, "notes": notes})
     write_json(evidence_dir / "special-breed-colors-v1-report.json", {
         "schema_version": 1, "audit": "special-breed-colors", "audit_version": "v1",
         "rows": rows, "skipped": skipped, "errors": errors, "error_count": len(errors),

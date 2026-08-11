@@ -25,7 +25,7 @@ FEATURES = [
         ],
         "test_code": "extra/src/main/java/com/animania/extra/gametest/AnimaniaExtraGameTests.java",
         "selector": "animania_extra:hamster_carry_server_round_trip",
-        "log": "base/run/gametestserver/logs/latest.log",
+        "log": "base/run/gameTestServer/logs/latest.log",
         "notes": ["server-authoritative carrier state and native first/third-person renderer path"],
     },
     {
@@ -73,7 +73,7 @@ FEATURES = [
         "target": ["base/src/main/java/com/animania/common/entity/goal/AnimaniaHerdedByGermanShepherdGoal.java"],
         "test_code": "base/src/main/java/com/animania/gametest/AnimaniaBaseGameTests.java",
         "selector": "animania:germanShepherdHerdsFarmRuminantsWhenAllAddonsAreInstalled",
-        "log": "base/run/gametestserver/logs/latest.log",
+        "log": "base/run/gameTestServer/logs/latest.log",
         "notes": ["full-install integration selects a nearby tamed, non-sitting German shepherd"],
     },
 ]
@@ -154,12 +154,8 @@ def main() -> None:
             "test_code_sha256": sha256(test_file),
             "notes": feature["notes"],
         }
-        # The same selector is deliberately recorded as two separate
-        # requirement results when the legacy entry requires both domains:
-        # the test exercises the concrete target, while the central writer
-        # still demands every remaining requirement independently.
-        if "implementation" in entry.get("requirements", []):
-            results.append({**common, "requirement_id": "implementation", "evidence_kind": "executed_test"})
+        # Implementation ownership belongs to the source-to-ID mapping
+        # auditor. This runtime auditor owns only the behavior requirement.
         results.append({**common, "requirement_id": "behavior", "evidence_kind": "executed_test"})
 
     evidence_dir.mkdir(parents=True, exist_ok=True)

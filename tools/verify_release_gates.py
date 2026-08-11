@@ -75,7 +75,7 @@ def unit_reports(root: Path) -> tuple[bool, list[str], str]:
 
 def gametest_reports(root: Path) -> tuple[bool, list[str], str]:
     logs = {
-        "base": root / "base/run/gametestserver/logs/latest.log",
+        "base": root / "base/run/gameTestServer/logs/latest.log",
         "farm": root / "farm/run/gameTestServer/logs/latest.log",
         "extra": root / "extra/run/gameTestServer/logs/latest.log",
         "catsdogs": root / "catsdogs/run/gameTestServer/logs/latest.log",

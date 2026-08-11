@@ -103,6 +103,22 @@ class ClosureProtocolTest(unittest.TestCase):
             _, errors = validate_evidence(ROOT, self.matrix, evidence_dir)
         self.assertTrue(any("non-passing evidence result" in error for error in errors), errors)
 
+    def test_two_registered_auditors_cannot_own_one_requirement(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            evidence_dir = Path(directory)
+            first = self._manifest(self.resources[:1])
+            second = copy.deepcopy(first)
+            second_path = "tools/audit_manual_semantics.py"
+            second["audit_id"] = "manual-semantics"
+            second["auditor_path"] = second_path
+            second["auditor_sha256"] = sha256(ROOT / second_path)
+            second["results"][0]["test_code_path"] = second_path
+            second["results"][0]["test_code_sha256"] = sha256(ROOT / second_path)
+            write_json(evidence_dir / "first.json", first)
+            write_json(evidence_dir / "second.json", second)
+            _, errors = validate_evidence(ROOT, self.matrix, evidence_dir)
+        self.assertTrue(any("duplicate requirement evidence" in error for error in errors), errors)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

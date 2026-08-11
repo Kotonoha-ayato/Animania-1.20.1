@@ -69,14 +69,16 @@ def main() -> None:
         tests = [{"selector": SELECTOR, "result": "pass", "artifact": LOG,
                   "artifact_sha256": sha256(log_file)}]
         notes = [f"[farm-child-growth-behavior-v1] {source}: dedicated iteration covers all registered {label}, verifies the 1.12 family prefix and care-gated adult registry transition."]
-        for requirement in entry.get("requirements", []):
+        owned_requirements = [requirement for requirement in entry.get("requirements", [])
+                              if requirement != "implementation"]
+        for requirement in owned_requirements:
             results.append({"entry_id": entry["entry_id"], "requirement_id": requirement,
                             "result": "pass", "source_sha256": entry["sha256"],
                             "target_paths": targets, "tests": tests,
                             "evidence_kind": "executed_test", "test_code_path": TEST_CODE,
                             "test_code_sha256": sha256(test_file), "notes": notes})
         rows.append({"source": source, "family_prefix": prefix, "selector": SELECTOR,
-                     "requirements": entry.get("requirements", []), "result": "pass"})
+                     "requirements": owned_requirements, "result": "pass"})
     write_json(evidence_dir / "farm-child-growth-behavior-v1-report.json", {
         "schema_version": 1, "audit": "farm-child-growth-behavior", "audit_version": "v1",
         "rows": rows, "skipped": skipped, "errors": errors, "error_count": len(errors),

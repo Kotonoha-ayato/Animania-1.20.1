@@ -135,7 +135,7 @@ def main() -> None:
     matrix = read_json(matrix_path)
     auditor_path = "tools/audit_animal_family_implementation.py"
     common_entity = root / COMMON_ENTITY
-    results, errors, rows = [], [], []
+    results, errors, rows, skipped = [], [], [], []
     ids_by_module = {module: legacy_ids(root / spec["ids"]) for module, spec in MODULES.items()}
     for module, spec in MODULES.items():
         needed = (root / spec["registry"], root / spec["test"], root / spec["log"], common_entity)
@@ -150,7 +150,7 @@ def main() -> None:
             continue
         ids = family_ids(module, source, ids_by_module[module])
         if not ids:
-            errors.append(f"{module}: no explicit ID family mapping for {source}")
+            skipped.append({"source": source, "reason": "not a species-family class owned by this auditor"})
             continue
         spec = MODULES[module]
         upstream = root / "upstream/Animania-1.12" / source
@@ -198,7 +198,7 @@ def main() -> None:
     evidence_dir.mkdir(parents=True, exist_ok=True)
     write_json(evidence_dir / "animal-family-implementation-v1-report.json", {
         "schema_version": 1, "audit": "animal-family-implementation", "audit_version": "v1",
-        "rows": rows, "errors": errors, "error_count": len(errors),
+        "rows": rows, "skipped": skipped, "errors": errors, "error_count": len(errors),
     })
     write_json(evidence_dir / "animal-family-implementation-v1.json", {
         "schema_version": SCHEMA_VERSION, "audit_id": "animal-family-implementation", "audit_version": "v1",
@@ -207,7 +207,7 @@ def main() -> None:
         "auditor_path": auditor_path, "auditor_sha256": sha256(root / auditor_path),
         "results": results, "errors": errors,
     })
-    print(json.dumps({"results": len(results), "rows": len(rows), "errors": errors}, ensure_ascii=False, indent=2))
+    print(json.dumps({"results": len(results), "rows": len(rows), "skipped": len(skipped), "errors": errors}, ensure_ascii=False, indent=2))
     if errors:
         raise SystemExit(1)
 

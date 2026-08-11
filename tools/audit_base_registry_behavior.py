@@ -10,7 +10,7 @@ from closure_common import SCHEMA_VERSION, read_json, sha256, write_json
 
 
 TEST_CODE = "base/src/main/java/com/animania/gametest/AnimaniaBaseGameTests.java"
-LOG = "base/run/gametestserver/logs/latest.log"
+LOG = "base/run/gameTestServer/logs/latest.log"
 FEATURES = [
     {
         "source": "src/main/java/com/animania/common/ModSoundEvents.java",
