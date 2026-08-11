@@ -38,7 +38,7 @@ public final class CatsDogsPetFacilityRenderer implements BlockEntityRenderer<Ca
         pose.mulPose(Axis.YP.rotationDegrees(entity.getBlockState()
                 .getValue(HorizontalDirectionalBlock.FACING).toYRot()));
         ResourceLocation texture = new ResourceLocation("animania_catsdogs", "textures/entity/tileentities/" + id + ".png");
-        model.render(pose, buffers.getBuffer(RenderType.entityCutout(texture)), packedLight, OverlayTexture.NO_OVERLAY);
+        model.render(pose, buffers.getBuffer(RenderType.entityCutoutNoCull(texture)), packedLight, OverlayTexture.NO_OVERLAY);
         pose.popPose();
     }
 }

@@ -39,7 +39,7 @@ public final class ExtraHamsterWheelRenderer implements BlockEntityRenderer<Extr
         pose.translate(0.5D, 1.5D, 0.5D);
         pose.scale(1.0F, -1.0F, -1.0F);
         pose.mulPose(Axis.YP.rotationDegrees(entity.getBlockState().getValue(ExtraHamsterWheelBlock.FACING).toYRot()));
-        wheel.render(pose, buffers.getBuffer(RenderType.entityCutout(WHEEL_TEXTURE)), packedLight, OverlayTexture.NO_OVERLAY);
+        wheel.render(pose, buffers.getBuffer(RenderType.entityCutoutNoCull(WHEEL_TEXTURE)), packedLight, OverlayTexture.NO_OVERLAY);
         if (entity.isRunning()) {
             pose.pushPose();
             pose.scale(0.5F, 0.5F, 0.5F);

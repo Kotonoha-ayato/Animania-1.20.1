@@ -179,6 +179,15 @@ def legacy_texture_rects(node: dict) -> list[list[int]]:
     ]
 
 
+def legacy_faces_flipped(vertices: list[list[float]]) -> bool:
+    """Reproduce CSModelBox.checkBlockForShadow's three parity flips."""
+    flips = 0
+    if vertices[1][0] - vertices[0][0] < 0: flips += 1
+    if vertices[3][1] - vertices[0][1] > 0: flips += 1
+    if vertices[4][2] - vertices[0][2] > 0: flips += 1
+    return flips % 2 == 1
+
+
 def java_float_matrix(values: list[list[float]]) -> str:
     rows = ", ".join("{" + ", ".join(fl(value) for value in row) + "}" for row in values)
     return "new float[][]{" + rows + "}"
@@ -212,11 +221,13 @@ def emit_runtime_node(lines: list[str], node: dict, is_root: bool, width: int, h
     child_map = "Map.of()" if not children else "Map.ofEntries(" + ", ".join(
         f'Map.entry("{child_name}", {child_var})' for child_name, child_var in children) + ")"
     variable = f"part_{len(used)}_{name}"
-    vertices = java_float_matrix(legacy_vertices(node))
+    raw_vertices = legacy_vertices(node)
+    vertices = java_float_matrix(raw_vertices)
     rects = java_int_matrix(legacy_texture_rects(node))
     pose = f"PartPose.offsetAndRotation({', '.join(fl(value) for value in position + rotation)})"
     lines.append(f"        ModelPart {variable} = LegacyMeshModel.part({pose},")
-    lines.append(f"                new LegacyMeshCube({vertices}, {rects}, {width}, {height}), {child_map});")
+    flipped = str(legacy_faces_flipped(raw_vertices)).lower()
+    lines.append(f"                new LegacyMeshCube({vertices}, {rects}, {width}, {height}, {flipped}), {child_map});")
     return name, variable
 
 

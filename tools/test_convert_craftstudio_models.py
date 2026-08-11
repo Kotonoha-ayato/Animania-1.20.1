@@ -68,6 +68,16 @@ class CraftStudioConversionTest(unittest.TestCase):
         self.assertEqual(rectangles[0], [24, 30, 18, 26])
         self.assertEqual(rectangles[5], [18, 30, 16, 26])
 
+    def test_legacy_shadow_check_flips_reversed_custom_winding(self) -> None:
+        normal = [[0.0, 0.0, 0.0] for _ in range(8)]
+        normal[1][0] = 1.0
+        normal[3][1] = -1.0
+        normal[4][2] = -1.0
+        self.assertFalse(CONVERTER.legacy_faces_flipped(normal))
+        reversed_x = [row[:] for row in normal]
+        reversed_x[1][0] = -1.0
+        self.assertTrue(CONVERTER.legacy_faces_flipped(reversed_x))
+
     def test_parent_offset_is_inherited_by_child_pivot(self) -> None:
         lines = []
         CONVERTER.emit_runtime_node(lines, {

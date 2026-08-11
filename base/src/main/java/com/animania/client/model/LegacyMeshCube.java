@@ -17,8 +17,9 @@ public final class LegacyMeshCube extends ModelPart.Cube {
     private final int[][] textureRects;
     private final float textureWidth;
     private final float textureHeight;
+    private final boolean flipped;
 
-    public LegacyMeshCube(float[][] vertices, int[][] textureRects, int textureWidth, int textureHeight) {
+    public LegacyMeshCube(float[][] vertices, int[][] textureRects, int textureWidth, int textureHeight, boolean flipped) {
         super(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, false,
                 textureWidth, textureHeight, Set.of());
         if (vertices.length != 8 || textureRects.length != 6) {
@@ -28,6 +29,7 @@ public final class LegacyMeshCube extends ModelPart.Cube {
         this.textureRects = textureRects;
         this.textureWidth = textureWidth;
         this.textureHeight = textureHeight;
+        this.flipped = flipped;
     }
 
     @Override
@@ -35,7 +37,9 @@ public final class LegacyMeshCube extends ModelPart.Cube {
                         float red, float green, float blue, float alpha) {
         for (int face = 0; face < FACE_VERTICES.length; face++) {
             int[] indices = FACE_VERTICES[face];
-            float[] p0 = vertices[indices[0]], p1 = vertices[indices[1]], p2 = vertices[indices[2]];
+            float[] p0 = vertices[indices[flipped ? 3 : 0]];
+            float[] p1 = vertices[indices[flipped ? 2 : 1]];
+            float[] p2 = vertices[indices[flipped ? 1 : 2]];
             Vector3f edgeA = new Vector3f(p1[0] - p0[0], p1[1] - p0[1], p1[2] - p0[2]);
             Vector3f edgeB = new Vector3f(p2[0] - p1[0], p2[1] - p1[1], p2[2] - p1[2]);
             Vector3f normal = edgeA.cross(edgeB);
@@ -47,11 +51,12 @@ public final class LegacyMeshCube extends ModelPart.Cube {
                     {uv[0] / textureWidth, uv[3] / textureHeight}, {uv[2] / textureWidth, uv[3] / textureHeight}
             };
             for (int corner = 0; corner < 4; corner++) {
-                float[] source = vertices[indices[corner]];
+                int sourceCorner = flipped ? 3 - corner : corner;
+                float[] source = vertices[indices[sourceCorner]];
                 Vector4f position = pose.pose().transform(new Vector4f(source[0] / 16.0F, source[1] / 16.0F,
                         source[2] / 16.0F, 1.0F));
                 consumer.vertex(position.x(), position.y(), position.z(), red, green, blue, alpha,
-                        mappedUv[corner][0], mappedUv[corner][1], overlay, light,
+                        mappedUv[sourceCorner][0], mappedUv[sourceCorner][1], overlay, light,
                         normal.x(), normal.y(), normal.z());
             }
         }
