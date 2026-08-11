@@ -34,7 +34,7 @@ public final class AnimaniaHamsterBallItem extends Item {
     @Override
     public String getDescriptionId(ItemStack stack) {
         if (!colored) return "item.animania.hamster_ball_clear";
-        String colorName = DyeColor.byId(color(stack)).getName();
+        String colorName = legacyDye(color(stack)).getName();
         // Animania 1.12 used "silver" for vanilla's modern light_gray dye.
         if ("light_gray".equals(colorName)) colorName = "silver";
         return "item.animania.hamster_ball_" + colorName;
@@ -55,7 +55,12 @@ public final class AnimaniaHamsterBallItem extends Item {
     public int tintColor(ItemStack stack, int tintIndex) {
         if (tintIndex != 0) return 0xFFFFFFFF;
         if (!colored) return 0xFFFFFFFF;
-        return 0xFF000000 | DyeColor.byId(color(stack)).getFireworkColor();
+        return 0xFF000000 | legacyDye(color(stack)).getFireworkColor();
+    }
+
+    /** 1.12 stored dye-damage order, which is the reverse of modern dye IDs. */
+    static DyeColor legacyDye(int legacyColor) {
+        return DyeColor.byId(15 - clamp(legacyColor));
     }
 
     private static int clamp(int color) {
