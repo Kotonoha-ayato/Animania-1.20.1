@@ -80,6 +80,7 @@ public final class LegacyAnimalModel extends HierarchicalModel<AnimaniaAnimalEnt
             showPrivateParts = false;
         }
         for (ModelPart part : privateParts) part.visible = showPrivateParts;
+        if (entity.isPigAnimal()) applyPigRestPose(entity.registryPath(), showPrivateParts);
         if (petAnimation.active() && petLookPart != null && !entity.isSleeping()
                 && (petAnimation.lookWhileSitting() || !entity.isSitting())) {
             petLookPart.xRot = headPitch * petAnimation.pitchScale() + petAnimation.pitchOffset();
@@ -102,7 +103,9 @@ public final class LegacyAnimalModel extends HierarchicalModel<AnimaniaAnimalEnt
                         * Mth.sin(ageInTicks * 3.141593F * 0.03F * 0.05F)
                         * 0.15F * 3.141593F;
                 tails.forEach(part -> part.yRot += tailYaw);
-            } else {
+            } else if (!entity.isPigAnimal()) {
+                // Pig tails are an authored curled rest-pose in the legacy
+                // models, not the generic idle-tail animation.
                 tails.forEach(part -> part.yRot += Mth.sin(ageInTicks * 0.12F) * 0.18F);
             }
         }
@@ -181,8 +184,51 @@ public final class LegacyAnimalModel extends HierarchicalModel<AnimaniaAnimalEnt
         }
     }
 
-    private ModelPart child(String name) {
-        return root.hasChild(name) ? root.getChild(name) : null;
+    /**
+     * Restores the constant pose that the 1.12 pig Java models assigned from
+     * {@code setRotationAngles}.  It is deliberately applied after resetPose:
+     * those models did not store this pose in their constructors, so baking
+     * the geometry alone leaves every pig body upright.
+     */
+    private void applyPigRestPose(String id, boolean showPrivateParts) {
+        boolean piglet = id.startsWith("piglet_");
+        boolean largeBlack = id.endsWith("large_black");
+        setRotation(child("body"), Mth.HALF_PI, 0.0F, 0.0F);
+
+        float earX = largeBlack ? 0.5235987F : -0.2617994F;
+        float earY = largeBlack ? 0.5235987F : 0.3490658F;
+        float earZ = largeBlack ? 0.8726646F : 0.6981317F;
+        for (String name : new String[]{"ear1", "ear1a", "ear1b"})
+            setRotation(child("head/" + name), earX, earY, earZ);
+        for (String name : new String[]{"ear2", "ear2a", "ear2b"})
+            setRotation(child("head/" + name), earX, -earY, -earZ);
+
+        if (piglet) {
+            setRotation(child("tail1/tail1a"), 1.5F, 1.5F, 0.0F);
+            return;
+        }
+
+        setRotation(child("tail1"), 0.1409582F, 0.2046205F, 0.0F);
+        setRotation(child("tail1/tail1a"), 1.429837F, -2.936972F, -Mth.PI);
+        for (int number = 1; number <= 6; number++)
+            setRotation(child("nipple" + number), Mth.HALF_PI, 0.0F, 0.0F);
+        if (showPrivateParts) setRotation(child("block_a"), 0.2617994F, 0.0F, 0.0F);
+    }
+
+    private ModelPart child(String path) {
+        ModelPart current = root;
+        for (String segment : path.split("/")) {
+            if (!current.hasChild(segment)) return null;
+            current = current.getChild(segment);
+        }
+        return current;
+    }
+
+    private static void setRotation(ModelPart part, float xRot, float yRot, float zRot) {
+        if (part == null) return;
+        part.xRot = xRot;
+        part.yRot = yRot;
+        part.zRot = zRot;
     }
 
     @Override
