@@ -32,15 +32,24 @@ public final class ExtraHamsterWheelRenderer implements BlockEntityRenderer<Extr
     public void render(ExtraHamsterWheelBlockEntity entity, float partialTick, PoseStack pose,
                        MultiBufferSource buffers, int packedLight, int packedOverlay) {
         wheel.getAllParts().forEach(ModelPart::resetPose);
-        if (entity.isRunning() && entity.getLevel() != null) {
-            wheelRotor.zRot += (entity.getLevel().getGameTime() + partialTick) * 0.35F;
-        }
         pose.pushPose();
         pose.translate(0.5D, 1.5D, 0.5D);
         pose.scale(1.0F, -1.0F, -1.0F);
         pose.mulPose(Axis.YP.rotationDegrees(entity.getBlockState().getValue(ExtraHamsterWheelBlock.FACING).toYRot()));
-        wheel.render(pose, buffers.getBuffer(RenderType.entityCutoutNoCull(WHEEL_TEXTURE)), packedLight, OverlayTexture.NO_OVERLAY);
-        if (entity.isRunning()) {
+        var wheelBuffer = buffers.getBuffer(RenderType.entityCutoutNoCull(WHEEL_TEXTURE));
+        wheelRotor.visible = false;
+        wheel.render(pose, wheelBuffer, packedLight, OverlayTexture.NO_OVERLAY);
+        wheelRotor.visible = true;
+        pose.pushPose();
+        pose.translate(0.0F, 6.5F / 16.0F, 0.0F);
+        wheelRotor.setPos(0.0F, 0.0F, 0.0F);
+        wheelRotor.xRot = 0.0F;
+        wheelRotor.yRot = 0.0F;
+        wheelRotor.zRot = entity.isRunning() && entity.getLevel() != null
+                ? -(entity.getLevel().getGameTime() + partialTick) * ((float) Math.PI / 40.0F) : 0.0F;
+        wheelRotor.render(pose, wheelBuffer, packedLight, OverlayTexture.NO_OVERLAY);
+        pose.popPose();
+        if (entity.hasHamster()) {
             pose.pushPose();
             pose.scale(0.5F, 0.5F, 0.5F);
             pose.translate(0.0D, 0.9D, 0.0D);

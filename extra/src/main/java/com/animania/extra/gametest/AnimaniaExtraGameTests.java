@@ -672,6 +672,10 @@ public final class AnimaniaExtraGameTests {
         helper.assertTrue(rejected.getCount() == 1 && wheel.getItem(0).getCount() == 16
                         && overflow.getCount() == 48,
                 "hamster wheel automation accepted invalid food or exceeded sixteen items");
+        wheel.clearContent();
+        helper.assertTrue(wheel.tryInsertFood(new ItemStack(ExtraContent.ITEM_ENTRIES.get("hamster_food").get()))
+                        && wheel.getItem(0).getCount() == 1,
+                "hamster wheel rejected its legacy right-click food insertion path");
         @SuppressWarnings("unchecked")
         EntityType<? extends AnimaniaAnimalEntity> type = (EntityType<? extends AnimaniaAnimalEntity>) (EntityType<?>) AnimaniaExtra.ENTITIES.get("hamster").get();
         AnimaniaAnimalEntity hamster = type.create(helper.getLevel());
@@ -679,11 +683,15 @@ public final class AnimaniaExtraGameTests {
             helper.fail("hamster entity could not be constructed");
             return;
         }
-        hamster.moveTo(helper.absolutePos(new BlockPos(2, 1, 0)), 0.0F, 0.0F);
         hamster.setHunger(100);
-        helper.getLevel().addFreshEntity(hamster);
+        CompoundTag wheelHamster = new CompoundTag();
+        hamster.addAdditionalSaveData(wheelHamster);
+        helper.assertTrue(wheel.insertHamster(wheelHamster), "hamster wheel rejected its stored hamster NBT");
         wheel.serverTick();
-        helper.assertTrue(wheel.isRunning(), "nearby hamster did not start the wheel");
+        helper.assertTrue(wheel.isRunning() && wheel.hasHamster(), "stored hamster did not start the wheel");
+        helper.assertTrue(helper.getLevel().getEntitiesOfClass(AnimaniaAnimalEntity.class,
+                        new net.minecraft.world.phys.AABB(pos).inflate(1.5D)).isEmpty(),
+                "hamster wheel duplicated its stored hamster as a live nearby entity");
         helper.assertTrue(wheel.energyStored() > 0, "hamster wheel did not generate Forge energy");
         helper.succeed();
     }
@@ -733,6 +741,7 @@ public final class AnimaniaExtraGameTests {
         carried.moveTo(helper.absolutePos(new BlockPos(4, 1, 1)), 0.0F, 0.0F);
         carried.setTamed(true);
         carried.setOwnerUUID(player.getUUID());
+        carried.setVariantName("wheel_round_trip");
         helper.getLevel().addFreshEntity(carried);
         player.setShiftKeyDown(true);
         player.setPose(net.minecraft.world.entity.Pose.CROUCHING);
@@ -750,9 +759,18 @@ public final class AnimaniaExtraGameTests {
                 wheelPos, player, InteractionHand.MAIN_HAND, hit);
         helper.assertFalse(AnimaniaAnimalEntity.hasCarriedAnimal(player),
                 "hamster carrier state was not cleared when inserted into the wheel");
-        helper.assertTrue(!helper.getLevel().getEntitiesOfClass(AnimaniaAnimalEntity.class,
-                new net.minecraft.world.phys.AABB(wheelPos).inflate(1.5D)).isEmpty(),
-                "hamster was not restored beside the wheel");
+        ExtraHamsterWheelBlockEntity wheel = (ExtraHamsterWheelBlockEntity) helper.getLevel().getBlockEntity(wheelPos);
+        helper.assertTrue(wheel != null && wheel.hasHamster() && wheel.isRunning(),
+                "carried hamster was not stored inside the wheel");
+        helper.assertTrue(helper.getLevel().getEntitiesOfClass(AnimaniaAnimalEntity.class,
+                        new net.minecraft.world.phys.AABB(wheelPos).inflate(1.5D)).isEmpty(),
+                "wheel insertion left a duplicate live hamster outside");
+        helper.assertTrue(wheel.ejectHamster(), "wheel could not release its stored hamster");
+        var released = helper.getLevel().getEntitiesOfClass(AnimaniaAnimalEntity.class,
+                new net.minecraft.world.phys.AABB(wheelPos).inflate(1.5D));
+        helper.assertTrue(released.size() == 1 && "wheel_round_trip".equals(released.get(0).getVariantName())
+                        && player.getUUID().equals(released.get(0).getOwnerUUID()),
+                "wheel release did not restore exactly the same hamster state");
         player.setShiftKeyDown(false);
         helper.succeed();
     }

@@ -6,9 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
@@ -24,6 +22,7 @@ public final class ExtraHamsterWheelBlockEntity extends AnimaniaStorageBlockEnti
     private final EnergyStorage energy = new EnergyStorage(ExtraConfig.HAMSTER_WHEEL_CAPACITY.get(),
             ExtraConfig.HAMSTER_WHEEL_GENERATION.get(), ExtraConfig.HAMSTER_WHEEL_GENERATION.get());
     private final LazyOptional<EnergyStorage> energyOptional = LazyOptional.of(() -> energy);
+    private CompoundTag hamsterData = new CompoundTag();
     private int useTicks;
     private boolean running;
 
@@ -43,8 +42,7 @@ public final class ExtraHamsterWheelBlockEntity extends AnimaniaStorageBlockEnti
 
     @Override
     public void serverTick() {
-        AnimaniaAnimalEntity hamster = findHamster();
-        running = hamster != null && hamster.getHunger() > 0;
+        running = hasHamster();
         if (!running) {
             useTicks = 0;
             return;
@@ -56,27 +54,61 @@ public final class ExtraHamsterWheelBlockEntity extends AnimaniaStorageBlockEnti
             if (!food.isEmpty() && isHamsterFood(food)) {
                 setItem(0, new ItemStack(food.getItem(), food.getCount() - 1));
             } else {
-                hamster.setHunger(Math.max(0, hamster.getHunger() - 20));
+                ejectHamster();
+                running = false;
             }
         }
         setChanged();
     }
 
-    private AnimaniaAnimalEntity findHamster() {
-        if (level == null) return null;
-        return level.getEntitiesOfClass(AnimaniaAnimalEntity.class,
-                        new AABB(worldPosition).inflate(1.5D)).stream()
-                .filter(entity -> {
-                    ResourceLocation id = ForgeRegistries.ENTITY_TYPES.getKey(entity.getType());
-                    return id != null && AnimaniaExtra.MOD_ID.equals(id.getNamespace()) && "hamster".equals(id.getPath())
-                            && !entity.isInBall();
-                })
-                .findFirst().orElse(null);
+    public boolean insertHamster(CompoundTag data) {
+        if (hasHamster() || data == null || data.isEmpty()) return false;
+        hamsterData = data.copy();
+        running = true;
+        useTicks = 0;
+        setChanged();
+        return true;
+    }
+
+    public boolean hasHamster() {
+        return hamsterData != null && !hamsterData.isEmpty();
+    }
+
+    public boolean ejectHamster() {
+        if (!hasHamster() || level == null || level.isClientSide) return false;
+        var type = ForgeRegistries.ENTITY_TYPES.getValue(
+                ResourceLocation.fromNamespaceAndPath(AnimaniaExtra.MOD_ID, "hamster"));
+        if (type == null || !(type.create(level) instanceof AnimaniaAnimalEntity hamster)) return false;
+        hamster.readAdditionalSaveData(hamsterData.copy());
+        for (net.minecraft.core.Direction direction : net.minecraft.core.Direction.values()) {
+            if (direction == net.minecraft.core.Direction.DOWN) continue;
+            BlockPos target = worldPosition.relative(direction);
+            hamster.moveTo(target.getX() + 0.5D, target.getY(), target.getZ() + 0.5D, 0.0F, 0.0F);
+            if (!level.getWorldBorder().isWithinBounds(target) || !level.noCollision(hamster)) continue;
+            hamster.setPersistenceRequired();
+            if (!level.addFreshEntity(hamster)) return false;
+            hamsterData = new CompoundTag();
+            running = false;
+            useTicks = 0;
+            setChanged();
+            return true;
+        }
+        hamster.discard();
+        return false;
     }
 
     private static boolean isHamsterFood(ItemStack stack) {
         net.minecraft.world.item.Item food = ForgeRegistries.ITEMS.getValue(new ResourceLocation(AnimaniaExtra.MOD_ID, "hamster_food"));
         return food != null && stack.is(food);
+    }
+
+    public boolean tryInsertFood(ItemStack stack) {
+        if (!isHamsterFood(stack)) return false;
+        ItemStack current = getItem(0);
+        if (!current.isEmpty() && !ItemStack.isSameItemSameTags(current, stack)) return false;
+        if (current.getCount() >= getMaxStackSize()) return false;
+        setItem(0, stack.copyWithCount(current.getCount() + 1));
+        return true;
     }
 
     public boolean isRunning() {
@@ -105,6 +137,7 @@ public final class ExtraHamsterWheelBlockEntity extends AnimaniaStorageBlockEnti
         tag.putInt("Energy", energy.getEnergyStored());
         tag.putInt("UseTicks", useTicks);
         tag.putBoolean("Running", running);
+        if (hasHamster()) tag.put("Hamster", hamsterData.copy());
     }
 
     @Override
@@ -116,6 +149,7 @@ public final class ExtraHamsterWheelBlockEntity extends AnimaniaStorageBlockEnti
         }
         energy.receiveEnergy(Math.max(0, tag.getInt("Energy")), false);
         useTicks = Math.max(0, tag.getInt("UseTicks"));
-        running = tag.getBoolean("Running");
+        hamsterData = tag.contains("Hamster") ? tag.getCompound("Hamster").copy() : new CompoundTag();
+        running = hasHamster() && tag.getBoolean("Running");
     }
 }

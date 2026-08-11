@@ -4,6 +4,7 @@ import com.animania.common.block.AnimaniaContainerBlock;
 import com.animania.common.entity.AnimaniaAnimalEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
@@ -19,6 +20,7 @@ import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -54,20 +56,21 @@ public final class ExtraHamsterWheelBlock extends AnimaniaContainerBlock {
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player,
                                  InteractionHand hand, BlockHitResult hit) {
+        ExtraHamsterWheelBlockEntity wheel = level.getBlockEntity(pos) instanceof ExtraHamsterWheelBlockEntity found
+                ? found : null;
         if (!level.isClientSide && hand == InteractionHand.MAIN_HAND
                 && AnimaniaAnimalEntity.hasCarriedAnimal(player)
                 && "animania_extra:hamster".equals(AnimaniaAnimalEntity.carriedAnimalType(player))
-                && level.getBlockEntity(pos) instanceof ExtraHamsterWheelBlockEntity wheel
+                && wheel != null
                 && !wheel.isRunning()) {
             EntityType<?> type = ForgeRegistries.ENTITY_TYPES.getValue(new ResourceLocation("animania_extra", "hamster"));
             AnimaniaAnimalEntity hamster = type == null ? null : (AnimaniaAnimalEntity) type.create(level);
             if (hamster != null) {
                 hamster.readAdditionalSaveData(AnimaniaAnimalEntity.carriedAnimalData(player));
                 if (!hamster.isInBall() && hamster.getHunger() > 0) {
-                    hamster.moveTo(pos.getX() + 0.5D, pos.getY() + 1.0D, pos.getZ() + 0.5D,
-                            player.getYRot(), 0.0F);
-                    hamster.setPersistenceRequired();
-                    level.addFreshEntity(hamster);
+                    CompoundTag stored = new CompoundTag();
+                    hamster.addAdditionalSaveData(stored);
+                    if (!wheel.insertHamster(stored)) return InteractionResult.PASS;
                     AnimaniaAnimalEntity.clearCarriedAnimal(player);
                     level.playSound(null, pos, SoundEvents.ITEM_PICKUP, hamster.getSoundSource(), 1.0F, 1.0F);
                     player.swing(hand);
@@ -76,6 +79,24 @@ public final class ExtraHamsterWheelBlock extends AnimaniaContainerBlock {
                 hamster.discard();
             }
         }
+        if (wheel != null && hand == InteractionHand.MAIN_HAND
+                && player.getItemInHand(hand).is(ExtraContent.ITEM_ENTRIES.get("hamster_food").get())) {
+            if (level.isClientSide) return InteractionResult.SUCCESS;
+            ItemStack held = player.getItemInHand(hand);
+            if (wheel.tryInsertFood(held)) {
+                if (!player.getAbilities().instabuild) held.shrink(1);
+                player.swing(hand);
+                return InteractionResult.CONSUME;
+            }
+        }
         return super.use(state, level, pos, player, hand, hit);
+    }
+
+    @Override
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState replacement, boolean moving) {
+        if (!state.is(replacement.getBlock()) && level.getBlockEntity(pos) instanceof ExtraHamsterWheelBlockEntity wheel) {
+            wheel.ejectHamster();
+        }
+        super.onRemove(state, level, pos, replacement, moving);
     }
 }
