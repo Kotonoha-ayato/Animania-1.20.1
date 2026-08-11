@@ -80,6 +80,7 @@ public final class LegacyAnimalModel extends HierarchicalModel<AnimaniaAnimalEnt
             showPrivateParts = false;
         }
         for (ModelPart part : privateParts) part.visible = showPrivateParts;
+        hideGoatHornBudArtifacts(entity);
         if (entity.isPigAnimal()) applyPigRestPose(entity.registryPath(), showPrivateParts);
         if (petAnimation.active() && petLookPart != null && !entity.isSleeping()
                 && (petAnimation.lookWhileSitting() || !entity.isSitting())) {
@@ -215,6 +216,19 @@ public final class LegacyAnimalModel extends HierarchicalModel<AnimaniaAnimalEnt
         if (showPrivateParts) setRotation(child("block_a"), 0.2617994F, 0.0F, 0.0F);
     }
 
+    /**
+     * The 1.12 goat models used two tiny dark horn-bud cubes as editor aids.
+     * In a ModelPart layer their 3x1x3 faces become visible as a floating
+     * black pixel above every goat's head.  Horns remain separate geometry;
+     * only these shared artefact nodes are suppressed.
+     */
+    private void hideGoatHornBudArtifacts(AnimaniaAnimalEntity entity) {
+        String id = entity.registryPath();
+        if (!id.startsWith("buck_") && !id.startsWith("doe_") && !id.startsWith("kid_")) return;
+        hide(child("head_node/bud__r"));
+        hide(child("head_node/bud__l"));
+    }
+
     private ModelPart child(String path) {
         ModelPart current = root;
         for (String segment : path.split("/")) {
@@ -229,6 +243,10 @@ public final class LegacyAnimalModel extends HierarchicalModel<AnimaniaAnimalEnt
         part.xRot = xRot;
         part.yRot = yRot;
         part.zRot = zRot;
+    }
+
+    private static void hide(ModelPart part) {
+        if (part != null) part.visible = false;
     }
 
     @Override
