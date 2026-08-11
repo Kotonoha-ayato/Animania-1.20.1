@@ -16,7 +16,6 @@ import net.minecraft.resources.ResourceLocation;
 /** Native renderer for the player and wild hive legacy model models. */
 public final class FarmHiveRenderer implements BlockEntityRenderer<FarmHiveBlockEntity> {
     private static final ResourceLocation BEE_HIVE = new ResourceLocation("animania_farm", "textures/entity/props/bee_hive.png");
-    private static final ResourceLocation WILD_HIVE = new ResourceLocation("animania_farm", "textures/entity/props/wild_hive.png");
     private final ModelPart hive;
     private final ModelPart wildHive;
 
@@ -29,7 +28,10 @@ public final class FarmHiveRenderer implements BlockEntityRenderer<FarmHiveBlock
     public void render(FarmHiveBlockEntity entity, float partialTick, PoseStack pose,
                        MultiBufferSource buffers, int packedLight, int packedOverlay) {
         ModelPart model = entity.isWild() ? wildHive : hive;
-        ResourceLocation texture = entity.isWild() ? WILD_HIVE : BEE_HIVE;
+        // The 1.12 renderer deliberately used the shared bee-hive atlas for
+        // both variants.  The wild-hive item texture has a mostly white
+        // canvas and is not the CraftStudio model atlas.
+        ResourceLocation texture = BEE_HIVE;
         model.getAllParts().forEach(ModelPart::resetPose);
         pose.pushPose();
         if (entity.isWild()) {

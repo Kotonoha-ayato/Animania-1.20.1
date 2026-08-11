@@ -115,6 +115,7 @@ class CraftStudioConversionTest(unittest.TestCase):
     def test_legacy_uv_rectangles_are_not_vanilla_cube_uvs(self) -> None:
         rectangles = CONVERTER.legacy_texture_rects({"size": [2, 4, 6], "texOffset": [10, 20]})
         self.assertEqual(rectangles[0], [24, 30, 18, 26])
+        self.assertEqual(rectangles[4], [26, 30, 24, 26])
         self.assertEqual(rectangles[5], [18, 30, 16, 26])
 
     def test_legacy_shadow_check_flips_reversed_custom_winding(self) -> None:

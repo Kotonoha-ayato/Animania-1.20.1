@@ -186,7 +186,10 @@ def legacy_texture_rects(node: dict) -> list[list[int]]:
         [u + z, v + z + y, u, v + z],
         [u + z + x, v, u + z + x + x, v + z],
         [u + z, v, u + z + x, v + z],
-        [u + z + x + z + x + z, v + z + y, u + z + x + z, v + z],
+        # CSModelBox face 4 ends at u + z + x + z + x.  The former
+        # converter added a second trailing z here, stretching the face into
+        # the white unused area of every legacy prop texture.
+        [u + z + x + z + x, v + z + y, u + z + x + z, v + z],
         [u + z + x, v + z + y, u + z, v + z],
     ]
 
