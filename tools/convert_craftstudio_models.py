@@ -169,7 +169,13 @@ def legacy_vertices(node: dict) -> list[list[float]]:
 
 def legacy_texture_rects(node: dict) -> list[list[int]]:
     u, v = [int(value) for value in node.get("texOffset", [0, 0])]
-    x, y, z = [int(float(value)) for value in node.get("size", [0, 0, 0])]
+    # CSJsonReader flips Y and Z before ModelCraftStudio asks CSModelBox for
+    # its UV rectangles.  The rectangle formula deliberately consumes those
+    # signed dimensions; using the export's positive dimensions samples the
+    # transparent canvas (the visible white panels on facilities), even when
+    # vertex positions and pivots are otherwise exact.
+    raw_x, raw_y, raw_z = [int(float(value)) for value in node.get("size", [0, 0, 0])]
+    x, y, z = raw_x, -raw_y, -raw_z
     return [
         [u + z + x + z, v + z + y, u + z + x, v + z],
         [u + z, v + z + y, u, v + z],
