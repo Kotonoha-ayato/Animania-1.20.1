@@ -1,8 +1,10 @@
 package com.animania.farm.client.render;
 
 import com.animania.farm.FarmHiveBlockEntity;
-import com.animania.farm.client.model.FarmNativeModelLayers;
+import com.animania.farm.FarmHiveBlock;
+import com.animania.farm.client.model.FarmLegacyPropModels;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -19,8 +21,8 @@ public final class FarmHiveRenderer implements BlockEntityRenderer<FarmHiveBlock
     private final ModelPart wildHive;
 
     public FarmHiveRenderer(BlockEntityRendererProvider.Context context) {
-        hive = context.bakeLayer(FarmNativeModelLayers.LAYERS.get("model_bee_hive"));
-        wildHive = context.bakeLayer(FarmNativeModelLayers.LAYERS.get("model_wild_hive"));
+        hive = FarmLegacyPropModels.create("model_bee_hive");
+        wildHive = FarmLegacyPropModels.create("model_wild_hive");
     }
 
     @Override
@@ -28,10 +30,22 @@ public final class FarmHiveRenderer implements BlockEntityRenderer<FarmHiveBlock
                        MultiBufferSource buffers, int packedLight, int packedOverlay) {
         ModelPart model = entity.isWild() ? wildHive : hive;
         ResourceLocation texture = entity.isWild() ? WILD_HIVE : BEE_HIVE;
+        model.getAllParts().forEach(ModelPart::resetPose);
         pose.pushPose();
-        pose.translate(0.5D, 1.5D, 0.5D);
+        if (entity.isWild()) {
+            switch (entity.getBlockState().getValue(FarmHiveBlock.FACING)) {
+                case NORTH -> pose.translate(0.5D, 1.0D, 0.75D);
+                case SOUTH -> pose.translate(0.5D, 1.0D, 0.25D);
+                case EAST -> pose.translate(0.25D, 1.0D, 0.5D);
+                case WEST -> pose.translate(0.75D, 1.0D, 0.5D);
+                default -> pose.translate(0.5D, 1.0D, 0.5D);
+            }
+        } else {
+            pose.translate(0.5D, 1.5D, 0.5D);
+        }
         pose.scale(1.0F, -1.0F, -1.0F);
-        model.render(pose, buffers.getBuffer(RenderType.entityCutout(texture)), packedLight, OverlayTexture.NO_OVERLAY);
+        pose.mulPose(Axis.YP.rotationDegrees(entity.getBlockState().getValue(FarmHiveBlock.FACING).toYRot()));
+        model.render(pose, buffers.getBuffer(RenderType.entityCutoutNoCull(texture)), packedLight, OverlayTexture.NO_OVERLAY);
         pose.popPose();
     }
 }

@@ -110,8 +110,8 @@ public final class FarmContent {
         });
         BLOCK_ENTRIES.put("hive", HIVE);
         BLOCK_ENTRIES.put("wild_hive", WILD_HIVE);
-        ITEM_ENTRIES.put("hive", ITEMS.register("hive", () -> new BlockItem(HIVE.get(), new Item.Properties())));
-        ITEM_ENTRIES.put("wild_hive", ITEMS.register("wild_hive", () -> new BlockItem(WILD_HIVE.get(), new Item.Properties())));
+        ITEM_ENTRIES.put("hive", ITEMS.register("hive", () -> new FarmHiveItem(HIVE.get(), false, new Item.Properties())));
+        ITEM_ENTRIES.put("wild_hive", ITEMS.register("wild_hive", () -> new FarmHiveItem(WILD_HIVE.get(), true, new Item.Properties())));
         BLOCK_ENTRIES.put("cheese_mold", CHEESE_MOLD);
         ITEM_ENTRIES.put("cheese_mold", ITEMS.register("cheese_mold", () -> new BlockItem(CHEESE_MOLD.get(), new Item.Properties())));
     }

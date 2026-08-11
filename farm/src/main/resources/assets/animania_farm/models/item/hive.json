@@ -1,3 +1,4 @@
 {
-  "parent": "animania_farm:block/hive"
+  "parent": "minecraft:builtin/entity",
+  "gui_light": "side"
 }

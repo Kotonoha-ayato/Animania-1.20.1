@@ -27,6 +27,7 @@ KNOWN_TEXTURE_SIZES = {
 }
 
 EXACT_RUNTIME_MODELS = {
+    "farm": {"model_bee_hive", "model_wild_hive"},
     "extra": {"model_hamster_wheel"},
     "catsdogs": {"model_cat_bed_1", "model_cat_bed_2", "model_cat_tower", "model_dog_house",
                  "model_dog_pillow", "model_litter_box", "model_pet_bowl"},

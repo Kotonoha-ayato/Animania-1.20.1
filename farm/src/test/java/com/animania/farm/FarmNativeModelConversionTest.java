@@ -4,6 +4,7 @@ import com.animania.client.model.LegacyAnimalModel;
 import com.animania.client.model.LegacyAnimationProfile;
 import com.animania.farm.client.model.FarmNativeAnimations;
 import com.animania.farm.client.model.FarmNativeModelLayers;
+import com.animania.farm.client.model.FarmLegacyPropModels;
 import net.minecraft.client.model.geom.ModelPart;
 import org.junit.jupiter.api.Test;
 
@@ -33,6 +34,15 @@ final class FarmNativeModelConversionTest {
             animation.boneAnimations().keySet().forEach(bone ->
                     assertTrue(model.getAnyDescendantWithName(bone).isPresent(), clip + " references missing bone " + bone));
         });
+    }
+
+    @Test
+    void bothHiveModelsUseExactCraftStudioTopology() {
+        for (String id : new String[]{"model_bee_hive", "model_wild_hive"}) {
+            ModelPart exact = FarmLegacyPropModels.create(id);
+            assertTrue(exact.getAllParts().anyMatch(part -> !part.isEmpty()), id + " exact mesh has no geometry");
+            assertTrue(exact.getAllParts().count() > 10, id + " lost its legacy part hierarchy");
+        }
     }
 
     private static void assertGeometry(ModelPart root, String id) {
