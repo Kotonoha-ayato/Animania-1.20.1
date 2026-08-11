@@ -469,8 +469,10 @@ def main() -> None:
             special_dart = model_dir / "entity_egg_dart_frog.json"
             if special_dart.exists():
                 special_data = json.loads(special_dart.read_text(encoding="utf-8"))
-                if special_data.get("textures", {}).get("layer0") != "animania:item/egg_frog_dart":
-                    errors.append(f"{module}: legacy dart-frog egg does not use its dedicated texture")
+                dart_textures = special_data.get("textures", {})
+                if (dart_textures.get("layer0") != "animania:item/egg_layer_1"
+                        or dart_textures.get("layer1") != "animania:item/egg_layer_2"):
+                    errors.append(f"{module}: dart-frog egg does not use the modern tinted egg layers")
 
             generated_name = ("CatsDogs" if module == "catsdogs" else module.title()) + "LegacyModelLayers.java"
             generated = args.root / module / "src/main/java/com/animania" / module / "client/model" / generated_name

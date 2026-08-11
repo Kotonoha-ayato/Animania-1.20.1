@@ -9,10 +9,10 @@ import struct
 from pathlib import Path
 
 MODULES = {
-    "base": ("animania", "BaseCraftStudioLayers", "player-craftstudio"),
-    "farm": ("animania_farm", "FarmCraftStudioLayers", "farm-craftstudio"),
-    "extra": ("animania_extra", "ExtraCraftStudioLayers", "extra-craftstudio"),
-    "catsdogs": ("animania_catsdogs", "CatsDogsCraftStudioLayers", "catsdogs-craftstudio"),
+    "base": ("animania", "BaseNativeModelLayers", "player-craftstudio"),
+    "farm": ("animania_farm", "FarmNativeModelLayers", "farm-craftstudio"),
+    "extra": ("animania_extra", "ExtraNativeModelLayers", "extra-craftstudio"),
+    "catsdogs": ("animania_catsdogs", "CatsDogsNativeModelLayers", "catsdogs-craftstudio"),
 }
 KNOWN_TEXTURE_SIZES = {
     "model_bee_hive": (128, 64), "model_wild_hive": (128, 64),
@@ -40,6 +40,21 @@ def fl(value: float) -> str:
     return out + "F"
 
 
+def legacy_euler_to_modelpart(rx: float, ry: float, rz: float) -> tuple[float, float, float]:
+    """Convert CraftStudioAPI's quaternion Euler order to ModelPart Euler angles."""
+    cx, cy, cz = math.cos(rx / 2), math.cos(ry / 2), math.cos(rz / 2)
+    sx, sy, sz = math.sin(rx / 2), math.sin(ry / 2), math.sin(rz / 2)
+    qw = cx * cy * cz + sx * sy * sz
+    qx = sx * cy * cz + cx * sy * sz
+    qy = cx * sy * cz - sx * cy * sz
+    qz = cx * cy * sz - sx * sy * cz
+    x = math.atan2(2 * (qw * qx + qy * qz), 1 - 2 * (qx * qx + qy * qy))
+    sin_y = max(-1.0, min(1.0, 2 * (qw * qy - qz * qx)))
+    y = math.asin(sin_y)
+    z = math.atan2(2 * (qw * qz + qx * qy), 1 - 2 * (qy * qy + qz * qz))
+    return x, y, z
+
+
 def emit_node(lines: list[str], node: dict, parent: str, used: set[str], indent: str = "        ") -> None:
     base = safe(str(node.get("name", "part")))
     name = base
@@ -50,10 +65,14 @@ def emit_node(lines: list[str], node: dict, parent: str, used: set[str], indent:
     size = [float(v) for v in node.get("size", [0, 0, 0])]
     offset = [float(v) for v in node.get("offsetFromPivot", [0, 0, 0])]
     position = [float(v) for v in node.get("position", [0, 0, 0])]
-    rotation = [math.radians(float(v)) for v in node.get("rotation", [0, 0, 0])]
+    source_rotation = [math.radians(float(v)) for v in node.get("rotation", [0, 0, 0])]
+    rotation = list(legacy_euler_to_modelpart(*source_rotation))
     uv = [int(v) for v in node.get("texOffset", [0, 0])]
     builder = "CubeListBuilder.create()"
-    if all(value > 0 for value in size):
+    # CraftStudio intentionally uses zero-thickness cubes for wings, spokes,
+    # webs and other textured planes. CubeListBuilder supports those planes;
+    # dropping them made the hamster wheel and several Farm props incomplete.
+    if any(value > 0 for value in size) and all(value >= 0 for value in size):
         origin = [offset[i] - size[i] / 2.0 for i in range(3)]
         builder += f".texOffs({uv[0]}, {uv[1]}).addBox({', '.join(fl(v) for v in origin + size)})"
     pose = f"PartPose.offsetAndRotation({', '.join(fl(v) for v in position + rotation)})"
@@ -73,7 +92,7 @@ def emit_module(root: Path, module: str, modid: str, class_name: str, archive: s
         output_root = root / module / "src/main/java/com/animania" / module / "client/model"
     files = sorted(model_root.rglob("*.csjsmodel"))
     lines = [f"package {package};", "",
-             "// Generated from archived LGPL-3.0 CraftStudio JSON; no CraftStudio runtime dependency.",
+             "// Generated from archived LGPL-3.0 legacy native JSON; no legacy native runtime dependency.",
              "import java.util.LinkedHashMap;", "import java.util.Map;",
              "import net.minecraft.client.model.geom.ModelLayerLocation;", "import net.minecraft.client.model.geom.PartPose;",
              "import net.minecraft.client.model.geom.builders.CubeListBuilder;", "import net.minecraft.client.model.geom.builders.LayerDefinition;",
@@ -84,10 +103,10 @@ def emit_module(root: Path, module: str, modid: str, class_name: str, archive: s
     for path in files:
         key = path.stem
         models.append((key, json.loads(path.read_text(encoding="utf-8"))))
-        lines.append(f'        LAYERS.put("{key}", new ModelLayerLocation(new ResourceLocation("{modid}", "craftstudio/{key}"), "main"));')
+        lines.append(f'        LAYERS.put("{key}", new ModelLayerLocation(new ResourceLocation("{modid}", "native/{key}"), "main"));')
     lines += ["    }", f"    private {class_name}() {{}}", "    public static LayerDefinition create(String id) {", "        return switch (id) {"]
     for key, _ in models: lines.append(f'            case "{key}" -> {safe(key)}();')
-    lines += ['            default -> throw new IllegalArgumentException("Unknown CraftStudio model " + id);', "        };", "    }"]
+    lines += ['            default -> throw new IllegalArgumentException("Unknown legacy native model " + id);', "        };", "    }"]
     for key, data in models:
         width, height = KNOWN_TEXTURE_SIZES.get(key, (128, 128))
         lines += [f"    private static LayerDefinition {safe(key)}() {{", "        MeshDefinition mesh = new MeshDefinition();", "        PartDefinition root = mesh.getRoot();"]
@@ -98,7 +117,7 @@ def emit_module(root: Path, module: str, modid: str, class_name: str, archive: s
     output = output_root / f"{class_name}.java"
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text("\n".join(lines) + "\n", encoding="utf-8")
-    emit_animations(root, module, archive, class_name.replace("Layers", "Animations"))
+    emit_animations(root, module, archive, class_name.replace("ModelLayers", "Animations"))
     print(module, len(models), output)
 
 
@@ -113,7 +132,7 @@ def emit_animations(root: Path, module: str, archive: str, class_name: str) -> N
         output_root = root / module / "src/main/java/com/animania" / module / "client/model"
     files = sorted(animation_root.rglob("*.csjsmodelanim"))
     lines = [f"package {package};", "",
-             "// Generated native AnimationDefinitions from archived CraftStudio keyframes.",
+             "// Generated native AnimationDefinitions from archived legacy native keyframes.",
              "import java.util.LinkedHashMap;", "import java.util.Map;",
              "import net.minecraft.client.animation.AnimationChannel;", "import net.minecraft.client.animation.AnimationDefinition;",
              "import net.minecraft.client.animation.Keyframe;", "import static net.minecraft.client.animation.AnimationChannel.Interpolations.LINEAR;",

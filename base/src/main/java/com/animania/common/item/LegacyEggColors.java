@@ -57,6 +57,7 @@ public final class LegacyEggColors {
     );
 
     private static final Map<String, Colors> EXACT = Map.ofEntries(
+            e("dart_frog", 1728436, 15914571), e("dartfrog", 1728436, 15914571),
             e("ferret_grey", 13948116, 8741209), e("ferret_white", 15395298, 16447993),
             e("frog", 1860371, 1793554), e("hamster", 14603464, 14317391),
             e("hedgehog", 10451558, 14337943), e("hedgehog_albino", 12369084, 16777215),
@@ -64,7 +65,7 @@ public final class LegacyEggColors {
     );
 
     public static Colors forEntity(String id) {
-        if (id == null || id.endsWith("_random") || id.equals("dart_frog") || id.equals("dartfrog")) return null;
+        if (id == null || id.endsWith("_random")) return null;
         Colors exact = EXACT.get(id);
         if (exact != null) return exact;
         String breed = stripRole(id);

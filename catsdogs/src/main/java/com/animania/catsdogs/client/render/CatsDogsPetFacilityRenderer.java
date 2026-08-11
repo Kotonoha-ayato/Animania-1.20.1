@@ -3,6 +3,8 @@ package com.animania.catsdogs.client.render;
 import com.animania.catsdogs.CatsDogsPetFacilityBlockEntity;
 import com.animania.catsdogs.client.model.CatsDogsNativeModelLayers;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -33,6 +35,8 @@ public final class CatsDogsPetFacilityRenderer implements BlockEntityRenderer<Ca
         pose.pushPose();
         pose.translate(0.5D, 1.5D, 0.5D);
         pose.scale(1.0F, -1.0F, -1.0F);
+        pose.mulPose(Axis.YP.rotationDegrees(entity.getBlockState()
+                .getValue(HorizontalDirectionalBlock.FACING).toYRot()));
         ResourceLocation texture = new ResourceLocation("animania_catsdogs", "textures/entity/tileentities/" + id + ".png");
         model.render(pose, buffers.getBuffer(RenderType.entityCutout(texture)), packedLight, OverlayTexture.NO_OVERLAY);
         pose.popPose();

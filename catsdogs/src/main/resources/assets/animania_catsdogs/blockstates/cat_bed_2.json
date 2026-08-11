@@ -1,7 +1,8 @@
 {
   "variants": {
-    "": {
-      "model": "animania_catsdogs:block/cat_bed_2"
-    }
+    "facing=north": { "model": "animania_catsdogs:block/cat_bed_2" },
+    "facing=east": { "model": "animania_catsdogs:block/cat_bed_2", "y": 90 },
+    "facing=south": { "model": "animania_catsdogs:block/cat_bed_2", "y": 180 },
+    "facing=west": { "model": "animania_catsdogs:block/cat_bed_2", "y": 270 }
   }
 }

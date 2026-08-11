@@ -1,7 +1,8 @@
 {
   "variants": {
-    "": {
-      "model": "animania_catsdogs:block/dog_pillow"
-    }
+    "facing=north": { "model": "animania_catsdogs:block/dog_pillow" },
+    "facing=east": { "model": "animania_catsdogs:block/dog_pillow", "y": 90 },
+    "facing=south": { "model": "animania_catsdogs:block/dog_pillow", "y": 180 },
+    "facing=west": { "model": "animania_catsdogs:block/dog_pillow", "y": 270 }
   }
 }

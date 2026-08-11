@@ -39,12 +39,12 @@ public final class ExtraNativeModelLayers {
         PartDefinition wheel2 = wheel1.addOrReplaceChild("wheel2", CubeListBuilder.create().texOffs(19, 2).addBox(0.0F, -1.0F, -5.0F, 6.0F, 1.0F, 10.0F), PartPose.offsetAndRotation(3.0F, 0.5F, 0.0F, 0.0F, 0.0F, -0.785398F));
         PartDefinition wheel3 = wheel2.addOrReplaceChild("wheel3", CubeListBuilder.create().texOffs(19, 2).addBox(0.0F, -1.0F, -5.0F, 6.0F, 1.0F, 10.0F), PartPose.offsetAndRotation(3.0F, 0.5F, 0.0F, 0.0F, 0.0F, -0.785398F));
         PartDefinition wheel4 = wheel3.addOrReplaceChild("wheel4", CubeListBuilder.create().texOffs(19, 2).addBox(0.0F, -1.0F, -5.0F, 6.0F, 1.0F, 10.0F), PartPose.offsetAndRotation(3.0F, 0.5F, 0.0F, 0.0F, 0.0F, -0.785398F));
-        PartDefinition wheel5 = wheel4.addOrReplaceChild("wheel5", CubeListBuilder.create().texOffs(19, 2).addBox(0.0F, -1.0F, -5.0F, 6.0F, 1.0F, 10.0F), PartPose.offsetAndRotation(3.0F, 0.5F, 0.0F, -6.283185F, 0.0F, -0.785398F));
+        PartDefinition wheel5 = wheel4.addOrReplaceChild("wheel5", CubeListBuilder.create().texOffs(19, 2).addBox(0.0F, -1.0F, -5.0F, 6.0F, 1.0F, 10.0F), PartPose.offsetAndRotation(3.0F, 0.5F, 0.0F, 0.0F, 0.0F, -0.785398F));
         PartDefinition wheel6 = wheel5.addOrReplaceChild("wheel6", CubeListBuilder.create().texOffs(19, 2).addBox(0.0F, -1.0F, -5.0F, 6.0F, 1.0F, 10.0F), PartPose.offsetAndRotation(3.0F, 0.5F, 0.0F, 0.0F, 0.0F, -0.785398F));
         PartDefinition wheel7 = wheel6.addOrReplaceChild("wheel7", CubeListBuilder.create().texOffs(19, 2).addBox(0.0F, -1.0F, -5.0F, 6.0F, 1.0F, 10.0F), PartPose.offsetAndRotation(3.0F, 0.5F, 0.0F, 0.0F, 0.0F, -0.785398F));
         PartDefinition wheel8 = wheel7.addOrReplaceChild("wheel8", CubeListBuilder.create().texOffs(19, 2).addBox(0.0F, -1.0F, -5.0F, 6.0F, 1.0F, 10.0F), PartPose.offsetAndRotation(3.0F, 0.5F, 0.0F, 0.0F, 0.0F, -0.785398F));
-        PartDefinition stick = wheel1.addOrReplaceChild("stick", CubeListBuilder.create(), PartPose.offsetAndRotation(-0.000001F, -6.5F, -4.75F, 0.0F, 0.0F, 0.0F));
-        PartDefinition stick2 = stick.addOrReplaceChild("stick2", CubeListBuilder.create(), PartPose.offsetAndRotation(-0.000001F, -0.0F, 9.5F, 0.0F, 0.0F, 0.0F));
+        PartDefinition stick = wheel1.addOrReplaceChild("stick", CubeListBuilder.create().texOffs(13, 2).addBox(-0.5F, -6.5F, 0.0F, 1.0F, 13.0F, 0.0F), PartPose.offsetAndRotation(-0.000001F, -6.5F, -4.75F, 0.0F, 0.0F, 0.0F));
+        PartDefinition stick2 = stick.addOrReplaceChild("stick2", CubeListBuilder.create().texOffs(13, 2).addBox(-0.5F, -6.5F, 0.0F, 1.0F, 13.0F, 0.0F), PartPose.offsetAndRotation(-0.000001F, -0.0F, 9.5F, 0.0F, 0.0F, 0.0F));
         PartDefinition axel1b = base1.addOrReplaceChild("axel1b", CubeListBuilder.create().texOffs(0, 0).addBox(-0.5F, -0.5F, -1.0F, 1.0F, 1.0F, 2.0F), PartPose.offsetAndRotation(-10.5F, 0.5F, -1.0F, 0.0F, 0.0F, 2.094395F));
         return LayerDefinition.create(mesh, 64, 32);
     }

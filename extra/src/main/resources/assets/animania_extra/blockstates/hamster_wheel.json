@@ -1,7 +1,8 @@
 {
   "variants": {
-    "": {
-      "model": "animania_extra:block/hamster_wheel"
-    }
+    "facing=north": { "model": "animania_extra:block/hamster_wheel" },
+    "facing=east": { "model": "animania_extra:block/hamster_wheel", "y": 90 },
+    "facing=south": { "model": "animania_extra:block/hamster_wheel", "y": 180 },
+    "facing=west": { "model": "animania_extra:block/hamster_wheel", "y": 270 }
   }
 }

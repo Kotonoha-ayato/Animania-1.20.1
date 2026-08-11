@@ -31,6 +31,15 @@ public final class AnimaniaHamsterBallItem extends Item {
         return colorOf(stack);
     }
 
+    @Override
+    public String getDescriptionId(ItemStack stack) {
+        if (!colored) return "item.animania.hamster_ball_clear";
+        String colorName = DyeColor.byId(color(stack)).getName();
+        // Animania 1.12 used "silver" for vanilla's modern light_gray dye.
+        if ("light_gray".equals(colorName)) colorName = "silver";
+        return "item.animania.hamster_ball_" + colorName;
+    }
+
     public static int colorOf(ItemStack stack) {
         if (stack.isEmpty() || !stack.hasTag() || !stack.getTag().contains(COLOR_TAG)) return 0;
         return clamp(stack.getTag().getInt(COLOR_TAG));

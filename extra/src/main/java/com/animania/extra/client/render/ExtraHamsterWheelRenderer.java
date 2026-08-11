@@ -3,6 +3,8 @@ package com.animania.extra.client.render;
 import com.animania.extra.ExtraHamsterWheelBlockEntity;
 import com.animania.extra.client.model.ExtraNativeModelLayers;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
+import com.animania.extra.ExtraHamsterWheelBlock;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -35,11 +37,13 @@ public final class ExtraHamsterWheelRenderer implements BlockEntityRenderer<Extr
         pose.pushPose();
         pose.translate(0.5D, 1.5D, 0.5D);
         pose.scale(1.0F, -1.0F, -1.0F);
+        pose.mulPose(Axis.YP.rotationDegrees(entity.getBlockState().getValue(ExtraHamsterWheelBlock.FACING).toYRot()));
         wheel.render(pose, buffers.getBuffer(RenderType.entityCutout(WHEEL_TEXTURE)), packedLight, OverlayTexture.NO_OVERLAY);
         if (entity.isRunning()) {
             pose.pushPose();
             pose.scale(0.5F, 0.5F, 0.5F);
             pose.translate(0.0D, 0.9D, 0.0D);
+            pose.mulPose(Axis.YP.rotationDegrees(-90.0F));
             hamster.render(pose, buffers.getBuffer(RenderType.entityCutout(HAMSTER_TEXTURE)), packedLight, OverlayTexture.NO_OVERLAY);
             pose.popPose();
         }
