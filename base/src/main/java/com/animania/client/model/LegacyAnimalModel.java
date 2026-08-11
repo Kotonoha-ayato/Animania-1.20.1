@@ -22,11 +22,16 @@ public final class LegacyAnimalModel extends HierarchicalModel<AnimaniaAnimalEnt
     private final List<ModelPart> bodies;
     private final List<ModelPart> privateParts;
     private final List<ModelPart> coloredParts;
+    private final List<ResolvedPose> sittingPose;
     private float woolRed = 1.0F;
     private float woolGreen = 1.0F;
     private float woolBlue = 1.0F;
 
     public LegacyAnimalModel(ModelPart root, LegacyAnimationProfile profile) {
+        this(root, profile, LegacyPoseDefinition.EMPTY);
+    }
+
+    public LegacyAnimalModel(ModelPart root, LegacyAnimationProfile profile, LegacyPoseDefinition sittingPose) {
         this.root = root;
         this.heads = resolve(root, profile.heads());
         this.leftLegs = resolve(root, profile.leftLegs());
@@ -36,6 +41,7 @@ public final class LegacyAnimalModel extends HierarchicalModel<AnimaniaAnimalEnt
         this.bodies = resolve(root, profile.bodies());
         this.privateParts = resolve(root, profile.privateParts());
         this.coloredParts = resolve(root, profile.coloredParts());
+        this.sittingPose = resolvePose(root, sittingPose);
     }
 
     @Override
@@ -72,6 +78,8 @@ public final class LegacyAnimalModel extends HierarchicalModel<AnimaniaAnimalEnt
         tails.forEach(part -> part.yRot += Mth.sin(ageInTicks * 0.12F) * 0.18F);
         float flap = Mth.sin(ageInTicks * 0.55F) * (0.08F + limbSwingAmount * 0.45F);
         for (int i = 0; i < wings.size(); i++) wings.get(i).zRot += (i & 1) == 0 ? flap : -flap;
+
+        if (entity.isSitting()) applyPose(sittingPose);
 
         if (entity.getEatingTicks() > 0) {
             heads.forEach(part -> part.xRot += 0.9F);
@@ -130,4 +138,29 @@ public final class LegacyAnimalModel extends HierarchicalModel<AnimaniaAnimalEnt
         }
         return result;
     }
+
+    private static List<ResolvedPose> resolvePose(ModelPart root, LegacyPoseDefinition definition) {
+        LegacyPartPose[] definitions = definition.parts();
+        List<ResolvedPose> result = new ArrayList<>(definitions.length);
+        for (LegacyPartPose pose : definitions) {
+            List<ModelPart> resolved = resolve(root, new String[]{pose.path()});
+            if (!resolved.isEmpty()) result.add(new ResolvedPose(resolved.get(0), pose));
+        }
+        return result;
+    }
+
+    private static void applyPose(List<ResolvedPose> poses) {
+        for (ResolvedPose resolved : poses) {
+            ModelPart part = resolved.part();
+            LegacyPartPose pose = resolved.pose();
+            if (Float.isFinite(pose.x())) part.x = pose.x();
+            if (Float.isFinite(pose.y())) part.y = pose.y();
+            if (Float.isFinite(pose.z())) part.z = pose.z();
+            if (Float.isFinite(pose.xRot())) part.xRot = pose.xRot();
+            if (Float.isFinite(pose.yRot())) part.yRot = pose.yRot();
+            if (Float.isFinite(pose.zRot())) part.zRot = pose.zRot();
+        }
+    }
+
+    private record ResolvedPose(ModelPart part, LegacyPartPose pose) {}
 }

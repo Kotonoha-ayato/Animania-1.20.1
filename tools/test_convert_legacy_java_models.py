@@ -58,6 +58,48 @@ class LegacyJavaModelConverterTest(unittest.TestCase):
         self.assertIn("PartPose.offsetAndRotation(10.0F, 20.0F, 30.0F", emitted)
         self.assertIn("PartPose.offsetAndRotation(4.5F, 4.0F, 8.0F", emitted)
 
+    def test_all_dog_models_have_explicit_sitting_pose_overrides(self) -> None:
+        dog_root = ROOT / "upstream/Animania-1.12/src/main/java/com/animania/addons/catsdogs/client/models/dogs"
+        models = [CONVERTER.parse_model(path) for path in sorted(dog_root.glob("Model*.java"))]
+        self.assertEqual(15, len(models))
+        self.assertTrue(all(model.sitting_pose for model in models),
+                        [model.name for model in models if not model.sitting_pose])
+
+    def test_collie_sitting_pose_matches_legacy_branch(self) -> None:
+        model = CONVERTER.parse_model(
+            ROOT / "upstream/Animania-1.12/src/main/java/com/animania/addons/catsdogs/client/models/dogs/ModelCollie.java"
+        )
+        self.assertEqual((0.0, 12.0, -5.0), model.sitting_pose["body"].pos)
+        self.assertAlmostEqual(-0.10049954898833749, model.sitting_pose["body"].rot[0])
+        self.assertAlmostEqual(-0.68513423385813, model.sitting_pose["lower_body"].rot[0])
+        self.assertEqual(9, len(model.sitting_pose))
+
+    def test_every_catsdogs_entity_has_a_renderer_translation(self) -> None:
+        translations = CONVERTER.catsdogs_translations(ROOT)
+        mapping = CONVERTER.mappings(ROOT, "catsdogs")
+        self.assertEqual(set(mapping), set(translations))
+        self.assertEqual(69, len(translations))
+
+    def test_dog_renderer_translations_match_legacy_factories(self) -> None:
+        translations = CONVERTER.catsdogs_translations(ROOT)
+        for role in ("male", "female", "puppy"):
+            self.assertEqual((0.0, -0.1, 0.0), translations[f"{role}_blood_hound"])
+            self.assertEqual((0.0, -0.05, 0.0), translations[f"{role}_corgi"])
+            self.assertEqual((0.0, -0.1, 0.0), translations[f"{role}_great_dane"])
+            self.assertEqual((0.0, 0.1, -0.5), translations[f"{role}_chihuahua"])
+            self.assertEqual((0.0, 0.0, 0.0), translations[f"{role}_collie"])
+            self.assertEqual((0.0, 0.1, 0.0), translations[f"{role}_fox"])
+        self.assertEqual((0.0, 0.0, -0.5), translations["male_pomeranian"])
+        self.assertEqual((0.0, 0.0, -0.25), translations["puppy_pomeranian"])
+        self.assertEqual((0.0, 0.0, -0.5), translations["male_pug"])
+        self.assertEqual((0.0, 0.0, -0.25), translations["puppy_pug"])
+
+    def test_fox_role_scales_match_dedicated_legacy_renderer(self) -> None:
+        mapping = CONVERTER.mappings(ROOT, "catsdogs")
+        self.assertEqual(1.0, mapping["male_fox"][1])
+        self.assertEqual(0.9, mapping["female_fox"][1])
+        self.assertEqual(0.5, mapping["puppy_fox"][1])
+
 
 if __name__ == "__main__":
     unittest.main()

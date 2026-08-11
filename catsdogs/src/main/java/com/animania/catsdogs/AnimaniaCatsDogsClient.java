@@ -26,7 +26,10 @@ final class AnimaniaCatsDogsClient {
     static void onClientSetup(FMLClientSetupEvent event) {
         event.enqueueWork(() -> AnimaniaCatsDogs.ENTITIES.forEach((id, type) -> EntityRenderers.register(
                 (EntityType<AnimaniaAnimalEntity>) type.get(),
-                context -> new AnimaniaAnimalRenderer(context, AnimaniaClientDiagnostics.requireLayer(AnimaniaCatsDogs.MOD_ID, id, CatsDogsLegacyModelLayers.LAYERS.get(id)), CatsDogsLegacyModelLayers.profile(id), CatsDogsLegacyModelLayers.scale(id)))));
+                context -> new AnimaniaAnimalRenderer(context,
+                        AnimaniaClientDiagnostics.requireLayer(AnimaniaCatsDogs.MOD_ID, id, CatsDogsLegacyModelLayers.LAYERS.get(id)),
+                        CatsDogsLegacyModelLayers.profile(id), CatsDogsLegacyModelLayers.sittingPose(id),
+                        CatsDogsLegacyModelLayers.transform(id), CatsDogsLegacyModelLayers.scale(id)))));
         AnimaniaClientDiagnostics.rendererRegistrations(AnimaniaCatsDogs.MOD_ID, AnimaniaCatsDogs.ENTITIES.size(), 0);
     }
 }

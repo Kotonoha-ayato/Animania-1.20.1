@@ -2,6 +2,8 @@ package com.animania.client.render;
 
 import com.animania.client.model.LegacyAnimalModel;
 import com.animania.client.model.LegacyAnimationProfile;
+import com.animania.client.model.LegacyPoseDefinition;
+import com.animania.client.model.LegacyRenderTransform;
 import com.animania.client.AnimaniaClientDiagnostics;
 import com.animania.common.entity.AnimaniaAnimalEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -15,11 +17,25 @@ import net.minecraftforge.registries.ForgeRegistries;
 /** Client-only renderer using native ModelPart animation and legacy-compatible IDs. */
 public class AnimaniaAnimalRenderer extends MobRenderer<AnimaniaAnimalEntity, LegacyAnimalModel> {
     private final float modelScale;
+    private final LegacyRenderTransform renderTransform;
 
     public AnimaniaAnimalRenderer(EntityRendererProvider.Context context, ModelLayerLocation layer,
                                   LegacyAnimationProfile profile, float modelScale) {
-        super(context, new LegacyAnimalModel(context.bakeLayer(layer), profile), 0.45f);
+        this(context, layer, profile, LegacyPoseDefinition.EMPTY, LegacyRenderTransform.EMPTY, modelScale);
+    }
+
+    public AnimaniaAnimalRenderer(EntityRendererProvider.Context context, ModelLayerLocation layer,
+                                  LegacyAnimationProfile profile, LegacyPoseDefinition sittingPose,
+                                  float modelScale) {
+        this(context, layer, profile, sittingPose, LegacyRenderTransform.EMPTY, modelScale);
+    }
+
+    public AnimaniaAnimalRenderer(EntityRendererProvider.Context context, ModelLayerLocation layer,
+                                  LegacyAnimationProfile profile, LegacyPoseDefinition sittingPose,
+                                  LegacyRenderTransform renderTransform, float modelScale) {
+        super(context, new LegacyAnimalModel(context.bakeLayer(layer), profile, sittingPose), 0.45f);
         this.modelScale = modelScale;
+        this.renderTransform = renderTransform;
         addLayer(new AnimaniaHamsterBallLayer(this, context.bakeLayer(com.animania.client.model.AnimaniaHamsterBallModel.LAYER)));
         addLayer(new AnimaniaBlinkingLayer(this));
         addLayer(new AnimaniaMudLayer(this));
@@ -60,6 +76,8 @@ public class AnimaniaAnimalRenderer extends MobRenderer<AnimaniaAnimalEntity, Le
 
     @Override
     protected void scale(AnimaniaAnimalEntity entity, PoseStack poseStack, float partialTickTime) {
+        // Matches RenderDogGeneric/RenderFox: translate first, then scale.
+        poseStack.translate(renderTransform.x(), renderTransform.y(), renderTransform.z());
         poseStack.scale(modelScale, modelScale, modelScale);
     }
 }

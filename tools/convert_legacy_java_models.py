@@ -85,12 +85,19 @@ class Part:
 
 
 @dataclass
+class PoseOverride:
+    pos: tuple[float, float, float] | None = None
+    rot: tuple[float | None, float | None, float | None] = (None, None, None)
+
+
+@dataclass
 class Model:
     name: str
     width: int
     height: int
     parts: dict[str, Part]
     private_parts: set[str]
+    sitting_pose: dict[str, PoseOverride] = field(default_factory=dict)
 
 
 def method_body(text: str, signature: re.Pattern[str]) -> str | None:
@@ -193,6 +200,35 @@ def parse_model(path: Path) -> Model:
             try: rotations[match.group(1)] = model_args(match.group(2))[:3]
             except ValueError: pass
     for name, rotation in rotations.items(): parts[name].rot = tuple(rotation)
+    sitting_pose: dict[str, PoseOverride] = {}
+    sitting = method_body(text, re.compile(r"\bif\s*\(\s*sitting\b[^{;]*\)\s*\{"))
+    if sitting is not None:
+        sitting_rotations: dict[str, list[float | None]] = {}
+        for match in re.finditer(r"(?:this\.)?(\w+)\.rotateAngle([XYZ])\s*=\s*([^;]+);", sitting):
+            name, axis, raw = match.groups()
+            if name not in parts:
+                continue
+            try:
+                value = number(raw)
+            except ValueError:
+                continue
+            sitting_rotations.setdefault(name, [None, None, None])[axes[axis]] = value
+        sitting_positions: dict[str, tuple[float, float, float]] = {}
+        for match in re.finditer(r"(?:this\.)?(\w+)\.setRotationPoint\s*\(([^)]*)\)", sitting):
+            name = match.group(1)
+            if name not in parts:
+                continue
+            try:
+                values = tuple(model_args(match.group(2))[:3])
+            except ValueError:
+                continue
+            if len(values) == 3:
+                sitting_positions[name] = values
+        changed = sitting_rotations.keys() | sitting_positions.keys()
+        for name in parts:
+            if name in changed:
+                sitting_pose[name] = PoseOverride(
+                    sitting_positions.get(name), tuple(sitting_rotations.get(name, [None, None, None])))
     # Extract the original walk cycle phase instead of guessing from the side
     # of the body. Quadrupeds animate diagonal pairs together; grouping all
     # left legs together produces an visibly incorrect pacing gait.
@@ -213,7 +249,7 @@ def parse_model(path: Path) -> Model:
                 private_parts.add(rendered)
     if not parts:
         raise ValueError(f"no ModelRenderer geometry in {path}")
-    return Model(path.stem, width, height, parts, private_parts)
+    return Model(path.stem, width, height, parts, private_parts, sitting_pose)
 
 
 def find_model(source: Path, name: str) -> Path | None:
@@ -257,7 +293,33 @@ def mappings(root: Path, module: str) -> dict[str, tuple[str, float]]:
             scale_match = re.search(r",\s*(-?[0-9]+(?:\.[0-9]+)?)f(?:\s*[,\)])", remainder)
             result[snake(entity)] = (model, float(scale_match.group(1)) if scale_match else 1.0)
         # Fox uses a dedicated renderer but the same Java model conversion path.
-        for role in ("male", "female", "puppy"): result[f"{role}_fox"] = ("ModelFox", 1.0)
+        result["male_fox"] = ("ModelFox", 1.0)
+        result["female_fox"] = ("ModelFox", 0.9)
+        result["puppy_fox"] = ("ModelFox", 0.5)
+    return result
+
+
+def catsdogs_translations(root: Path) -> dict[str, tuple[float, float, float]]:
+    handler = root / "upstream/Animania-1.12/src/main/java/com/animania/addons/catsdogs/client/CatsDogsAddonRenderHandler.java"
+    text = handler.read_text(encoding="utf-8", errors="replace")
+    result: dict[str, tuple[float, float, float]] = {}
+    # RenderCatGeneric has no per-factory translation; record its explicit
+    # identity transform so every Cats & Dogs registry ID remains audited.
+    for entity in re.findall(
+        r"Entity(\w+)\.class\s*,\s*new\s+RenderCatGeneric\.Factory\s*\(", text
+    ):
+        result[snake(entity)] = (0.0, 0.0, 0.0)
+    pattern = re.compile(
+        r"Entity(\w+)\.class\s*,\s*new\s+RenderDogGeneric\.Factory\s*\(\s*new\s+Model\w+\s*\(\s*\)\s*,"
+        r"\s*r\([^)]*\)\s*,\s*r\([^)]*\)\s*,\s*[^,]+,\s*-?[0-9]+(?:\.[0-9]+)?f"
+        r"(?:\s*,\s*(-?[0-9]+(?:\.[0-9]+)?)\s*,\s*(-?[0-9]+(?:\.[0-9]+)?)\s*,\s*(-?[0-9]+(?:\.[0-9]+)?))?",
+        re.S,
+    )
+    for match in pattern.finditer(text):
+        entity, x, y, z = match.groups()
+        result[snake(entity)] = tuple(float(value) if value is not None else 0.0 for value in (x, y, z))
+    for role in ("male", "female", "puppy"):
+        result[f"{role}_fox"] = (0.0, 0.1, 0.0)
     return result
 
 
@@ -359,6 +421,52 @@ def animation_profile(model: Model) -> tuple[list[str], list[str], list[str], li
     return heads[:2], phase_a[:8], phase_b[:8], tails[:2], wings[:2], bodies[:2], private_parts, colored_parts
 
 
+def model_part_paths(model: Model) -> dict[str, str]:
+    children = {child for part in model.parts.values() for child in part.children}
+    paths: dict[str, str] = {}
+
+    def walk(name: str, prefix: tuple[str, ...]) -> None:
+        current = prefix + (snake(name),)
+        paths[name] = "/".join(current)
+        for child in model.parts[name].children:
+            walk(child, current)
+
+    for name in model.parts:
+        if name not in children:
+            walk(name, ())
+    return paths
+
+
+def java_optional(value: float | None) -> str:
+    return "Float.NaN" if value is None else f(value)
+
+
+def sitting_pose_java(model: Model) -> str:
+    if not model.sitting_pose:
+        return "LegacyPoseDefinition.EMPTY"
+    paths = model_part_paths(model)
+    entries: list[str] = []
+    parent_by_child = {
+        child: parent.name for parent in model.parts.values() for child in parent.children
+    }
+    for name, override in model.sitting_pose.items():
+        if name not in paths:
+            raise ValueError(f"{model.name}: sitting pose references unreachable part {name}")
+        if override.pos is None:
+            position = (None, None, None)
+        else:
+            # The parent ModelRendererAnimania offset is inherited before the
+            # child's rotation point in 1.12; mirror emit_part's conversion.
+            parent = parent_by_child.get(name)
+            inherited = model.parts[parent].offset if parent is not None else (0.0, 0.0, 0.0)
+            position = tuple(override.pos[index] + inherited[index] for index in range(3))
+        values = (*position, *override.rot)
+        entries.append(
+            f'new LegacyPartPose("{paths[name]}", {", ".join(java_optional(value) for value in values)})'
+        )
+    return "new LegacyPoseDefinition(" + ", ".join(entries) + ")"
+
+
 def java_array(values: list[str]) -> str:
     return "new String[]{" + ", ".join(f'"{value}"' for value in values) + "}"
 
@@ -386,7 +494,10 @@ def emit(root: Path, module: str) -> None:
              "import net.minecraft.client.model.geom.builders.CubeDeformation;", "import net.minecraft.client.model.geom.builders.CubeListBuilder;",
              "import net.minecraft.client.model.geom.builders.LayerDefinition;", "import net.minecraft.client.model.geom.builders.MeshDefinition;",
              "import net.minecraft.client.model.geom.builders.PartDefinition;", "import net.minecraft.resources.ResourceLocation;", "",
-             "import com.animania.client.model.LegacyAnimationProfile;", "",
+             "import com.animania.client.model.LegacyAnimationProfile;",
+             "import com.animania.client.model.LegacyPartPose;",
+             "import com.animania.client.model.LegacyPoseDefinition;",
+             "import com.animania.client.model.LegacyRenderTransform;", "",
              f"public final class {class_name} {{", "    public static final Map<String, ModelLayerLocation> LAYERS = new LinkedHashMap<>();",
              "    static {"]
     for entity in ids:
@@ -405,6 +516,24 @@ def emit(root: Path, module: str) -> None:
         constructor = ", ".join(java_array(values) for values in profile)
         lines.append(f"            case {labels} -> new LegacyAnimationProfile({constructor});")
     lines += ["            default -> LegacyAnimationProfile.EMPTY;", "        };", "    }"]
+    if module == "catsdogs":
+        lines += ["    public static LegacyPoseDefinition sittingPose(String id) {", "        return switch (id) {"]
+        for model_name, entity_ids in reverse.items():
+            labels = ", ".join(f'"{entity}"' for entity in entity_ids)
+            lines.append(f"            case {labels} -> {sitting_pose_java(models[model_name])};")
+        lines += ["            default -> LegacyPoseDefinition.EMPTY;", "        };", "    }"]
+        translations = catsdogs_translations(root)
+        missing_translations = [entity for entity in ids if entity not in translations]
+        if missing_translations:
+            raise SystemExit(f"catsdogs: missing renderer translations: {missing_translations}")
+        lines += ["    public static LegacyRenderTransform transform(String id) {", "        return switch (id) {"]
+        by_translation: dict[tuple[float, float, float], list[str]] = {}
+        for entity in ids:
+            by_translation.setdefault(translations[entity], []).append(entity)
+        for (x, y, z), entity_ids in by_translation.items():
+            labels = ", ".join(f'"{entity}"' for entity in entity_ids)
+            lines.append(f"            case {labels} -> new LegacyRenderTransform({f(x)}, {f(y)}, {f(z)});")
+        lines += ["            default -> LegacyRenderTransform.EMPTY;", "        };", "    }"]
     lines += ["    public static float scale(String id) {", "        return switch (id) {"]
     by_scale: dict[float, list[str]] = {}
     for entity in ids: by_scale.setdefault(mapping[entity][1], []).append(entity)
