@@ -65,6 +65,7 @@ public final class AnimaniaExtra {
         ExtraContent.ITEMS.register(bus);
         ExtraContent.BLOCKS.register(bus);
         ExtraContent.BLOCK_ENTITIES.register(bus);
+        ExtraContent.MENUS.register(bus);
         ExtraTab.TABS.register(bus);
         AnimaniaApi.registerFoodMatcher(MOD_ID, (id, stack) -> ExtraConfig.matchesSpeciesFood(id, stack));
         AnimaniaSleepProfiles.register(MOD_ID, AnimaniaExtra::sleepProfile);
@@ -103,7 +104,14 @@ public final class AnimaniaExtra {
     }
 
     private void attributes(EntityAttributeCreationEvent event) {
-        ENTITIES.values().forEach(type -> event.put((EntityType<? extends LivingEntity>) type.get(), AnimaniaAnimalEntity.createAttributes().build()));
+        ENTITIES.forEach((id, type) -> {
+            var attributes = AnimaniaAnimalEntity.createAttributes();
+            if (id.equals("hamster")) {
+                attributes.add(net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH, 10.0D);
+                attributes.add(net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED, 0.30000001192092896D);
+            }
+            event.put((EntityType<? extends LivingEntity>) type.get(), attributes.build());
+        });
     }
 
     private void spawnPlacements(SpawnPlacementRegisterEvent event) {
@@ -239,7 +247,7 @@ public final class AnimaniaExtra {
 
     private static float sizeFor(String id, boolean width) {
         if (id.startsWith("kit_") || id.startsWith("peachick_")) return width ? 0.35f : 0.45f;
-        if (id.equals("hamster")) return width ? 0.35f : 0.3f;
+        if (id.equals("hamster")) return width ? 0.5f : 0.3f;
         return width ? 0.7f : 0.8f;
     }
 }

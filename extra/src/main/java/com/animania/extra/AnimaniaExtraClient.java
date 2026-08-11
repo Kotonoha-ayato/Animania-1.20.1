@@ -11,6 +11,8 @@ import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import com.animania.common.entity.AnimaniaAnimalEntity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.client.gui.screens.MenuScreens;
+import com.animania.extra.client.screen.ExtraHamsterWheelScreen;
 
 final class AnimaniaExtraClient {
     private AnimaniaExtraClient() { }
@@ -20,9 +22,12 @@ final class AnimaniaExtraClient {
         AnimaniaClientDiagnostics.layerDefinitions(AnimaniaExtra.MOD_ID, ExtraLegacyModelLayers.LAYERS.size(), ExtraNativeModelLayers.LAYERS.size());
     }
     static void onClientSetup(FMLClientSetupEvent event) {
-        event.enqueueWork(() -> AnimaniaExtra.ENTITIES.forEach((id, type) -> EntityRenderers.register(
-                (EntityType<AnimaniaAnimalEntity>) type.get(),
-                context -> new AnimaniaAnimalRenderer(context, AnimaniaClientDiagnostics.requireLayer(AnimaniaExtra.MOD_ID, id, ExtraLegacyModelLayers.LAYERS.get(id)), ExtraLegacyModelLayers.profile(id), ExtraLegacyModelLayers.scale(id)))));
+        event.enqueueWork(() -> {
+            AnimaniaExtra.ENTITIES.forEach((id, type) -> EntityRenderers.register(
+                    (EntityType<AnimaniaAnimalEntity>) type.get(),
+                    context -> new AnimaniaAnimalRenderer(context, AnimaniaClientDiagnostics.requireLayer(AnimaniaExtra.MOD_ID, id, ExtraLegacyModelLayers.LAYERS.get(id)), ExtraLegacyModelLayers.profile(id), ExtraLegacyModelLayers.scale(id))));
+            MenuScreens.register(ExtraContent.HAMSTER_WHEEL_MENU.get(), ExtraHamsterWheelScreen::new);
+        });
         AnimaniaClientDiagnostics.rendererRegistrations(AnimaniaExtra.MOD_ID, AnimaniaExtra.ENTITIES.size(), 0);
     }
     static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {

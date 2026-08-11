@@ -14,6 +14,8 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+import net.minecraftforge.common.extensions.IForgeMenuType;
+import net.minecraft.world.inventory.MenuType;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -24,6 +26,8 @@ public final class ExtraContent {
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, AnimaniaExtra.MOD_ID);
     public static final DeferredRegister<net.minecraft.world.level.block.entity.BlockEntityType<?>> BLOCK_ENTITIES =
             DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, AnimaniaExtra.MOD_ID);
+    public static final DeferredRegister<MenuType<?>> MENUS =
+            DeferredRegister.create(ForgeRegistries.MENU_TYPES, AnimaniaExtra.MOD_ID);
     public static final Map<String, RegistryObject<Item>> ITEM_ENTRIES = new LinkedHashMap<>();
     public static final Map<String, RegistryObject<Block>> BLOCK_ENTRIES = new LinkedHashMap<>();
     public static final List<String> ITEM_IDS = List.of("blue_peacock_feather", "white_peacock_feather", "charcoal_peacock_feather", "opal_peacock_feather",
@@ -37,6 +41,8 @@ public final class ExtraContent {
     public static final RegistryObject<net.minecraft.world.level.block.entity.BlockEntityType<ExtraHamsterWheelBlockEntity>> HAMSTER_WHEEL_BE =
             BLOCK_ENTITIES.register("hamster_wheel", () -> net.minecraft.world.level.block.entity.BlockEntityType.Builder
                     .of(ExtraHamsterWheelBlockEntity::new, HAMSTER_WHEEL.get()).build(null));
+    public static final RegistryObject<MenuType<ExtraHamsterWheelMenu>> HAMSTER_WHEEL_MENU =
+            MENUS.register("hamster_wheel", () -> IForgeMenuType.create(ExtraHamsterWheelMenu::new));
 
     static { 
         ITEM_IDS.forEach(id -> {

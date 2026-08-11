@@ -3,6 +3,7 @@ package com.animania.extra.gametest;
 import com.animania.extra.AnimaniaExtra;
 import com.animania.extra.ExtraContent;
 import com.animania.extra.ExtraHamsterWheelBlockEntity;
+import com.animania.extra.ExtraHamsterWheelMenu;
 import com.animania.extra.ExtraLegacyIds;
 import com.animania.extra.ExtraSounds;
 import com.animania.api.data.AnimalGender;
@@ -693,6 +694,53 @@ public final class AnimaniaExtraGameTests {
                         new net.minecraft.world.phys.AABB(pos).inflate(1.5D)).isEmpty(),
                 "hamster wheel duplicated its stored hamster as a live nearby entity");
         helper.assertTrue(wheel.energyStored() > 0, "hamster wheel did not generate Forge energy");
+        helper.succeed();
+    }
+
+    @GameTest(template = "empty")
+    public static void hamsterInteractionMenuAndLegacyStateRoundTrip(GameTestHelper helper) {
+        AnimaniaGameTestEvidence.mark("animania_extra:hamster_interaction_menu_and_state");
+        var player = helper.makeMockPlayer();
+        player.moveTo(helper.absolutePos(new BlockPos(1, 1, 1)), 0.0F, 0.0F);
+        helper.getLevel().addFreshEntity(player);
+        BlockPos wheelPos = helper.absolutePos(new BlockPos(1, 1, 2));
+        helper.getLevel().setBlock(wheelPos, ExtraContent.HAMSTER_WHEEL.get().defaultBlockState(), 3);
+        ExtraHamsterWheelBlockEntity wheel = (ExtraHamsterWheelBlockEntity) helper.getLevel().getBlockEntity(wheelPos);
+        helper.assertTrue(wheel != null, "wheel block entity was absent");
+        var menu = wheel.createMenu(1, player.getInventory(), player);
+        helper.assertTrue(menu instanceof ExtraHamsterWheelMenu && menu.slots.size() == 37,
+                "wheel did not expose one real slot plus the 36 player inventory slots");
+        helper.assertFalse(menu.getSlot(0).mayPlace(new ItemStack(Items.STONE)),
+                "wheel menu accepted a non-food item");
+        helper.assertTrue(menu.getSlot(0).mayPlace(new ItemStack(ExtraContent.ITEM_ENTRIES.get("hamster_food").get())),
+                "wheel menu rejected hamster food");
+
+        AnimaniaAnimalEntity hamster = createAnimal(helper, "hamster");
+        hamster.moveTo(helper.absolutePos(new BlockPos(3, 1, 1)), 0.0F, 0.0F);
+        helper.getLevel().addFreshEntity(hamster);
+        player.setItemInHand(InteractionHand.MAIN_HAND,
+                new ItemStack(ExtraContent.ITEM_ENTRIES.get("hamster_food").get(), 2));
+        helper.assertTrue(hamster.mobInteract(player, InteractionHand.MAIN_HAND).consumesAction(),
+                "hamster feeding interaction was not consumed");
+        helper.assertTrue(hamster.isTamed() && player.getUUID().equals(hamster.getOwnerUUID()),
+                "legacy first feeding did not tame the hamster to the feeding player");
+        helper.assertTrue(hamster.getHamsterFoodStack() == 1 && hamster.isHamsterStanding(),
+                "feeding did not fill one cheek-pouch unit and start the alert pose");
+
+        CompoundTag saved = new CompoundTag();
+        hamster.addAdditionalSaveData(saved);
+        hamster.setHamsterFoodStack(0);
+        hamster.setHamsterStanding(false, 0);
+        hamster.readAdditionalSaveData(saved);
+        helper.assertTrue(hamster.getHamsterFoodStack() == 1 && hamster.isHamsterStanding(),
+                "hamster cheek-pouch or standing state was lost on save/reload");
+
+        player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+        player.setShiftKeyDown(false);
+        helper.assertTrue(hamster.mobInteract(player, InteractionHand.MAIN_HAND).consumesAction() && hamster.isSitting(),
+                "normal empty-hand interaction did not sit the tamed hamster");
+        helper.assertTrue(hamster.mobInteract(player, InteractionHand.MAIN_HAND).consumesAction() && !hamster.isSitting(),
+                "second normal empty-hand interaction did not release the tamed hamster");
         helper.succeed();
     }
 

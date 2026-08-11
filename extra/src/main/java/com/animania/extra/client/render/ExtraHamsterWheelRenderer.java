@@ -17,7 +17,6 @@ import net.minecraft.resources.ResourceLocation;
 /** Native animated renderer for the legacy hamster wheel and runner model. */
 public final class ExtraHamsterWheelRenderer implements BlockEntityRenderer<ExtraHamsterWheelBlockEntity> {
     private static final ResourceLocation WHEEL_TEXTURE = new ResourceLocation("animania_extra", "textures/entity/tileentities/hamster_wheel.png");
-    private static final ResourceLocation HAMSTER_TEXTURE = new ResourceLocation("animania_extra", "textures/entity/rodents/hamster_tarou.png");
     private final ModelPart wheel;
     private final ModelPart wheelRotor;
     private final ModelPart hamster;
@@ -54,7 +53,9 @@ public final class ExtraHamsterWheelRenderer implements BlockEntityRenderer<Extr
             pose.scale(0.5F, 0.5F, 0.5F);
             pose.translate(0.0D, 0.9D, 0.0D);
             pose.mulPose(Axis.YP.rotationDegrees(-90.0F));
-            hamster.render(pose, buffers.getBuffer(RenderType.entityCutout(HAMSTER_TEXTURE)), packedLight, OverlayTexture.NO_OVERLAY);
+            ResourceLocation hamsterTexture = ResourceLocation.fromNamespaceAndPath("animania_extra",
+                    "textures/entity/rodents/hamster_" + entity.hamsterVariant() + ".png");
+            hamster.render(pose, buffers.getBuffer(RenderType.entityCutout(hamsterTexture)), packedLight, OverlayTexture.NO_OVERLAY);
             pose.popPose();
         }
         pose.popPose();

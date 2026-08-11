@@ -6,6 +6,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -38,6 +41,16 @@ public final class ExtraHamsterWheelBlockEntity extends AnimaniaStorageBlockEnti
     @Override
     protected boolean isItemValid(int slot, ItemStack stack) {
         return slot == 0 && isHamsterFood(stack);
+    }
+
+    @Override
+    public boolean canPlaceItem(int slot, ItemStack stack) {
+        return isItemValid(slot, stack);
+    }
+
+    @Override
+    public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
+        return new ExtraHamsterWheelMenu(id, inventory, this);
     }
 
     @Override
@@ -74,12 +87,23 @@ public final class ExtraHamsterWheelBlockEntity extends AnimaniaStorageBlockEnti
         return hamsterData != null && !hamsterData.isEmpty();
     }
 
+    public String hamsterVariant() {
+        String variant = hasHamster() ? hamsterData.getString("AnimaniaVariant") : "tarou";
+        return switch (variant) {
+            case "black", "brown", "darkbrown", "darkgray", "gray", "plum", "tarou", "white", "gold" -> variant;
+            default -> "tarou";
+        };
+    }
+
     public boolean ejectHamster() {
         if (!hasHamster() || level == null || level.isClientSide) return false;
         var type = ForgeRegistries.ENTITY_TYPES.getValue(
                 ResourceLocation.fromNamespaceAndPath(AnimaniaExtra.MOD_ID, "hamster"));
         if (type == null || !(type.create(level) instanceof AnimaniaAnimalEntity hamster)) return false;
         hamster.readAdditionalSaveData(hamsterData.copy());
+        // 1.12 marks the released runner as unfed; it must be fed again before
+        // it can immediately re-enter a wheel.
+        hamster.setHunger(0);
         for (net.minecraft.core.Direction direction : net.minecraft.core.Direction.values()) {
             if (direction == net.minecraft.core.Direction.DOWN) continue;
             BlockPos target = worldPosition.relative(direction);

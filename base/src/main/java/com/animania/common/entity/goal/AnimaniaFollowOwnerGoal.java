@@ -41,7 +41,7 @@ public final class AnimaniaFollowOwnerGoal extends Goal {
     @Override
     public boolean canContinueToUse() {
         return owner != null && legacyGateAllows() && owner.isAlive()
-                && animal.distanceToSqr(owner) > minDistance * minDistance;
+                && animal.distanceToSqr(owner) > maxDistance * maxDistance;
     }
 
     @Override
@@ -94,9 +94,9 @@ public final class AnimaniaFollowOwnerGoal extends Goal {
     private void followOrTeleport() {
         if (owner == null) return;
         double distance = animal.distanceToSqr(owner);
-        if (distance >= maxDistance * maxDistance && configured(AnimaniaConfig.TAMED_ANIMALS_TELEPORT, true)
+        if (distance >= 144.0D && configured(AnimaniaConfig.TAMED_ANIMALS_TELEPORT, true)
                 && tryTeleportNearOwner()) return;
-        if (distance > minDistance * minDistance) {
+        if (distance > maxDistance * maxDistance) {
             animal.getNavigation().moveTo(owner, speed);
             animal.getLookControl().setLookAt(owner, animal.getMaxHeadYRot(), animal.getMaxHeadXRot());
         }

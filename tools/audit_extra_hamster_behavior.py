@@ -14,14 +14,14 @@ FEATURES = [
     {
         "source": "src/main/java/com/animania/addons/extra/common/block/BlockHamsterWheel.java",
         "targets": ["extra/src/main/java/com/animania/extra/ExtraHamsterWheelBlock.java", "extra/src/main/java/com/animania/extra/ExtraHamsterWheelBlockEntity.java"],
-        "selectors": ["animania_extra:hamsterWheelGeneratesForgeEnergy"],
-        "note": "a nearby fed hamster starts the wheel and the block entity produces Forge energy",
+        "selectors": ["animania_extra:hamsterWheelGeneratesForgeEnergy", "animania_extra:hamster_interaction_menu_and_state"],
+        "note": "a stored fed hamster starts the wheel, the block entity produces Forge energy, and the one-slot food menu rejects invalid items",
     },
     {
         "source": "src/main/java/com/animania/addons/extra/common/entity/rodents/EntityHamster.java",
-        "targets": ["base/src/main/java/com/animania/common/entity/AnimaniaAnimalEntity.java", "extra/src/main/java/com/animania/extra/ExtraContent.java"],
-        "selectors": ["animania_extra:hamster_carry_server_round_trip", "animania_extra:hamsterDeathReturnsExactlyOneColourPreservingBall"],
-        "note": "server-authoritative ball/carry state round-trips through NBT and lethal death returns exactly one colour-preserving ball",
+        "targets": ["base/src/main/java/com/animania/common/entity/AnimaniaAnimalEntity.java", "extra/src/main/java/com/animania/extra/ExtraContent.java", "extra/src/main/java/com/animania/extra/client/model/ExtraLegacyModelLayers.java"],
+        "selectors": ["animania_extra:hamster_carry_server_round_trip", "animania_extra:hamsterDeathReturnsExactlyOneColourPreservingBall", "animania_extra:hamster_interaction_menu_and_state"],
+        "note": "server-authoritative taming, cheek-pouch, standing, ball and carry state round-trip through NBT and lethal death returns exactly one colour-preserving ball",
     },
     {
         "source": "src/main/java/com/animania/addons/extra/common/item/ItemHamsterBall.java",

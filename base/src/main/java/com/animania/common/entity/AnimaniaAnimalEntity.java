@@ -59,6 +59,7 @@ import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.ai.goal.LeapAtTargetGoal;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.world.entity.ai.goal.FleeSunGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.monster.AbstractSkeleton;
 import net.minecraft.world.entity.animal.Chicken;
@@ -125,6 +126,8 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
     private static final EntityDataAccessor<Optional<java.util.UUID>> RIVAL = SynchedEntityData.defineId(AnimaniaAnimalEntity.class, EntityDataSerializers.OPTIONAL_UUID);
     private static final EntityDataAccessor<Integer> FIGHT_TIMER = SynchedEntityData.defineId(AnimaniaAnimalEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Float> GROWTH_PROGRESS = SynchedEntityData.defineId(AnimaniaAnimalEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Integer> HAMSTER_FOOD_STACK = SynchedEntityData.defineId(AnimaniaAnimalEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Boolean> HAMSTER_STANDING = SynchedEntityData.defineId(AnimaniaAnimalEntity.class, EntityDataSerializers.BOOLEAN);
     public static final String CARRIED_ENTITY_TAG = "AnimaniaCarriedEntity";
     public static final String CARRIED_ANIMAL_TAG = "AnimaniaCarriedAnimal";
     private int pregnancyTicks;
@@ -146,6 +149,8 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
      * is persisted with the entity and never inferred from a client packet.
      */
     private boolean interacted;
+    private int hamsterStandTicks;
+    private int hamsterEatTicks = 5000;
 
     public AnimaniaAnimalEntity(EntityType<? extends AnimaniaAnimalEntity> type, Level level) {
         super(type, level);
@@ -252,6 +257,10 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
 
     @Override
     protected void registerGoals() {
+        if (isHamster()) {
+            registerHamsterGoals();
+            return;
+        }
         if (AnimaniaSmallCreatureFloatGoal.supports(this)) {
             goalSelector.addGoal(AnimaniaSmallCreatureFloatGoal.legacyPriority(this),
                     new AnimaniaSmallCreatureFloatGoal(this));
@@ -313,6 +322,23 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
                         target -> true));
             }
         }
+    }
+
+    /** Exact task ordering from EntityHamster#initAI in the 1.12 baseline. */
+    private void registerHamsterGoals() {
+        goalSelector.addGoal(1, new AnimaniaSitGoal(this));
+        goalSelector.addGoal(1, new AnimaniaPanicGoal(this, 1.4D));
+        goalSelector.addGoal(2, new AnimaniaSmallCreatureFloatGoal(this));
+        goalSelector.addGoal(3, new AnimaniaFindWaterGoal(this));
+        goalSelector.addGoal(3, new AnimaniaFindFoodGoal(this));
+        goalSelector.addGoal(4, new FleeSunGoal(this, 1.0D));
+        goalSelector.addGoal(5, new AnimaniaWanderAvoidWaterGoal(this, 1.1D));
+        goalSelector.addGoal(6, new AnimaniaTemptGoal(this, 1.2D, false));
+        goalSelector.addGoal(7, new AnimaniaFollowOwnerGoal(this, 1.0D, 10.0F, 2.0F));
+        goalSelector.addGoal(8, new AnimaniaWatchClosestGoal(this));
+        goalSelector.addGoal(9, new AnimaniaLookIdleGoal(this));
+        goalSelector.addGoal(10, new AnimaniaSleepGoal(this));
+        targetSelector.addGoal(0, new AnimaniaHurtByTargetGoal(this));
     }
 
     @Override
@@ -433,6 +459,8 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
         entityData.define(RIVAL, Optional.empty());
         entityData.define(FIGHT_TIMER, 0);
         entityData.define(GROWTH_PROGRESS, 1.0F);
+        entityData.define(HAMSTER_FOOD_STACK, 0);
+        entityData.define(HAMSTER_STANDING, false);
     }
 
     @Override
@@ -454,6 +482,7 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
             getNavigation().stop();
             setDeltaMovement(0.0D, getDeltaMovement().y, 0.0D);
         }
+        tickHamsterState();
         if (config(AnimaniaConfig.AMBIANCE_MODE, false)) {
             // Ambiance mode keeps the care meters full and disables all
             // starvation pressure while retaining the visible state fields.
@@ -513,6 +542,32 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
         }
         if (isPregnant() && ++pregnancyTicks >= pregnancyDuration()) giveBirth();
         tickRoosterCrow();
+    }
+
+    /** Restores the 1.12 cheek-pouch, alert-standing and self-heal cycle. */
+    private void tickHamsterState() {
+        if (!isHamster()) return;
+        if (isHamsterStanding()) {
+            getNavigation().stop();
+            setDeltaMovement(0.0D, getDeltaMovement().y, 0.0D);
+            if (--hamsterStandTicks <= 0 && random.nextInt(10) == 0) setHamsterStanding(false, 0);
+        } else if (!isSitting() && !isSleeping() && !isInBall()
+                && random.nextInt(20) == 0 && random.nextInt(20) == 0) {
+            setHamsterStanding(true, 30);
+        }
+        if (getHamsterFoodStack() > 0) {
+            if (getHealth() < getMaxHealth()) {
+                setHamsterFoodStack(getHamsterFoodStack() - 1);
+                heal(1.0F);
+                hamsterEatTicks = 5000;
+            } else if (hamsterEatTicks-- <= 0) {
+                if (random.nextInt(30) == 0 && random.nextInt(30) == 0) {
+                    setHamsterFoodStack(getHamsterFoodStack() - 1);
+                    heal(1.0F);
+                    hamsterEatTicks = 5000;
+                }
+            }
+        }
     }
 
     /** Client-synchronized 0..1 fraction of the legacy 0.00..0.85 child growth cycle. */
@@ -783,6 +838,14 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
         if (isHamster()) {
             InteractionResult ballResult = interactHamsterBall(player, hand, stack);
             if (ballResult != null) return ballResult;
+            if (stack.isEmpty() && isTamed() && !player.isCrouching() && !isSleeping()) {
+                if (!level().isClientSide) {
+                    setSitting(!isSitting());
+                    setHamsterStanding(false, 0);
+                    getNavigation().stop();
+                }
+                return InteractionResult.sidedSuccess(level().isClientSide);
+            }
         }
         if (isHorseAnimal() && !isBaby()) {
             if (stack.is(Items.SADDLE) && !isSaddled()) {
@@ -838,6 +901,16 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
                         && com.animania.common.AnimaniaSupporters.contains(player.getUUID())) {
                     setVariantName("gold");
                 }
+                if (isHamster()) {
+                    if (!isTamed()) {
+                        setTamed(true);
+                        setOwnerUUID(player.getUUID());
+                        setSitting(false);
+                    }
+                    if (getHamsterFoodStack() < 5) setHamsterFoodStack(getHamsterFoodStack() + 1);
+                    else heal(1.0F);
+                    setHamsterStanding(true, 100);
+                }
                 ItemStack fedItem = stack.copyWithCount(1);
                 feed(stack);
                 if (player instanceof ServerPlayer serverPlayer) {
@@ -888,6 +961,28 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
     public boolean isHamster() {
         ResourceLocation id = ForgeRegistries.ENTITY_TYPES.getKey(getType());
         return id != null && "animania_extra".equals(id.getNamespace()) && "hamster".equals(id.getPath());
+    }
+
+    public int getHamsterFoodStack() {
+        return isHamster() ? Math.max(0, Math.min(5, entityData.get(HAMSTER_FOOD_STACK))) : 0;
+    }
+
+    public void setHamsterFoodStack(int count) {
+        if (isHamster()) entityData.set(HAMSTER_FOOD_STACK, Math.max(0, Math.min(5, count)));
+    }
+
+    public boolean isHamsterStanding() {
+        return isHamster() && entityData.get(HAMSTER_STANDING);
+    }
+
+    public void setHamsterStanding(boolean standing, int ticks) {
+        if (!isHamster()) return;
+        entityData.set(HAMSTER_STANDING, standing);
+        hamsterStandTicks = standing ? Math.max(1, ticks) : 0;
+        if (standing) {
+            setSitting(false);
+            setSleeping(false);
+        }
     }
 
     public boolean isInBall() {
@@ -958,7 +1053,7 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
             }
             return InteractionResult.sidedSuccess(level().isClientSide);
         }
-        if (stack.isEmpty() && player.isCrouching() && isTamed() && ownerMatches(player)
+        if (stack.isEmpty() && player.isCrouching() && isTamed()
                 && !isSleeping() && !isInBall() && !hasCarriedAnimal(player)) {
             if (!level().isClientSide) {
                 CompoundTag animal = new CompoundTag();
@@ -1696,6 +1791,13 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
         tag.putBoolean("InBall", isInBall());
         tag.putInt("AnimaniaBallColor", getBallColor());
         tag.putInt("BallColor", getBallColor());
+        if (isHamster()) {
+            tag.putInt("AnimaniaHamsterFoodStack", getHamsterFoodStack());
+            tag.putInt("foodStackCount", getHamsterFoodStack());
+            tag.putBoolean("AnimaniaHamsterStanding", isHamsterStanding());
+            tag.putInt("AnimaniaHamsterStandTicks", hamsterStandTicks);
+            tag.putInt("AnimaniaHamsterEatTicks", hamsterEatTicks);
+        }
         tag.putInt("AnimaniaWoolColor", getWoolColor());
         tag.putInt("DyeColor", getWoolColor());
         tag.putInt("AnimaniaBlinkTimer", getBlinkTimer());
@@ -1748,6 +1850,14 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
         interacted = tag.getBoolean("AnimaniaInteracted");
         setInBall(tag.getBoolean("AnimaniaInBall") || tag.getBoolean("InBall"));
         setBallColor(tag.contains("AnimaniaBallColor") ? tag.getInt("AnimaniaBallColor") : tag.getInt("BallColor"));
+        if (isHamster()) {
+            setHamsterFoodStack(tag.contains("AnimaniaHamsterFoodStack")
+                    ? tag.getInt("AnimaniaHamsterFoodStack") : tag.getInt("foodStackCount"));
+            setHamsterStanding(tag.getBoolean("AnimaniaHamsterStanding"),
+                    Math.max(1, tag.getInt("AnimaniaHamsterStandTicks")));
+            hamsterEatTicks = tag.contains("AnimaniaHamsterEatTicks")
+                    ? Math.max(0, tag.getInt("AnimaniaHamsterEatTicks")) : 5000;
+        }
         setWoolColor(tag.contains("AnimaniaWoolColor") ? tag.getInt("AnimaniaWoolColor")
                 : tag.contains("DyeColor") ? tag.getInt("DyeColor") : DyeColor.WHITE.getId());
         setBlinkTimer(tag.contains("AnimaniaBlinkTimer") ? tag.getInt("AnimaniaBlinkTimer") : getBlinkTimer());

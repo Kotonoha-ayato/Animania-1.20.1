@@ -23,6 +23,8 @@ import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.network.NetworkHooks;
+import net.minecraft.server.level.ServerPlayer;
 
 /** Functional hamster wheel block replacing the old legacy model tile entity. */
 public final class ExtraHamsterWheelBlock extends AnimaniaContainerBlock {
@@ -89,7 +91,13 @@ public final class ExtraHamsterWheelBlock extends AnimaniaContainerBlock {
                 return InteractionResult.CONSUME;
             }
         }
-        return super.use(state, level, pos, player, hand, hit);
+        if (hand != InteractionHand.MAIN_HAND) return InteractionResult.PASS;
+        if (level.isClientSide) return InteractionResult.SUCCESS;
+        if (wheel != null && player instanceof ServerPlayer serverPlayer) {
+            NetworkHooks.openScreen(serverPlayer, wheel, pos);
+            return InteractionResult.CONSUME;
+        }
+        return InteractionResult.PASS;
     }
 
     @Override

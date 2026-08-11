@@ -109,7 +109,8 @@ public final class LegacyAnimalModel extends HierarchicalModel<AnimaniaAnimalEnt
         float flap = Mth.sin(ageInTicks * 0.55F) * (0.08F + limbSwingAmount * 0.45F);
         for (int i = 0; i < wings.size(); i++) wings.get(i).zRot += (i & 1) == 0 ? flap : -flap;
 
-        if (entity.isSitting()) applyPose(sittingPose);
+        if (entity.isHamster()) setupHamsterPose(entity, ageInTicks);
+        else if (entity.isSitting()) applyPose(sittingPose);
         else if (entity.isSleeping() && petAnimation.active()) applyPose(sleepingPose);
 
         if (entity.getEatingTicks() > 0) {
@@ -135,6 +136,53 @@ public final class LegacyAnimalModel extends HierarchicalModel<AnimaniaAnimalEnt
         } else if (entity.getHunger() < 25) {
             heads.forEach(part -> part.xRot += 0.35F + Mth.sin(ageInTicks * 0.45F) * 0.12F);
         }
+    }
+
+    /** Applies the final positions written by ModelHamster#setLivingAnimations in 1.12. */
+    private void setupHamsterPose(AnimaniaAnimalEntity entity, float ageInTicks) {
+        // The Java model is deliberately centred at X=-1.5: its body cube is
+        // -4.02..0.98. The generated layer lost the matching head offset,
+        // which made an otherwise symmetric head look displaced.
+        heads.forEach(part -> part.x = -1.5F);
+        for (int i = 0; i < 5; i++) {
+            if (root.hasChild("hamster_cheek_right" + i))
+                root.getChild("hamster_cheek_right" + i).visible = i < entity.getHamsterFoodStack();
+            if (root.hasChild("hamster_cheek_left" + i))
+                root.getChild("hamster_cheek_left" + i).visible = i < entity.getHamsterFoodStack();
+        }
+        ModelPart body = child("hamster_body");
+        ModelPart tail = child("hamster_tail");
+        ModelPart backRight = child("hamster_leg_back_right");
+        ModelPart backLeft = child("hamster_leg_back_left");
+        ModelPart frontRight = child("hamster_leg_front_right");
+        ModelPart frontLeft = child("hamster_leg_front_left");
+        if (entity.isSitting()) {
+            if (body != null) body.xRot = 1.0F;
+            heads.forEach(part -> { part.y = 16.0F; part.z = -1.5F; });
+            if (backRight != null) backRight.loadPose(net.minecraft.client.model.geom.PartPose.offsetAndRotation(-3.5F, 24.5F, 2.0F, -1.570796F, 0.8F, 0.0F));
+            if (backLeft != null) backLeft.loadPose(net.minecraft.client.model.geom.PartPose.offsetAndRotation(2.5F, 24.5F, 3.5F, -1.570796F, -0.8F, 0.0F));
+            if (frontRight != null) frontRight.setPos(-2.0F, 21.0F, -0.5F);
+            if (frontLeft != null) frontLeft.setPos(2.0F, 21.0F, -0.5F);
+            if (tail != null) tail.setPos(0.0F, 17.0F, 2.0F);
+        } else if (entity.isHamsterStanding()) {
+            heads.forEach(part -> { part.y = 9.6F; part.z = 4.5F; });
+            if (body != null) { body.setPos(0.0F, 15.1F, 4.5F); body.xRot = Mth.cos(80.0F * Mth.DEG_TO_RAD); }
+            if (backRight != null) backRight.setPos(-2.0F, 20.6F, 6.0F);
+            if (backLeft != null) backLeft.setPos(2.0F, 20.6F, 6.0F);
+            if (frontRight != null) frontRight.loadPose(net.minecraft.client.model.geom.PartPose.offsetAndRotation(-2.0F, 14.6F, 3.0F, Mth.cos(150.0F * Mth.DEG_TO_RAD), Mth.sin(-10.0F * Mth.DEG_TO_RAD), 0.0F));
+            if (frontLeft != null) frontLeft.loadPose(net.minecraft.client.model.geom.PartPose.offsetAndRotation(2.0F, 14.6F, 3.0F, Mth.cos(150.0F * Mth.DEG_TO_RAD), Mth.sin(10.0F * Mth.DEG_TO_RAD), 0.0F));
+            if (tail != null) tail.setPos(0.0F, 14.6F, 2.0F);
+        }
+        if (tail != null) {
+            tail.xRot = 1.570796F;
+            tail.zRot = entity.isTamed()
+                    ? Mth.sin(ageInTicks * 3.141593F * 0.05F) * Mth.sin(ageInTicks * 3.141593F * 11.0F * 0.05F) * 0.15F * 3.141593F
+                    : 0.0F;
+        }
+    }
+
+    private ModelPart child(String name) {
+        return root.hasChild(name) ? root.getChild(name) : null;
     }
 
     @Override
