@@ -4,6 +4,7 @@ import com.animania.client.model.LegacyAnimalModel;
 import com.animania.client.model.LegacyAnimationProfile;
 import com.animania.client.model.LegacyPoseDefinition;
 import com.animania.client.model.LegacyRenderTransform;
+import com.animania.client.model.LegacyPetAnimationDefinition;
 import com.animania.client.AnimaniaClientDiagnostics;
 import com.animania.common.entity.AnimaniaAnimalEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -21,19 +22,28 @@ public class AnimaniaAnimalRenderer extends MobRenderer<AnimaniaAnimalEntity, Le
 
     public AnimaniaAnimalRenderer(EntityRendererProvider.Context context, ModelLayerLocation layer,
                                   LegacyAnimationProfile profile, float modelScale) {
-        this(context, layer, profile, LegacyPoseDefinition.EMPTY, LegacyRenderTransform.EMPTY, modelScale);
+        this(context, layer, profile, LegacyPoseDefinition.EMPTY, LegacyPetAnimationDefinition.EMPTY,
+                LegacyRenderTransform.EMPTY, modelScale);
     }
 
     public AnimaniaAnimalRenderer(EntityRendererProvider.Context context, ModelLayerLocation layer,
                                   LegacyAnimationProfile profile, LegacyPoseDefinition sittingPose,
                                   float modelScale) {
-        this(context, layer, profile, sittingPose, LegacyRenderTransform.EMPTY, modelScale);
+        this(context, layer, profile, sittingPose, LegacyPetAnimationDefinition.EMPTY,
+                LegacyRenderTransform.EMPTY, modelScale);
     }
 
     public AnimaniaAnimalRenderer(EntityRendererProvider.Context context, ModelLayerLocation layer,
                                   LegacyAnimationProfile profile, LegacyPoseDefinition sittingPose,
                                   LegacyRenderTransform renderTransform, float modelScale) {
-        super(context, new LegacyAnimalModel(context.bakeLayer(layer), profile, sittingPose), 0.45f);
+        this(context, layer, profile, sittingPose, LegacyPetAnimationDefinition.EMPTY, renderTransform, modelScale);
+    }
+
+    public AnimaniaAnimalRenderer(EntityRendererProvider.Context context, ModelLayerLocation layer,
+                                  LegacyAnimationProfile profile, LegacyPoseDefinition sittingPose,
+                                  LegacyPetAnimationDefinition petAnimation,
+                                  LegacyRenderTransform renderTransform, float modelScale) {
+        super(context, new LegacyAnimalModel(context.bakeLayer(layer), profile, sittingPose, petAnimation), 0.45f);
         this.modelScale = modelScale;
         this.renderTransform = renderTransform;
         addLayer(new AnimaniaHamsterBallLayer(this, context.bakeLayer(com.animania.client.model.AnimaniaHamsterBallModel.LAYER)));

@@ -23,15 +23,23 @@ public final class LegacyAnimalModel extends HierarchicalModel<AnimaniaAnimalEnt
     private final List<ModelPart> privateParts;
     private final List<ModelPart> coloredParts;
     private final List<ResolvedPose> sittingPose;
+    private final List<ResolvedPose> sleepingPose;
+    private final ModelPart petLookPart;
+    private final LegacyPetAnimationDefinition petAnimation;
     private float woolRed = 1.0F;
     private float woolGreen = 1.0F;
     private float woolBlue = 1.0F;
 
     public LegacyAnimalModel(ModelPart root, LegacyAnimationProfile profile) {
-        this(root, profile, LegacyPoseDefinition.EMPTY);
+        this(root, profile, LegacyPoseDefinition.EMPTY, LegacyPetAnimationDefinition.EMPTY);
     }
 
     public LegacyAnimalModel(ModelPart root, LegacyAnimationProfile profile, LegacyPoseDefinition sittingPose) {
+        this(root, profile, sittingPose, LegacyPetAnimationDefinition.EMPTY);
+    }
+
+    public LegacyAnimalModel(ModelPart root, LegacyAnimationProfile profile, LegacyPoseDefinition sittingPose,
+                             LegacyPetAnimationDefinition petAnimation) {
         this.root = root;
         this.heads = resolve(root, profile.heads());
         this.leftLegs = resolve(root, profile.leftLegs());
@@ -42,6 +50,10 @@ public final class LegacyAnimalModel extends HierarchicalModel<AnimaniaAnimalEnt
         this.privateParts = resolve(root, profile.privateParts());
         this.coloredParts = resolve(root, profile.coloredParts());
         this.sittingPose = resolvePose(root, sittingPose);
+        this.sleepingPose = resolvePose(root, petAnimation.sleepingPose());
+        List<ModelPart> look = resolve(root, new String[]{petAnimation.lookPart()});
+        this.petLookPart = look.isEmpty() ? null : look.get(0);
+        this.petAnimation = petAnimation;
     }
 
     @Override
@@ -68,18 +80,27 @@ public final class LegacyAnimalModel extends HierarchicalModel<AnimaniaAnimalEnt
             showPrivateParts = false;
         }
         for (ModelPart part : privateParts) part.visible = showPrivateParts;
-        float headX = headPitch * Mth.DEG_TO_RAD;
-        float headY = netHeadYaw * Mth.DEG_TO_RAD;
-        heads.forEach(part -> { part.xRot += headX; part.yRot += headY; });
+        if (petAnimation.active() && petLookPart != null && !entity.isSleeping()
+                && (petAnimation.lookWhileSitting() || !entity.isSitting())) {
+            petLookPart.xRot = headPitch * petAnimation.pitchScale() + petAnimation.pitchOffset();
+            petLookPart.yRot = netHeadYaw * petAnimation.yawScale();
+        } else if (!petAnimation.active()) {
+            float headX = headPitch * Mth.DEG_TO_RAD;
+            float headY = netHeadYaw * Mth.DEG_TO_RAD;
+            heads.forEach(part -> { part.xRot += headX; part.yRot += headY; });
+        }
 
-        float stride = Mth.cos(limbSwing * 0.6662F) * 1.2F * limbSwingAmount;
-        leftLegs.forEach(part -> part.xRot += stride);
-        rightLegs.forEach(part -> part.xRot -= stride);
-        tails.forEach(part -> part.yRot += Mth.sin(ageInTicks * 0.12F) * 0.18F);
+        if (!entity.isSleeping()) {
+            float stride = Mth.cos(limbSwing * 0.6662F) * petAnimation.strideScale() * limbSwingAmount;
+            leftLegs.forEach(part -> part.xRot += stride);
+            rightLegs.forEach(part -> part.xRot -= stride);
+            tails.forEach(part -> part.yRot += Mth.sin(ageInTicks * 0.12F) * 0.18F);
+        }
         float flap = Mth.sin(ageInTicks * 0.55F) * (0.08F + limbSwingAmount * 0.45F);
         for (int i = 0; i < wings.size(); i++) wings.get(i).zRot += (i & 1) == 0 ? flap : -flap;
 
         if (entity.isSitting()) applyPose(sittingPose);
+        else if (entity.isSleeping() && petAnimation.active()) applyPose(sleepingPose);
 
         if (entity.getEatingTicks() > 0) {
             heads.forEach(part -> part.xRot += 0.9F);
@@ -91,7 +112,7 @@ public final class LegacyAnimalModel extends HierarchicalModel<AnimaniaAnimalEnt
         } else if (entity.isFighting()) {
             heads.forEach(part -> part.xRot -= 0.35F);
             bodies.forEach(part -> part.xRot += 0.08F);
-        } else if (entity.isSleeping()) {
+        } else if (entity.isSleeping() && !petAnimation.active()) {
             bodies.forEach(part -> part.zRot += 0.12F);
             heads.forEach(part -> part.xRot += 0.35F);
         } else if (entity.getPlayGoal() != null && entity.isPlaying()) {

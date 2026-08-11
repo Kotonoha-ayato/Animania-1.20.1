@@ -69,7 +69,7 @@ class LegacyJavaModelConverterTest(unittest.TestCase):
                     self.assertEqual(tuple(CONVERTER.args(raw)[:3]), model.parts[name].pos,
                                      f"{path.name}:{name}")
 
-    def test_offset_stays_after_rotation_and_is_inherited_by_children(self) -> None:
+    def test_offset_stays_as_a_native_node_between_rotation_and_children(self) -> None:
         parent = CONVERTER.Part("parent", boxes=[(1.0, 2.0, 3.0, 4.0, 5.0, 6.0)],
                                 pos=(10.0, 20.0, 30.0), offset=(0.5, -1.0, 2.0), children=["child"])
         child = CONVERTER.Part("child", boxes=[(0.0, 0.0, 0.0, 1.0, 1.0, 1.0)],
@@ -78,9 +78,31 @@ class LegacyJavaModelConverterTest(unittest.TestCase):
         lines: list[str] = []
         CONVERTER.emit_part(lines, model, parent, "root", "")
         emitted = "\n".join(lines)
-        self.assertIn("addBox(1.5F, 1.0F, 5.0F, 4.0F, 5.0F, 6.0F)", emitted)
+        self.assertIn("addBox(1.0F, 2.0F, 3.0F, 4.0F, 5.0F, 6.0F)", emitted)
         self.assertIn("PartPose.offsetAndRotation(10.0F, 20.0F, 30.0F", emitted)
-        self.assertIn("PartPose.offsetAndRotation(4.5F, 4.0F, 8.0F", emitted)
+        self.assertIn('addOrReplaceChild("_offset"', emitted)
+        self.assertIn("PartPose.offset(0.5F, -1.0F, 2.0F)", emitted)
+        self.assertIn("PartPose.offsetAndRotation(4.0F, 5.0F, 6.0F", emitted)
+
+    def test_source_named_pet_limbs_all_receive_gait_paths(self) -> None:
+        dog_root = ROOT / "upstream/Animania-1.12/src/main/java/com/animania/addons/catsdogs/client/models/dogs"
+        for name in ("ModelChihuahua.java", "ModelPomeranian.java", "ModelPug.java"):
+            path = dog_root / name
+            model = CONVERTER.parse_model(path)
+            _, phase_a, phase_b, *_ = CONVERTER.animation_profile(model, path)
+            self.assertEqual(4, len(phase_a) + len(phase_b), name)
+
+    def test_all_pet_models_map_a_complete_sleeping_pose(self) -> None:
+        model_root = ROOT / "upstream/Animania-1.12/src/main/java/com/animania/addons/catsdogs/client/models"
+        paths = sorted([*model_root.glob("cats/Model*.java"), *model_root.glob("dogs/Model*.java")])
+        self.assertEqual(22, len(paths))
+        for path in paths:
+            model = CONVERTER.parse_model(path)
+            pose = CONVERTER.sleeping_pose(ROOT, path)
+            rendered = CONVERTER.full_pose_java(model, pose)
+            common = set(pose.parts) & set(model.parts)
+            self.assertGreater(len(common), 10, path.name)
+            self.assertEqual(len(common) * 2, rendered.count("new LegacyPartPose("), path.name)
 
     def test_all_dog_models_have_explicit_sitting_pose_overrides(self) -> None:
         dog_root = ROOT / "upstream/Animania-1.12/src/main/java/com/animania/addons/catsdogs/client/models/dogs"

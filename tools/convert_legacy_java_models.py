@@ -130,7 +130,7 @@ def parse_model(path: Path) -> Model:
     text = expand_indexed_part_loops(text)
     constructor = method_body(
         text,
-        re.compile(rf"\bpublic\s+{re.escape(path.stem)}\s*\(\s*\)\s*\{{"),
+        re.compile(rf"\b(?:public|private|protected)\s+{re.escape(path.stem)}\s*\(\s*\)\s*\{{"),
     )
     # Geometry and default pivots belong to the no-argument constructor.
     # Scanning the full file accidentally promoted literal values in
@@ -339,30 +339,30 @@ def catsdogs_translations(root: Path) -> dict[str, tuple[float, float, float]]:
     return result
 
 
-def emit_part(lines: list[str], model: Model, part: Part, variable: str, indent: str,
-              inherited_offset: tuple[float, float, float] = (0, 0, 0)) -> None:
+def emit_part(lines: list[str], model: Model, part: Part, variable: str, indent: str) -> None:
     builder = "CubeListBuilder.create()"
     if part.mirror: builder += ".mirror()"
     for box in part.boxes:
-        # 1.12 ModelRendererAnimania is T(pivot) * R(rotation) * T(offset).
-        # A LayerDefinition has no post-rotation part offset, so move each
-        # cube locally and add the parent's offset to the child's pivot below.
-        local_box = (box[0] + part.offset[0], box[1] + part.offset[1], box[2] + part.offset[2], *box[3:])
-        builder += f".texOffs({part.uv[0]}, {part.uv[1]}).addBox({', '.join(f(v) for v in local_box[:6])}"
+        builder += f".texOffs({part.uv[0]}, {part.uv[1]}).addBox({', '.join(f(v) for v in box[:6])}"
         if len(box) == 7: builder += f", new CubeDeformation({f(box[6])})"
         builder += ")"
-    x = part.pos[0] + inherited_offset[0]
-    y = part.pos[1] + inherited_offset[1]
-    z = part.pos[2] + inherited_offset[2]
+    x, y, z = part.pos
     rx, ry, rz = part.rot
     pose = f"PartPose.offsetAndRotation({f(x)}, {f(y)}, {f(z)}, {f(rx)}, {f(ry)}, {f(rz)})"
     safe = snake(part.name)
-    lines.append(f'{indent}PartDefinition {safe} = {variable}.addOrReplaceChild("{safe}", {builder}, {pose});')
+    # Preserve ModelRendererAnimania exactly as two native parts:
+    # T(pivot) * R(rotation) on the outer bone, then T(offset) on an inner
+    # node containing both the cube and child bones. This also permits the
+    # legacy sleeping poses to animate offsets without approximation.
+    lines.append(f'{indent}PartDefinition {safe} = {variable}.addOrReplaceChild("{safe}", CubeListBuilder.create(), {pose});')
+    offset = f"PartPose.offset({f(part.offset[0])}, {f(part.offset[1])}, {f(part.offset[2])})"
+    offset_var = safe + "_offset"
+    lines.append(f'{indent}PartDefinition {offset_var} = {safe}.addOrReplaceChild("_offset", {builder}, {offset});')
     for child in part.children:
-        emit_part(lines, model, model.parts[child], safe, indent, part.offset)
+        emit_part(lines, model, model.parts[child], offset_var, indent)
 
 
-def animation_profile(model: Model) -> tuple[list[str], list[str], list[str], list[str], list[str], list[str], list[str], list[str]]:
+def animation_profile(model: Model, source_path: Path | None = None) -> tuple[list[str], list[str], list[str], list[str], list[str], list[str], list[str], list[str]]:
     children = {child for part in model.parts.values() for child in part.children}
     entries: list[tuple[str, str, tuple[str, ...]]] = []
 
@@ -371,7 +371,7 @@ def animation_profile(model: Model) -> tuple[list[str], list[str], list[str], li
         current = path + (safe,)
         entries.append(("/".join(current), safe, ancestors))
         for child in model.parts[name].children:
-            walk(child, current, ancestors + (safe,))
+            walk(child, current + ("_offset",), ancestors + (safe,))
 
     for name in model.parts:
         if name not in children:
@@ -422,6 +422,19 @@ def animation_profile(model: Model) -> tuple[list[str], list[str], list[str], li
             phase_a.append(path)
         elif (right_side and back) or (left_side and front):
             phase_b.append(path)
+    if source_path is not None:
+        source = source_path.read_text(encoding="utf-8", errors="replace")
+        source_phases: dict[str, int] = {}
+        for match in re.finditer(
+            r"(?:this\.)?(\w+)\.rotateAngleX\s*=\s*MathHelper\.cos\s*\(([^;]+);", source
+        ):
+            name, expression = match.groups()
+            if name in model.parts:
+                source_phases[name] = 1 if re.search(r"Math\.PI|3\.14159", expression) else 0
+        if source_phases:
+            paths = model_part_paths(model)
+            phase_a = [paths[name] for name, phase in source_phases.items() if phase == 0]
+            phase_b = [paths[name] for name, phase in source_phases.items() if phase == 1]
         elif index % 2 == 0:
             phase_a.append(path)
         else:
@@ -433,7 +446,7 @@ def animation_profile(model: Model) -> tuple[list[str], list[str], list[str], li
     private_names = {snake(name) for name in model.private_parts}
     private_parts = [path for path, name, ancestors in entries if name in private_names]
     colored_names = {snake(name) for name, part in model.parts.items() if part.colored}
-    colored_parts = [path for path, name, ancestors in entries if name in colored_names]
+    colored_parts = [path + "/_offset" for path, name, ancestors in entries if name in colored_names]
     return heads[:2], phase_a[:8], phase_b[:8], tails[:2], wings[:2], bodies[:2], private_parts, colored_parts
 
 
@@ -445,7 +458,7 @@ def model_part_paths(model: Model) -> dict[str, str]:
         current = prefix + (snake(name),)
         paths[name] = "/".join(current)
         for child in model.parts[name].children:
-            walk(child, current)
+            walk(child, current + ("_offset",))
 
     for name in model.parts:
         if name not in children:
@@ -462,25 +475,70 @@ def sitting_pose_java(model: Model) -> str:
         return "LegacyPoseDefinition.EMPTY"
     paths = model_part_paths(model)
     entries: list[str] = []
-    parent_by_child = {
-        child: parent.name for parent in model.parts.values() for child in parent.children
-    }
     for name, override in model.sitting_pose.items():
         if name not in paths:
             raise ValueError(f"{model.name}: sitting pose references unreachable part {name}")
         if override.pos is None:
             position = (None, None, None)
         else:
-            # The parent ModelRendererAnimania offset is inherited before the
-            # child's rotation point in 1.12; mirror emit_part's conversion.
-            parent = parent_by_child.get(name)
-            inherited = model.parts[parent].offset if parent is not None else (0.0, 0.0, 0.0)
-            position = tuple(override.pos[index] + inherited[index] for index in range(3))
+            position = override.pos
         values = (*position, *override.rot)
         entries.append(
             f'new LegacyPartPose("{paths[name]}", {", ".join(java_optional(value) for value in values)})'
         )
     return "new LegacyPoseDefinition(" + ", ".join(entries) + ")"
+
+
+def full_pose_java(model: Model, pose: Model) -> str:
+    paths = model_part_paths(model)
+    entries: list[str] = []
+    # ModelPose applies fields by matching name and deliberately ignores pose
+    # fields that a breed does not have (for example mane/tail variants).
+    for name in model.parts:
+        if name not in pose.parts:
+            continue
+        part = pose.parts[name]
+        values = (*part.pos, *part.rot)
+        entries.append(f'new LegacyPartPose("{paths[name]}", {", ".join(f(value) for value in values)})')
+        offset_values = (*part.offset, None, None, None)
+        entries.append(
+            f'new LegacyPartPose("{paths[name]}/_offset", '
+            + ", ".join(java_optional(value) for value in offset_values) + ")"
+        )
+    return "new LegacyPoseDefinition(" + ", ".join(entries) + ")"
+
+
+def sleeping_pose(root: Path, source_path: Path) -> Model:
+    text = source_path.read_text(encoding="utf-8", errors="replace")
+    match = re.search(r"new\s+ModelPose\s*\(\s*this\s*,\s*(\w+)\.INSTANCE\s*\)", text)
+    if match is None:
+        raise ValueError(f"{source_path.name}: missing sleeping ModelPose")
+    pose_path = next((path for path in source_path.parents[1].rglob(match.group(1) + ".java")), None)
+    if pose_path is None:
+        raise ValueError(f"{source_path.name}: missing pose source {match.group(1)}")
+    return parse_model(pose_path)
+
+
+def pet_animation_java(model: Model, source_path: Path, pose: Model) -> str:
+    text = source_path.read_text(encoding="utf-8", errors="replace")
+    x_match = re.search(r"(?:this\.)?(\w+)\.rotateAngleX\s*=\s*headPitch\s*\*\s*([0-9.Ee+-]+)[fFdD]?\s*([+-]\s*[0-9.Ee+-]+[fFdD]?)?\s*;", text)
+    y_match = re.search(r"(?:this\.)?(\w+)\.rotateAngleY\s*=\s*netHeadYaw\s*\*\s*([0-9.Ee+-]+)[fFdD]?\s*;", text)
+    if x_match is None or y_match is None or x_match.group(1) != y_match.group(1):
+        raise ValueError(f"{model.name}: missing source-derived look animation")
+    look_name = x_match.group(1)
+    paths = model_part_paths(model)
+    pitch_scale = number(x_match.group(2))
+    pitch_offset = number(x_match.group(3).replace(" ", "")) if x_match.group(3) else 0.0
+    yaw_scale = number(y_match.group(2))
+    limb_multiplier = re.search(r"limbSwingAmount\s*\*=\s*([0-9.Ee+-]+)[fFdD]?\s*;", text)
+    gait_multiplier = re.search(r"MathHelper\.cos\s*\([^;]+?\)\s*\*\s*([0-9.Ee+-]+)[fFdD]?\s*\*\s*limbSwingAmount", text)
+    if limb_multiplier is None or gait_multiplier is None:
+        raise ValueError(f"{model.name}: missing source-derived gait multiplier")
+    stride = number(limb_multiplier.group(1)) * number(gait_multiplier.group(1))
+    look_while_sitting = source_path.parent.name == "dogs"
+    return ("new LegacyPetAnimationDefinition(" + full_pose_java(model, pose)
+            + f', "{paths[look_name]}", {f(pitch_scale)}, {f(pitch_offset)}, {f(yaw_scale)}, {f(stride)}, '
+            + str(look_while_sitting).lower() + ")")
 
 
 def java_array(values: list[str]) -> str:
@@ -497,11 +555,13 @@ def emit(root: Path, module: str) -> None:
     if missing: raise SystemExit(f"{module}: missing renderer mappings: {missing}")
     model_source = root / "upstream/Animania-1.12/src/main/java/com/animania/addons" / module / "client"
     models: dict[str, Model] = {}
+    model_sources: dict[str, Path] = {}
     for name in {mapping[entity][0] for entity in ids}:
         if name not in models:
             path = find_model(model_source, name)
             if path is None: raise SystemExit(f"{module}: missing source model {name}")
             models[name] = parse_model(path)
+            model_sources[name] = path
     class_name = ("CatsDogs" if module == "catsdogs" else module.title()) + "LegacyModelLayers"
     package = f"com.animania.{module}.client.model"
     lines = [f"package {package};", "", "// Generated from the pinned LGPL-3.0 Animania 1.12 Java models; do not edit by hand.",
@@ -511,6 +571,7 @@ def emit(root: Path, module: str) -> None:
              "import net.minecraft.client.model.geom.builders.LayerDefinition;", "import net.minecraft.client.model.geom.builders.MeshDefinition;",
              "import net.minecraft.client.model.geom.builders.PartDefinition;", "import net.minecraft.resources.ResourceLocation;", "",
              "import com.animania.client.model.LegacyAnimationProfile;",
+             "import com.animania.client.model.LegacyPetAnimationDefinition;",
              "import com.animania.client.model.LegacyPartPose;",
              "import com.animania.client.model.LegacyPoseDefinition;",
              "import com.animania.client.model.LegacyRenderTransform;", "",
@@ -528,7 +589,7 @@ def emit(root: Path, module: str) -> None:
     lines += ["    public static LegacyAnimationProfile profile(String id) {", "        return switch (id) {"]
     for model_name, entity_ids in reverse.items():
         labels = ", ".join(f'"{entity}"' for entity in entity_ids)
-        profile = animation_profile(models[model_name])
+        profile = animation_profile(models[model_name], model_sources[model_name] if module == "catsdogs" else None)
         constructor = ", ".join(java_array(values) for values in profile)
         lines.append(f"            case {labels} -> new LegacyAnimationProfile({constructor});")
     lines += ["            default -> LegacyAnimationProfile.EMPTY;", "        };", "    }"]
@@ -538,6 +599,13 @@ def emit(root: Path, module: str) -> None:
             labels = ", ".join(f'"{entity}"' for entity in entity_ids)
             lines.append(f"            case {labels} -> {sitting_pose_java(models[model_name])};")
         lines += ["            default -> LegacyPoseDefinition.EMPTY;", "        };", "    }"]
+        poses = {model_name: sleeping_pose(root, model_sources[model_name]) for model_name in reverse}
+        lines += ["    public static LegacyPetAnimationDefinition petAnimation(String id) {", "        return switch (id) {"]
+        for model_name, entity_ids in reverse.items():
+            labels = ", ".join(f'"{entity}"' for entity in entity_ids)
+            definition = pet_animation_java(models[model_name], model_sources[model_name], poses[model_name])
+            lines.append(f"            case {labels} -> {definition};")
+        lines += ["            default -> LegacyPetAnimationDefinition.EMPTY;", "        };", "    }"]
         translations = catsdogs_translations(root)
         missing_translations = [entity for entity in ids if entity not in translations]
         if missing_translations:

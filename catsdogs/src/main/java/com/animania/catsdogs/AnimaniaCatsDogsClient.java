@@ -29,6 +29,7 @@ final class AnimaniaCatsDogsClient {
                 context -> new AnimaniaAnimalRenderer(context,
                         AnimaniaClientDiagnostics.requireLayer(AnimaniaCatsDogs.MOD_ID, id, CatsDogsLegacyModelLayers.LAYERS.get(id)),
                         CatsDogsLegacyModelLayers.profile(id), CatsDogsLegacyModelLayers.sittingPose(id),
+                        CatsDogsLegacyModelLayers.petAnimation(id),
                         CatsDogsLegacyModelLayers.transform(id), CatsDogsLegacyModelLayers.scale(id)))));
         AnimaniaClientDiagnostics.rendererRegistrations(AnimaniaCatsDogs.MOD_ID, AnimaniaCatsDogs.ENTITIES.size(), 0);
     }
