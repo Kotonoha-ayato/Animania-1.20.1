@@ -28,7 +28,17 @@ public final class ExtraHamsterWheelBlockEntity extends AnimaniaStorageBlockEnti
     private boolean running;
 
     public ExtraHamsterWheelBlockEntity(BlockPos pos, BlockState state) {
-        super(ExtraContent.HAMSTER_WHEEL_BE.get(), pos, state);
+        super(ExtraContent.HAMSTER_WHEEL_BE.get(), pos, state, 1, 0);
+    }
+
+    @Override
+    public int getMaxStackSize() {
+        return 16;
+    }
+
+    @Override
+    protected boolean isItemValid(int slot, ItemStack stack) {
+        return slot == 0 && isHamsterFood(stack);
     }
 
     @Override
@@ -100,6 +110,10 @@ public final class ExtraHamsterWheelBlockEntity extends AnimaniaStorageBlockEnti
     @Override
     public void load(CompoundTag tag) {
         super.load(tag);
+        ItemStack food = getItem(0);
+        if (!food.isEmpty() && food.getCount() > getMaxStackSize()) {
+            setItem(0, food.copyWithCount(getMaxStackSize()));
+        }
         energy.receiveEnergy(Math.max(0, tag.getInt("Energy")), false);
         useTicks = Math.max(0, tag.getInt("UseTicks"));
         running = tag.getBoolean("Running");

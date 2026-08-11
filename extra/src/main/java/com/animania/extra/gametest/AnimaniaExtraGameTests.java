@@ -661,6 +661,17 @@ public final class AnimaniaExtraGameTests {
             helper.fail("hamster wheel did not create its block entity");
             return;
         }
+        var itemHandler = wheel.getCapability(net.minecraftforge.common.capabilities.ForgeCapabilities.ITEM_HANDLER, null)
+                .orElse(null);
+        helper.assertTrue(wheel.getContainerSize() == 1 && wheel.getMaxStackSize() == 16
+                        && itemHandler != null && itemHandler.getSlots() == 1 && itemHandler.getSlotLimit(0) == 16,
+                "hamster wheel did not retain its legacy one-slot, sixteen-food capacity");
+        ItemStack rejected = itemHandler.insertItem(0, new ItemStack(net.minecraft.world.item.Items.STONE, 1), false);
+        ItemStack overflow = itemHandler.insertItem(0,
+                new ItemStack(ExtraContent.ITEM_ENTRIES.get("hamster_food").get(), 64), false);
+        helper.assertTrue(rejected.getCount() == 1 && wheel.getItem(0).getCount() == 16
+                        && overflow.getCount() == 48,
+                "hamster wheel automation accepted invalid food or exceeded sixteen items");
         @SuppressWarnings("unchecked")
         EntityType<? extends AnimaniaAnimalEntity> type = (EntityType<? extends AnimaniaAnimalEntity>) (EntityType<?>) AnimaniaExtra.ENTITIES.get("hamster").get();
         AnimaniaAnimalEntity hamster = type.create(helper.getLevel());
