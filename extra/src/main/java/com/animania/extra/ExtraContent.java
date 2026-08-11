@@ -32,7 +32,8 @@ public final class ExtraContent {
             "raw_peacock", "cooked_peacock", "raw_prime_peacock", "cooked_prime_peacock",
             "entity_egg_peacock_random", "entity_egg_rabbit_random", "entity_egg_dart_frog");
     public static final RegistryObject<Block> HAMSTER_WHEEL = BLOCKS.register("hamster_wheel", () ->
-            new ExtraHamsterWheelBlock(BlockBehaviour.Properties.of().mapColor(MapColor.WOOD).strength(1.0f).sound(SoundType.WOOD)));
+            new ExtraHamsterWheelBlock(BlockBehaviour.Properties.of().mapColor(MapColor.WOOD).strength(1.0f)
+                    .sound(SoundType.WOOD).noOcclusion()));
     public static final RegistryObject<net.minecraft.world.level.block.entity.BlockEntityType<ExtraHamsterWheelBlockEntity>> HAMSTER_WHEEL_BE =
             BLOCK_ENTITIES.register("hamster_wheel", () -> net.minecraft.world.level.block.entity.BlockEntityType.Builder
                     .of(ExtraHamsterWheelBlockEntity::new, HAMSTER_WHEEL.get()).build(null));

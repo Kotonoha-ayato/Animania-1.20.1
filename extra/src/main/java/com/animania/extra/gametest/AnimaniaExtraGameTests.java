@@ -655,6 +655,8 @@ public final class AnimaniaExtraGameTests {
         AnimaniaGameTestEvidence.mark("animania_extra:hamsterWheelGeneratesForgeEnergy");
         BlockPos pos = helper.absolutePos(new BlockPos(2, 1, 0));
         helper.getLevel().setBlock(pos, ExtraContent.HAMSTER_WHEEL.get().defaultBlockState(), 3);
+        helper.assertFalse(helper.getLevel().getBlockState(pos).canOcclude(),
+                "hamster wheel incorrectly occludes the supporting block and exposes the underground void");
         if (!(helper.getLevel().getBlockEntity(pos) instanceof ExtraHamsterWheelBlockEntity wheel)) {
             helper.fail("hamster wheel did not create its block entity");
             return;
