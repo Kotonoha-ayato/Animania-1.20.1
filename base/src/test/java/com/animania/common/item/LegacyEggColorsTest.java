@@ -18,7 +18,7 @@ class LegacyEggColorsTest {
         assertEquals(new LegacyEggColors.Colors(15987699, 1776411), LegacyEggColors.forEntity("lamb_dorper"));
         assertEquals(new LegacyEggColors.Colors(13948116, 8741209), LegacyEggColors.forEntity("ferret_grey"));
         assertNull(LegacyEggColors.forEntity("cow_random"));
-        assertNull(LegacyEggColors.forEntity("dart_frog"));
+        assertEquals(new LegacyEggColors.Colors(1728436, 15914571), LegacyEggColors.forEntity("dart_frog"));
         assertNull(LegacyEggColors.forEntity(null));
     }
 

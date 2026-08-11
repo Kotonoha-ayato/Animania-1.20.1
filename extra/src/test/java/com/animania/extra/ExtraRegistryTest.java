@@ -60,9 +60,11 @@ class ExtraRegistryTest {
 
     @Test
     void everyTintedAnimalEggHasItsExactLegacyTintPair() {
-        ExtraLegacyIds.ALL.stream().filter(id -> !id.equals("dartfrog"))
-                .forEach(id -> assertNotNull(LegacyEggColors.forEntity(id), id));
-        assertNull(LegacyEggColors.forEntity("dartfrog"), "1.12 dart frogs explicitly disabled egg tinting");
+        ExtraLegacyIds.ALL.forEach(id -> assertNotNull(LegacyEggColors.forEntity(id), id));
+        // The pinned 1.12 model references egg_frog_dart, but that PNG is
+        // absent from the source tree. The modern port uses deterministic
+        // tinted layers instead of silently substituting the manual icon.
+        assertEquals(new LegacyEggColors.Colors(1728436, 15914571), LegacyEggColors.forEntity("dartfrog"));
         assertEquals(new LegacyEggColors.Colors(0, 16777215), LegacyEggColors.forEntity("doe_dutch"));
         assertEquals(new LegacyEggColors.Colors(2446225, 4361491), LegacyEggColors.forEntity("peacock_blue"));
     }
