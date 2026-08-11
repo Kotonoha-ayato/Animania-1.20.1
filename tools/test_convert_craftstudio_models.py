@@ -21,6 +21,27 @@ class CraftStudioConversionTest(unittest.TestCase):
         }, "root", set())
         self.assertIn("addBox(-0.5F, -6.5F, 0.0F, 1.0F, 13.0F, 0.0F)", lines[0])
 
+    def test_root_coordinates_match_pinned_craftstudio_reader(self) -> None:
+        lines = []
+        CONVERTER.emit_node(lines, {
+            "name": "RootPart", "size": [2, 4, 6], "offsetFromPivot": [1, 2, 3],
+            "position": [4, 5, 6], "rotation": [0, 0, 0], "texOffset": [0, 0],
+        }, "root", set())
+        self.assertIn("addBox(0.0F, -4.0F, -6.0F, 2.0F, 4.0F, 6.0F)", lines[0])
+        self.assertIn("PartPose.offsetAndRotation(4.0F, 19.0F, -6.0F", lines[0])
+
+    def test_child_coordinates_match_pinned_craftstudio_reader(self) -> None:
+        lines = []
+        CONVERTER.emit_node(lines, {
+            "name": "Child", "size": [2, 2, 2], "offsetFromPivot": [0, 0, 0],
+            "position": [4, 5, 6], "rotation": [10, 20, 30], "texOffset": [0, 0],
+        }, "parent_part", set())
+        self.assertIn("PartPose.offsetAndRotation(4.0F, -5.0F, -6.0F", lines[0])
+        raw = tuple(math.radians(value) for value in (10, -20, -30))
+        converted = CONVERTER.legacy_euler_to_modelpart(*raw)
+        for value in converted:
+            self.assertIn(CONVERTER.fl(value), lines[0])
+
     def test_craftstudio_multi_axis_rotation_uses_quaternion_order(self) -> None:
         raw = tuple(math.radians(value) for value in (20, 30, 40))
         converted = CONVERTER.legacy_euler_to_modelpart(*raw)

@@ -63,9 +63,18 @@ def emit_node(lines: list[str], node: dict, parent: str, used: set[str], indent:
         name = f"{base}_{suffix}"; suffix += 1
     used.add(name)
     size = [float(v) for v in node.get("size", [0, 0, 0])]
-    offset = [float(v) for v in node.get("offsetFromPivot", [0, 0, 0])]
-    position = [float(v) for v in node.get("position", [0, 0, 0])]
-    source_rotation = [math.radians(float(v)) for v in node.get("rotation", [0, 0, 0])]
+    raw_offset = [float(v) for v in node.get("offsetFromPivot", [0, 0, 0])]
+    raw_position = [float(v) for v in node.get("position", [0, 0, 0])]
+    raw_rotation = [float(v) for v in node.get("rotation", [0, 0, 0])]
+    # This is the exact coordinate normalization performed by
+    # CraftStudioAPI 1.0.1.95's CSJsonReader before ModelCraftStudio sees a
+    # node. Root Y is additionally anchored to the legacy 24-pixel entity
+    # origin. Omitting this conversion inverted every native prop model.
+    offset = [raw_offset[0], -raw_offset[1], -raw_offset[2]]
+    position = [raw_position[0], (24.0 - raw_position[1]) if parent == "root" else -raw_position[1],
+                -raw_position[2]]
+    source_rotation = [math.radians(raw_rotation[0]), math.radians(-raw_rotation[1]),
+                       math.radians(-raw_rotation[2])]
     rotation = list(legacy_euler_to_modelpart(*source_rotation))
     uv = [int(v) for v in node.get("texOffset", [0, 0])]
     builder = "CubeListBuilder.create()"
