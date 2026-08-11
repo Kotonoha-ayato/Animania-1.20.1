@@ -60,7 +60,7 @@ public final class AnimaniaHamsterBallItem extends Item {
 
     /** 1.12 stored dye-damage order, which is the reverse of modern dye IDs. */
     static DyeColor legacyDye(int legacyColor) {
-        return DyeColor.byId(15 - clamp(legacyColor));
+        return DyeColor.byId(AnimaniaHamsterBallColors.modernDyeId(legacyColor));
     }
 
     private static int clamp(int color) {
