@@ -83,6 +83,40 @@ class ExtraRegistryTest {
     }
 
     @Test
+    void specialAnimalGaitsMatchThePinnedOneTwelveModels() {
+        var rabbits = java.util.List.of(
+                "buck_chinchilla", "doe_chinchilla", "kit_chinchilla",
+                "buck_cottontail", "doe_cottontail", "kit_cottontail",
+                "buck_dutch", "doe_dutch", "kit_dutch",
+                "buck_havana", "doe_havana", "kit_havana",
+                "buck_jack", "doe_jack", "kit_jack",
+                "buck_lop", "doe_lop", "kit_lop",
+                "buck_new_zealand", "doe_new_zealand", "kit_new_zealand",
+                "buck_rex", "doe_rex", "kit_rex");
+        for (String id : rabbits) {
+            var profile = ExtraLegacyModelLayers.profile(id);
+            assertArrayEquals(new String[]{"back_leg_l1", "back_leg_l2", "back_leg_r1", "back_leg_r2"}, profile.leftLegs(), id);
+            assertArrayEquals(new String[]{"leg_l1", "leg_r1"}, profile.rightLegs(), id);
+        }
+
+        for (String id : java.util.List.of("ferret_grey", "ferret_white")) {
+            var profile = ExtraLegacyModelLayers.profile(id);
+            assertArrayEquals(new String[]{"paw_l_f", "paw_r_b"}, profile.leftLegs(), id);
+            assertArrayEquals(new String[]{"paw_r_f", "paw_l_b"}, profile.rightLegs(), id);
+        }
+
+        var hamster = ExtraLegacyModelLayers.profile("hamster");
+        assertArrayEquals(new String[]{"hamster_leg_back_right", "hamster_leg_front_left"}, hamster.leftLegs());
+        assertArrayEquals(new String[]{"hamster_leg_back_left", "hamster_leg_front_right"}, hamster.rightLegs());
+
+        for (String id : java.util.List.of("frog", "dartfrog", "toad")) {
+            var profile = ExtraLegacyModelLayers.profile(id);
+            assertArrayEquals(new String[]{}, profile.leftLegs(), id);
+            assertArrayEquals(new String[]{}, profile.rightLegs(), id);
+        }
+    }
+
+    @Test
     void everyAnimalModelBakesGeometryAndEveryAnimationPathResolves() {
         ExtraLegacyIds.ALL.forEach(id -> {
             ModelPart root = ExtraLegacyModelLayers.create(id).bakeRoot();
