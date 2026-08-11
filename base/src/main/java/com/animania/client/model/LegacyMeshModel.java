@@ -2,15 +2,14 @@ package com.animania.client.model;
 
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
-
 import java.util.List;
 import java.util.Map;
 
-/** Factory helpers for generated, direct ModelPart trees. */
-public final class LegacyCraftStudioModel {
-    private LegacyCraftStudioModel() { }
+/** Factory helpers for generated direct ModelPart trees. */
+public final class LegacyMeshModel {
+    private LegacyMeshModel() { }
 
-    public static ModelPart part(PartPose pose, LegacyCraftStudioCube cube, Map<String, ModelPart> children) {
+    public static ModelPart part(PartPose pose, LegacyMeshCube cube, Map<String, ModelPart> children) {
         ModelPart part = new ModelPart(cube == null ? List.of() : List.of(cube), children);
         part.setInitialPose(pose);
         part.loadPose(pose);

@@ -79,7 +79,7 @@ class CraftStudioConversionTest(unittest.TestCase):
             }]
         }, True, 64, 32, set())
         child_line = next(line for line in lines if "PartPose.offsetAndRotation(5.0F, -7.0F, -9.0F" in line)
-        self.assertIn("LegacyCraftStudioModel.part", child_line)
+        self.assertIn("LegacyMeshModel.part", child_line)
 
 
 if __name__ == "__main__":

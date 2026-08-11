@@ -215,8 +215,8 @@ def emit_runtime_node(lines: list[str], node: dict, is_root: bool, width: int, h
     vertices = java_float_matrix(legacy_vertices(node))
     rects = java_int_matrix(legacy_texture_rects(node))
     pose = f"PartPose.offsetAndRotation({', '.join(fl(value) for value in position + rotation)})"
-    lines.append(f"        ModelPart {variable} = LegacyCraftStudioModel.part({pose},")
-    lines.append(f"                new LegacyCraftStudioCube({vertices}, {rects}, {width}, {height}), {child_map});")
+    lines.append(f"        ModelPart {variable} = LegacyMeshModel.part({pose},")
+    lines.append(f"                new LegacyMeshCube({vertices}, {rects}, {width}, {height}), {child_map});")
     return name, variable
 
 
@@ -230,8 +230,8 @@ def emit_exact_runtime_models(root: Path, module: str, model_root: Path, models:
     if missing:
         raise RuntimeError(f"Missing exact runtime models for {module}: {sorted(missing)}")
     lines = [f"package {package};", "", "// Generated from the exact CraftStudio cuboid topology and UV layout.",
-             "import com.animania.client.model.LegacyCraftStudioCube;",
-             "import com.animania.client.model.LegacyCraftStudioModel;",
+             "import com.animania.client.model.LegacyMeshCube;",
+             "import com.animania.client.model.LegacyMeshModel;",
              "import java.util.Map;", "import net.minecraft.client.model.geom.ModelPart;",
              "import net.minecraft.client.model.geom.PartPose;", "", f"public final class {class_name} {{",
              f"    private {class_name}() {{ }}", "", "    public static ModelPart create(String id) {",
@@ -247,7 +247,7 @@ def emit_exact_runtime_models(root: Path, module: str, model_root: Path, models:
         used: set[str] = set()
         roots = [emit_runtime_node(lines, node, True, width, height, used) for node in data.get("tree", [])]
         entries = ", ".join(f'Map.entry("{name}", {variable})' for name, variable in roots)
-        lines.append(f"        return LegacyCraftStudioModel.root(Map.ofEntries({entries}));")
+        lines.append(f"        return LegacyMeshModel.root(Map.ofEntries({entries}));")
         lines.append("    }")
     lines.append("}")
     output = output_root / f"{class_name}.java"
