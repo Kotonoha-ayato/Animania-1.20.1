@@ -1,6 +1,7 @@
 package com.animania.extra.client.render;
 
 import com.animania.extra.ExtraHamsterWheelBlockEntity;
+import com.animania.extra.client.model.ExtraLegacyPropModels;
 import com.animania.extra.client.model.ExtraNativeModelLayers;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
@@ -22,7 +23,7 @@ public final class ExtraHamsterWheelRenderer implements BlockEntityRenderer<Extr
     private final ModelPart hamster;
 
     public ExtraHamsterWheelRenderer(BlockEntityRendererProvider.Context context) {
-        wheel = context.bakeLayer(ExtraNativeModelLayers.LAYERS.get("model_hamster_wheel"));
+        wheel = ExtraLegacyPropModels.create("model_hamster_wheel");
         wheelRotor = wheel.getChild("base1").getChild("wheel1");
         hamster = context.bakeLayer(ExtraNativeModelLayers.LAYERS.get("hamster"));
     }
@@ -30,7 +31,7 @@ public final class ExtraHamsterWheelRenderer implements BlockEntityRenderer<Extr
     @Override
     public void render(ExtraHamsterWheelBlockEntity entity, float partialTick, PoseStack pose,
                        MultiBufferSource buffers, int packedLight, int packedOverlay) {
-        wheel.resetPose();
+        wheel.getAllParts().forEach(ModelPart::resetPose);
         if (entity.isRunning() && entity.getLevel() != null) {
             wheelRotor.zRot += (entity.getLevel().getGameTime() + partialTick) * 0.35F;
         }

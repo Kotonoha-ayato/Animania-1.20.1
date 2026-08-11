@@ -1,7 +1,7 @@
 package com.animania.catsdogs.client.render;
 
 import com.animania.catsdogs.CatsDogsPetFacilityBlockEntity;
-import com.animania.catsdogs.client.model.CatsDogsNativeModelLayers;
+import com.animania.catsdogs.client.model.CatsDogsLegacyPropModels;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
@@ -22,7 +22,7 @@ public final class CatsDogsPetFacilityRenderer implements BlockEntityRenderer<Ca
 
     public CatsDogsPetFacilityRenderer(BlockEntityRendererProvider.Context context) {
         for (String id : new String[]{"cat_bed_1", "cat_bed_2", "cat_tower", "dog_house", "dog_pillow", "litter_box"}) {
-            models.put(id, context.bakeLayer(CatsDogsNativeModelLayers.LAYERS.get("model_" + id)));
+            models.put(id, CatsDogsLegacyPropModels.create("model_" + id));
         }
     }
 

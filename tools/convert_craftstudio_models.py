@@ -26,6 +26,12 @@ KNOWN_TEXTURE_SIZES = {
     "player": (64, 64), "player_sit": (64, 64),
 }
 
+EXACT_RUNTIME_MODELS = {
+    "extra": {"model_hamster_wheel"},
+    "catsdogs": {"model_cat_bed_1", "model_cat_bed_2", "model_cat_tower", "model_dog_house",
+                 "model_dog_pillow", "model_litter_box", "model_pet_bowl"},
+}
+
 
 def safe(value: str) -> str:
     value = re.sub(r"[^a-zA-Z0-9_]", "_", value)
@@ -126,8 +132,126 @@ def emit_module(root: Path, module: str, modid: str, class_name: str, archive: s
     output = output_root / f"{class_name}.java"
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    emit_exact_runtime_models(root, module, model_root, models, package, output_root,
+                              class_name.replace("NativeModelLayers", "LegacyPropModels"))
     emit_animations(root, module, archive, class_name.replace("ModelLayers", "Animations"))
     print(module, len(models), output)
+
+
+def legacy_vertices(node: dict) -> list[list[float]]:
+    """Return final cube-local vertices after CSJsonReader's stretch and offset transforms."""
+    size = [float(v) for v in node.get("size", [0, 0, 0])]
+    raw_offset = [float(v) for v in node.get("offsetFromPivot", [0, 0, 0])]
+    offset = [raw_offset[0], -raw_offset[1], -raw_offset[2]]
+    custom = node.get("vertexCoords")
+    if custom is not None:
+        # CSJsonReader reorders CraftStudio's exported corners, flips Y/Z,
+        # normalizes them, then CSModelRenderer restores the scale. Combining
+        # those operations gives these exact final local coordinates.
+        order = [3, 2, 1, 0, 6, 7, 4, 5]
+        vertices = []
+        for index in order:
+            raw = [float(v) for v in custom[index]]
+            vertices.append([raw[0] + offset[0], -raw[1] + offset[1], -raw[2] + offset[2]])
+        return vertices
+    transformed_size = [size[0], -size[1], -size[2]]
+    low = [-value / 2.0 for value in transformed_size]
+    high = [low[i] + transformed_size[i] for i in range(3)]
+    raw_vertices = [
+        [low[0], low[1], low[2]], [high[0], low[1], low[2]],
+        [high[0], high[1], low[2]], [low[0], high[1], low[2]],
+        [low[0], low[1], high[2]], [high[0], low[1], high[2]],
+        [high[0], high[1], high[2]], [low[0], high[1], high[2]],
+    ]
+    return [[vertex[i] + offset[i] for i in range(3)] for vertex in raw_vertices]
+
+
+def legacy_texture_rects(node: dict) -> list[list[int]]:
+    u, v = [int(value) for value in node.get("texOffset", [0, 0])]
+    x, y, z = [int(float(value)) for value in node.get("size", [0, 0, 0])]
+    return [
+        [u + z + x + z, v + z + y, u + z + x, v + z],
+        [u + z, v + z + y, u, v + z],
+        [u + z + x, v, u + z + x + x, v + z],
+        [u + z, v, u + z + x, v + z],
+        [u + z + x + z + x + z, v + z + y, u + z + x + z, v + z],
+        [u + z + x, v + z + y, u + z, v + z],
+    ]
+
+
+def java_float_matrix(values: list[list[float]]) -> str:
+    rows = ", ".join("{" + ", ".join(fl(value) for value in row) + "}" for row in values)
+    return "new float[][]{" + rows + "}"
+
+
+def java_int_matrix(values: list[list[int]]) -> str:
+    rows = ", ".join("{" + ", ".join(str(value) for value in row) + "}" for row in values)
+    return "new int[][]{" + rows + "}"
+
+
+def emit_runtime_node(lines: list[str], node: dict, is_root: bool, width: int, height: int,
+                      used: set[str], parent_offset: list[float] | None = None) -> tuple[str, str]:
+    base = safe(str(node.get("name", "part")))
+    name = base
+    suffix = 2
+    while name in used:
+        name = f"{base}_{suffix}"
+        suffix += 1
+    used.add(name)
+    raw_offset = [float(v) for v in node.get("offsetFromPivot", [0, 0, 0])]
+    offset = [raw_offset[0], -raw_offset[1], -raw_offset[2]]
+    children = [emit_runtime_node(lines, child, False, width, height, used, offset)
+                for child in node.get("children", [])]
+    raw_position = [float(v) for v in node.get("position", [0, 0, 0])]
+    position = [raw_position[0], 24.0 - raw_position[1] if is_root else -raw_position[1], -raw_position[2]]
+    if parent_offset is not None:
+        position = [position[i] + parent_offset[i] for i in range(3)]
+    raw_rotation = [float(v) for v in node.get("rotation", [0, 0, 0])]
+    source_rotation = [math.radians(raw_rotation[0]), math.radians(-raw_rotation[1]), math.radians(-raw_rotation[2])]
+    rotation = list(legacy_euler_to_modelpart(*source_rotation))
+    child_map = "Map.of()" if not children else "Map.ofEntries(" + ", ".join(
+        f'Map.entry("{child_name}", {child_var})' for child_name, child_var in children) + ")"
+    variable = f"part_{len(used)}_{name}"
+    vertices = java_float_matrix(legacy_vertices(node))
+    rects = java_int_matrix(legacy_texture_rects(node))
+    pose = f"PartPose.offsetAndRotation({', '.join(fl(value) for value in position + rotation)})"
+    lines.append(f"        ModelPart {variable} = LegacyCraftStudioModel.part({pose},")
+    lines.append(f"                new LegacyCraftStudioCube({vertices}, {rects}, {width}, {height}), {child_map});")
+    return name, variable
+
+
+def emit_exact_runtime_models(root: Path, module: str, model_root: Path, models: list[tuple[str, dict]],
+                              package: str, output_root: Path, class_name: str) -> None:
+    selected = EXACT_RUNTIME_MODELS.get(module)
+    if not selected:
+        return
+    model_map = dict(models)
+    missing = selected.difference(model_map)
+    if missing:
+        raise RuntimeError(f"Missing exact runtime models for {module}: {sorted(missing)}")
+    lines = [f"package {package};", "", "// Generated from the exact CraftStudio cuboid topology and UV layout.",
+             "import com.animania.client.model.LegacyCraftStudioCube;",
+             "import com.animania.client.model.LegacyCraftStudioModel;",
+             "import java.util.Map;", "import net.minecraft.client.model.geom.ModelPart;",
+             "import net.minecraft.client.model.geom.PartPose;", "", f"public final class {class_name} {{",
+             f"    private {class_name}() {{ }}", "", "    public static ModelPart create(String id) {",
+             "        return switch (id) {"]
+    for key in sorted(selected):
+        lines.append(f'            case "{key}" -> {safe(key)}();')
+    lines += ['            default -> throw new IllegalArgumentException("Unknown exact CraftStudio model " + id);',
+              "        };", "    }"]
+    for key in sorted(selected):
+        data = model_map[key]
+        width, height = KNOWN_TEXTURE_SIZES[key]
+        lines += ["", f"    private static ModelPart {safe(key)}() {{"]
+        used: set[str] = set()
+        roots = [emit_runtime_node(lines, node, True, width, height, used) for node in data.get("tree", [])]
+        entries = ", ".join(f'Map.entry("{name}", {variable})' for name, variable in roots)
+        lines.append(f"        return LegacyCraftStudioModel.root(Map.ofEntries({entries}));")
+        lines.append("    }")
+    lines.append("}")
+    output = output_root / f"{class_name}.java"
+    output.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
 def emit_animations(root: Path, module: str, archive: str, class_name: str) -> None:
