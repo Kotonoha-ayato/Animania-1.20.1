@@ -37,7 +37,9 @@ def generate(root: Path) -> None:
         raise SystemExit(f"unexpected pet-bowl split: shell={len(shell)}, food={len(food)}")
     rotations = assigned_rotations(shell_body) | assigned_rotations(food_body)
     for name, rotation in rotations.items():
-        model.parts[name].rot = legacy.legacy_euler_to_modelpart(*rotation)
+        # ModelPetBowl uses vanilla ModelRenderer/ModelRendererColored, whose
+        # Z-Y-X order already matches modern ModelPart.
+        model.parts[name].rot = rotation
 
     lines = [
         "package com.animania.catsdogs.client.model;", "",

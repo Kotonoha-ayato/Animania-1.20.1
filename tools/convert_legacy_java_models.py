@@ -100,6 +100,7 @@ class Part:
     mirror: bool = False
     gait_phase: int | None = None
     colored: bool = False
+    animania_rotation: bool = False
 
 
 @dataclass
@@ -172,6 +173,16 @@ def parse_model(path: Path) -> Model:
         setup = method_body(text, re.compile(r"\b(?:public|private|protected)?\s*(?:final\s+)?void\s+setupAngles\s*\(\s*\)\s*\{"))
         if setup is not None:
             defaults += "\n" + setup
+    # Farm and Extra's vanilla ModelRenderer classes commonly assign their
+    # authored rest rotations at the start of render() instead of in the
+    # constructor.  Include constant assignments from that method; dynamic
+    # limb/head/sleep expressions are rejected by number() below.  Later
+    # constant writes (notably the awake `else` branch) correctly override
+    # earlier editor values in textual/frame order.
+    render_defaults = method_body(text, re.compile(
+        r"\b(?:public|private|protected)\s+void\s+render\s*\([^)]*\)\s*\{"))
+    if render_defaults is not None:
+        defaults += "\n" + render_defaults
     constants = {name: value for name, value in re.findall(
         r"\b(?:float|double)\s+(\w+)\s*=\s*([+-]?(?:\d+(?:\.\d*)?|\.\d+)[fFdD]?)\s*;", geometry)}
 
@@ -185,7 +196,8 @@ def parse_model(path: Path) -> Model:
         name, renderer_type, raw = match.groups()
         values = model_args(raw) if raw.strip() else []
         uv = (int(values[-2]), int(values[-1])) if len(values) >= 2 else (0, 0)
-        parts[name] = Part(name, uv, colored=renderer_type == "ModelRendererColored")
+        parts[name] = Part(name, uv, colored=renderer_type == "ModelRendererColored",
+                           animania_rotation=renderer_type == "ModelRendererAnimania")
     # ModelBase defaults to 64x32. Starting height at 64 silently doubled UV
     # space for the many legacy models that rely on that default.
     width, height = 64, 32
@@ -257,7 +269,8 @@ def parse_model(path: Path) -> Model:
             try: rotations[match.group(1)] = model_args(match.group(2))[:3]
             except ValueError: pass
     for name, rotation in rotations.items():
-        parts[name].rot = legacy_euler_to_modelpart(*rotation)
+        parts[name].rot = (legacy_euler_to_modelpart(*rotation)
+                           if parts[name].animania_rotation else tuple(rotation))
     sitting_pose: dict[str, PoseOverride] = {}
     sitting = method_body(text, re.compile(r"\bif\s*\(\s*sitting\b[^{;]*\)\s*\{"))
     if sitting is not None:
@@ -289,8 +302,9 @@ def parse_model(path: Path) -> Model:
                 for axis, value in enumerate(sitting_rotations.get(name, [None, None, None])):
                     if value is not None:
                         effective[axis] = value
-                sitting_pose[name] = PoseOverride(
-                    sitting_positions.get(name), legacy_euler_to_modelpart(*effective))
+                converted = (legacy_euler_to_modelpart(*effective)
+                             if parts[name].animania_rotation else tuple(effective))
+                sitting_pose[name] = PoseOverride(sitting_positions.get(name), converted)
     # Extract the original walk cycle phase instead of guessing from the side
     # of the body. Quadrupeds animate diagonal pairs together; grouping all
     # left legs together produces an visibly incorrect pacing gait.
@@ -396,6 +410,11 @@ def emit_part(lines: list[str], model: Model, part: Part, variable: str, indent:
     rx, ry, rz = part.rot
     pose = f"PartPose.offsetAndRotation({f(x)}, {f(y)}, {f(z)}, {f(rx)}, {f(ry)}, {f(rz)})"
     safe = snake(part.name)
+    if not uses_offset_node(part):
+        lines.append(f'{indent}PartDefinition {safe} = {variable}.addOrReplaceChild("{safe}", {builder}, {pose});')
+        for child in part.children:
+            emit_part(lines, model, model.parts[child], safe, indent)
+        return
     # Preserve ModelRendererAnimania exactly as two native parts:
     # T(pivot) * R(rotation) on the outer bone, then T(offset) on an inner
     # node containing both the cube and child bones. This also permits the
@@ -408,6 +427,10 @@ def emit_part(lines: list[str], model: Model, part: Part, variable: str, indent:
         emit_part(lines, model, model.parts[child], offset_var, indent)
 
 
+def uses_offset_node(part: Part) -> bool:
+    return part.animania_rotation or any(abs(value) > 0.0000001 for value in part.offset)
+
+
 def animation_profile(model: Model, source_path: Path | None = None) -> tuple[list[str], list[str], list[str], list[str], list[str], list[str], list[str], list[str]]:
     children = {child for part in model.parts.values() for child in part.children}
     entries: list[tuple[str, str, tuple[str, ...]]] = []
@@ -416,8 +439,9 @@ def animation_profile(model: Model, source_path: Path | None = None) -> tuple[li
         safe = snake(name)
         current = path + (safe,)
         entries.append(("/".join(current), safe, ancestors))
+        child_prefix = current + (("_offset",) if uses_offset_node(model.parts[name]) else ())
         for child in model.parts[name].children:
-            walk(child, current + ("_offset",), ancestors + (safe,))
+            walk(child, child_prefix, ancestors + (safe,))
 
     for name in model.parts:
         if name not in children:
@@ -492,7 +516,9 @@ def animation_profile(model: Model, source_path: Path | None = None) -> tuple[li
     private_names = {snake(name) for name in model.private_parts}
     private_parts = [path for path, name, ancestors in entries if name in private_names]
     colored_names = {snake(name) for name, part in model.parts.items() if part.colored}
-    colored_parts = [path + "/_offset" for path, name, ancestors in entries if name in colored_names]
+    colored_parts = [path + ("/_offset" if uses_offset_node(model.parts[next(
+        original for original in model.parts if snake(original) == name)]) else "")
+                     for path, name, ancestors in entries if name in colored_names]
     return heads[:2], phase_a[:8], phase_b[:8], tails[:2], wings[:2], bodies[:2], private_parts, colored_parts
 
 
@@ -503,8 +529,9 @@ def model_part_paths(model: Model) -> dict[str, str]:
     def walk(name: str, prefix: tuple[str, ...]) -> None:
         current = prefix + (snake(name),)
         paths[name] = "/".join(current)
+        child_prefix = current + (("_offset",) if uses_offset_node(model.parts[name]) else ())
         for child in model.parts[name].children:
-            walk(child, current + ("_offset",))
+            walk(child, child_prefix)
 
     for name in model.parts:
         if name not in children:
@@ -637,7 +664,7 @@ def emit(root: Path, module: str) -> None:
     lines += ["    public static LegacyAnimationProfile profile(String id) {", "        return switch (id) {"]
     for model_name, entity_ids in reverse.items():
         labels = ", ".join(f'"{entity}"' for entity in entity_ids)
-        profile = animation_profile(models[model_name], model_sources[model_name] if module == "catsdogs" else None)
+        profile = animation_profile(models[model_name], model_sources[model_name])
         constructor = ", ".join(java_array(values) for values in profile)
         lines.append(f"            case {labels} -> new LegacyAnimationProfile({constructor});")
     lines += ["            default -> LegacyAnimationProfile.EMPTY;", "        };", "    }"]

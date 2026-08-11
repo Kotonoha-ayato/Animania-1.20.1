@@ -56,6 +56,16 @@ class LegacyJavaModelConverterTest(unittest.TestCase):
         for expected, actual in zip(legacy_quaternion, modelpart_quaternion):
             self.assertAlmostEqual(expected, actual, places=6)
 
+    def test_vanilla_renderer_multi_axis_rotation_is_not_craftstudio_converted(self) -> None:
+        model = CONVERTER.parse_model(
+            ROOT / "upstream/Animania-1.12/src/main/java/com/animania/addons/farm/client/model/goats/ModelBuckAlpine.java"
+        )
+        source_rotation = (0.398545, -0.2031062, 0.3211416)
+        # This source part is a vanilla ModelRenderer; its Euler order already
+        # matches ModelPart and must survive byte-for-byte numerically.
+        self.assertFalse(model.parts["Ear_R"].animania_rotation)
+        self.assertEqual(source_rotation, model.parts["Ear_R"].rot)
+
     def test_commented_angus_horns_are_not_geometry(self) -> None:
         model = CONVERTER.parse_model(
             ROOT / "upstream/Animania-1.12/src/main/java/com/animania/addons/farm/client/model/cow/ModelCowAngus.java"
