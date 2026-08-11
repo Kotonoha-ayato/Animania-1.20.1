@@ -1,0 +1,1638 @@
+{
+  "audit": "catsdogs-model-parity",
+  "version": 1,
+  "baseline": "Animania 1.12 pinned source",
+  "generated_sha256": "6206e98c7b8067e2fe3660533c120b4659710ba4b818ebae7e00258ad8253a57",
+  "model_count": 23,
+  "entity_count": 69,
+  "failures": 1,
+  "status": "fail",
+  "models": [
+    {
+      "model": "ModelCatAmericanShorthair",
+      "family": "cats",
+      "source": "upstream/Animania-1.12/src/main/java/com/animania/addons/catsdogs/client/models/cats/ModelCatAmericanShorthair.java",
+      "source_sha256": "ea6c006493dd39e147b15f709e2f8b58439c7dc23acf911ead4360ad10af66d1",
+      "parts": 27,
+      "cubes": 27,
+      "child_edges": 26,
+      "sitting_parts": 7,
+      "sleeping_pose": "PoseCatSleeping",
+      "sleeping_common_parts": 27,
+      "gait_parts": 4,
+      "checks": {
+        "geometry_exact": true,
+        "part_nodes": true,
+        "cube_count": true,
+        "child_edges": true,
+        "gait_assignments": true,
+        "sitting_pose": true,
+        "sleeping_pose": true
+      },
+      "status": "pass"
+    },
+    {
+      "model": "ModelCatAsiatic",
+      "family": "cats",
+      "source": "upstream/Animania-1.12/src/main/java/com/animania/addons/catsdogs/client/models/cats/ModelCatAsiatic.java",
+      "source_sha256": "e593283935d402cbac8859150451a659b3d8cc69af2e0c16331a0faf42d72344",
+      "parts": 29,
+      "cubes": 29,
+      "child_edges": 28,
+      "sitting_parts": 7,
+      "sleeping_pose": "PoseCatSleeping",
+      "sleeping_common_parts": 29,
+      "gait_parts": 4,
+      "checks": {
+        "geometry_exact": true,
+        "part_nodes": true,
+        "cube_count": true,
+        "child_edges": true,
+        "gait_assignments": true,
+        "sitting_pose": true,
+        "sleeping_pose": true
+      },
+      "status": "pass"
+    },
+    {
+      "model": "ModelCatExotic",
+      "family": "cats",
+      "source": "upstream/Animania-1.12/src/main/java/com/animania/addons/catsdogs/client/models/cats/ModelCatExotic.java",
+      "source_sha256": "2207764dafbfec6504376921920ef10e1ad3c794386fc5e1aa680ab87a9f3e1d",
+      "parts": 27,
+      "cubes": 27,
+      "child_edges": 26,
+      "sitting_parts": 7,
+      "sleeping_pose": "PoseCatSleeping",
+      "sleeping_common_parts": 27,
+      "gait_parts": 4,
+      "checks": {
+        "geometry_exact": true,
+        "part_nodes": true,
+        "cube_count": true,
+        "child_edges": true,
+        "gait_assignments": true,
+        "sitting_pose": true,
+        "sleeping_pose": true
+      },
+      "status": "pass"
+    },
+    {
+      "model": "ModelCatOcelot",
+      "family": "cats",
+      "source": "upstream/Animania-1.12/src/main/java/com/animania/addons/catsdogs/client/models/cats/ModelCatOcelot.java",
+      "source_sha256": "8a44fa615cb92f4ea3f70ae9a85fbebd9a6f285768abaf2d91ee7f710d4f114e",
+      "parts": 23,
+      "cubes": 23,
+      "child_edges": 22,
+      "sitting_parts": 7,
+      "sleeping_pose": "PoseCatSleeping",
+      "sleeping_common_parts": 22,
+      "gait_parts": 4,
+      "checks": {
+        "geometry_exact": true,
+        "part_nodes": true,
+        "cube_count": true,
+        "child_edges": true,
+        "gait_assignments": true,
+        "sitting_pose": true,
+        "sleeping_pose": true
+      },
+      "status": "pass"
+    },
+    {
+      "model": "ModelCatRagdoll",
+      "family": "cats",
+      "source": "upstream/Animania-1.12/src/main/java/com/animania/addons/catsdogs/client/models/cats/ModelCatRagdoll.java",
+      "source_sha256": "2bf298031f6bd85c6e0b2b9f39bf87f4b39dfd1b7d51ef07e4f79e36cdb58fcb",
+      "parts": 31,
+      "cubes": 31,
+      "child_edges": 30,
+      "sitting_parts": 7,
+      "sleeping_pose": "PoseCatSleeping",
+      "sleeping_common_parts": 29,
+      "gait_parts": 4,
+      "checks": {
+        "geometry_exact": true,
+        "part_nodes": true,
+        "cube_count": true,
+        "child_edges": true,
+        "gait_assignments": true,
+        "sitting_pose": true,
+        "sleeping_pose": true
+      },
+      "status": "pass"
+    },
+    {
+      "model": "ModelCatSiamese",
+      "family": "cats",
+      "source": "upstream/Animania-1.12/src/main/java/com/animania/addons/catsdogs/client/models/cats/ModelCatSiamese.java",
+      "source_sha256": "e0f00a26fa1f02a0677f85bb66de462d2d8032b15c8d1d3691c2088484447158",
+      "parts": 25,
+      "cubes": 25,
+      "child_edges": 24,
+      "sitting_parts": 7,
+      "sleeping_pose": "PoseCatSleeping",
+      "sleeping_common_parts": 24,
+      "gait_parts": 4,
+      "checks": {
+        "geometry_exact": true,
+        "part_nodes": true,
+        "cube_count": true,
+        "child_edges": true,
+        "gait_assignments": true,
+        "sitting_pose": true,
+        "sleeping_pose": true
+      },
+      "status": "pass"
+    },
+    {
+      "model": "ModelCatTabby",
+      "family": "cats",
+      "source": "upstream/Animania-1.12/src/main/java/com/animania/addons/catsdogs/client/models/cats/ModelCatTabby.java",
+      "source_sha256": "7548913e702ec09378acdc9ea9a8ba849b5f8cefe31b93f59d1671ea070815ae",
+      "parts": 29,
+      "cubes": 29,
+      "child_edges": 28,
+      "sitting_parts": 7,
+      "sleeping_pose": "PoseCatSleeping",
+      "sleeping_common_parts": 29,
+      "gait_parts": 4,
+      "checks": {
+        "geometry_exact": true,
+        "part_nodes": true,
+        "cube_count": true,
+        "child_edges": true,
+        "gait_assignments": true,
+        "sitting_pose": true,
+        "sleeping_pose": true
+      },
+      "status": "pass"
+    },
+    {
+      "model": "ModelBloodHound",
+      "family": "dogs",
+      "source": "upstream/Animania-1.12/src/main/java/com/animania/addons/catsdogs/client/models/dogs/ModelBloodHound.java",
+      "source_sha256": "110354a70be02ced6de5f38a29b1c40226414806c5f76fa6d93cf0bcb7612893",
+      "parts": 29,
+      "cubes": 29,
+      "child_edges": 28,
+      "sitting_parts": 9,
+      "sleeping_pose": "PoseBloodhoundSleeping",
+      "sleeping_common_parts": 26,
+      "gait_parts": 4,
+      "checks": {
+        "geometry_exact": true,
+        "part_nodes": true,
+        "cube_count": true,
+        "child_edges": true,
+        "gait_assignments": true,
+        "sitting_pose": true,
+        "sleeping_pose": true
+      },
+      "status": "pass"
+    },
+    {
+      "model": "ModelChihuahua",
+      "family": "dogs",
+      "source": "upstream/Animania-1.12/src/main/java/com/animania/addons/catsdogs/client/models/dogs/ModelChihuahua.java",
+      "source_sha256": "2bdb8a12a146dacaf17b953946522327785f0911cfbd266788e6b8b73f13681e",
+      "parts": 16,
+      "cubes": 16,
+      "child_edges": 15,
+      "sitting_parts": 6,
+      "sleeping_pose": "PoseChihuahuaSleeping",
+      "sleeping_common_parts": 15,
+      "gait_parts": 4,
+      "checks": {
+        "geometry_exact": true,
+        "part_nodes": true,
+        "cube_count": true,
+        "child_edges": true,
+        "gait_assignments": true,
+        "sitting_pose": true,
+        "sleeping_pose": true
+      },
+      "status": "pass"
+    },
+    {
+      "model": "ModelCollie",
+      "family": "dogs",
+      "source": "upstream/Animania-1.12/src/main/java/com/animania/addons/catsdogs/client/models/dogs/ModelCollie.java",
+      "source_sha256": "72222be953140527b596bde75568c77875df26a338f6c3b51c51c86ad9559748",
+      "parts": 31,
+      "cubes": 31,
+      "child_edges": 30,
+      "sitting_parts": 9,
+      "sleeping_pose": "PoseStandardDogSleeping",
+      "sleeping_common_parts": 25,
+      "gait_parts": 4,
+      "checks": {
+        "geometry_exact": true,
+        "part_nodes": true,
+        "cube_count": true,
+        "child_edges": true,
+        "gait_assignments": true,
+        "sitting_pose": true,
+        "sleeping_pose": true
+      },
+      "status": "pass"
+    },
+    {
+      "model": "ModelCorgi",
+      "family": "dogs",
+      "source": "upstream/Animania-1.12/src/main/java/com/animania/addons/catsdogs/client/models/dogs/ModelCorgi.java",
+      "source_sha256": "46c6641fcd332c96cee95dead3c4593c410ee11d942635137f3820ddaab5f7a7",
+      "parts": 24,
+      "cubes": 24,
+      "child_edges": 23,
+      "sitting_parts": 9,
+      "sleeping_pose": "PoseCorgiSleeping",
+      "sleeping_common_parts": 24,
+      "gait_parts": 4,
+      "checks": {
+        "geometry_exact": true,
+        "part_nodes": true,
+        "cube_count": true,
+        "child_edges": true,
+        "gait_assignments": true,
+        "sitting_pose": true,
+        "sleeping_pose": true
+      },
+      "status": "pass"
+    },
+    {
+      "model": "ModelDachshund",
+      "family": "dogs",
+      "source": "upstream/Animania-1.12/src/main/java/com/animania/addons/catsdogs/client/models/dogs/ModelDachshund.java",
+      "source_sha256": "5a77a9b8d2cac59c0d6da376d255e61dee4188de14a5d17eea530b246486af16",
+      "parts": 15,
+      "cubes": 15,
+      "child_edges": 14,
+      "sitting_parts": 6,
+      "sleeping_pose": "PoseDachshundSleeping",
+      "sleeping_common_parts": 15,
+      "gait_parts": 4,
+      "checks": {
+        "geometry_exact": true,
+        "part_nodes": true,
+        "cube_count": true,
+        "child_edges": true,
+        "gait_assignments": true,
+        "sitting_pose": true,
+        "sleeping_pose": true
+      },
+      "status": "pass"
+    },
+    {
+      "model": "ModelFox",
+      "family": "dogs",
+      "source": "upstream/Animania-1.12/src/main/java/com/animania/addons/catsdogs/client/models/dogs/ModelFox.java",
+      "source_sha256": "bb4d99352db680a57be7c087476f4f82ca7204d234ea387aef8f34d7a701f869",
+      "parts": 29,
+      "cubes": 29,
+      "child_edges": 28,
+      "sitting_parts": 9,
+      "sleeping_pose": "PoseStandardDogSleeping",
+      "sleeping_common_parts": 25,
+      "gait_parts": 4,
+      "checks": {
+        "geometry_exact": true,
+        "part_nodes": true,
+        "cube_count": true,
+        "child_edges": true,
+        "gait_assignments": true,
+        "sitting_pose": true,
+        "sleeping_pose": true
+      },
+      "status": "pass"
+    },
+    {
+      "model": "ModelGermanShepherd",
+      "family": "dogs",
+      "source": "upstream/Animania-1.12/src/main/java/com/animania/addons/catsdogs/client/models/dogs/ModelGermanShepherd.java",
+      "source_sha256": "301460bf8ca5cc2b834b3899d4a07651cce2a2fb765f6cd8dd59600f04b86e5e",
+      "parts": 27,
+      "cubes": 27,
+      "child_edges": 26,
+      "sitting_parts": 9,
+      "sleeping_pose": "PoseStandardDogSleeping",
+      "sleeping_common_parts": 27,
+      "gait_parts": 4,
+      "checks": {
+        "geometry_exact": true,
+        "part_nodes": true,
+        "cube_count": true,
+        "child_edges": true,
+        "gait_assignments": true,
+        "sitting_pose": true,
+        "sleeping_pose": true
+      },
+      "status": "pass"
+    },
+    {
+      "model": "ModelGreatDane",
+      "family": "dogs",
+      "source": "upstream/Animania-1.12/src/main/java/com/animania/addons/catsdogs/client/models/dogs/ModelGreatDane.java",
+      "source_sha256": "75761c6a3738b3fee35737b01254131c87642981ab54073eff836ac41aaf611b",
+      "parts": 27,
+      "cubes": 27,
+      "child_edges": 26,
+      "sitting_parts": 9,
+      "sleeping_pose": "PoseStandardDogSleeping",
+      "sleeping_common_parts": 27,
+      "gait_parts": 4,
+      "checks": {
+        "geometry_exact": true,
+        "part_nodes": true,
+        "cube_count": true,
+        "child_edges": true,
+        "gait_assignments": true,
+        "sitting_pose": true,
+        "sleeping_pose": true
+      },
+      "status": "pass"
+    },
+    {
+      "model": "ModelGreyhound",
+      "family": "dogs",
+      "source": "upstream/Animania-1.12/src/main/java/com/animania/addons/catsdogs/client/models/dogs/ModelGreyhound.java",
+      "source_sha256": "62f3bb23a8b30f70d1c9c014f2cf469841979339b328a6f5cabf971f3e589a05",
+      "parts": 32,
+      "cubes": 32,
+      "child_edges": 31,
+      "sitting_parts": 7,
+      "sleeping_pose": "PoseGreyhoundSleeping",
+      "sleeping_common_parts": 32,
+      "gait_parts": 4,
+      "checks": {
+        "geometry_exact": true,
+        "part_nodes": true,
+        "cube_count": true,
+        "child_edges": true,
+        "gait_assignments": true,
+        "sitting_pose": true,
+        "sleeping_pose": true
+      },
+      "status": "pass"
+    },
+    {
+      "model": "ModelHusky",
+      "family": "dogs",
+      "source": "upstream/Animania-1.12/src/main/java/com/animania/addons/catsdogs/client/models/dogs/ModelHusky.java",
+      "source_sha256": "82d3958f05c55e889f04398e26eecb050eaa802874f2fc3bccfa26b7c018818f",
+      "parts": 27,
+      "cubes": 27,
+      "child_edges": 26,
+      "sitting_parts": 9,
+      "sleeping_pose": "PoseStandardDogSleeping",
+      "sleeping_common_parts": 27,
+      "gait_parts": 4,
+      "checks": {
+        "geometry_exact": true,
+        "part_nodes": true,
+        "cube_count": true,
+        "child_edges": true,
+        "gait_assignments": true,
+        "sitting_pose": true,
+        "sleeping_pose": true
+      },
+      "status": "pass"
+    },
+    {
+      "model": "ModelLabrador",
+      "family": "dogs",
+      "source": "upstream/Animania-1.12/src/main/java/com/animania/addons/catsdogs/client/models/dogs/ModelLabrador.java",
+      "source_sha256": "4bcf6630321516d1997187b8ba184a25b8c45e439439537c4ca2547cb7e81dba",
+      "parts": 27,
+      "cubes": 27,
+      "child_edges": 26,
+      "sitting_parts": 9,
+      "sleeping_pose": "PoseLabradorSleeping",
+      "sleeping_common_parts": 27,
+      "gait_parts": 4,
+      "checks": {
+        "geometry_exact": true,
+        "part_nodes": true,
+        "cube_count": true,
+        "child_edges": true,
+        "gait_assignments": true,
+        "sitting_pose": true,
+        "sleeping_pose": true
+      },
+      "status": "pass"
+    },
+    {
+      "model": "ModelPomeranian",
+      "family": "dogs",
+      "source": "upstream/Animania-1.12/src/main/java/com/animania/addons/catsdogs/client/models/dogs/ModelPomeranian.java",
+      "source_sha256": "3c8c6259e63904b599c1db5f6317468625f0a9c10addf118ac7e10ae7cd3e9c8",
+      "parts": 14,
+      "cubes": 14,
+      "child_edges": 13,
+      "sitting_parts": 7,
+      "sleeping_pose": "PosePomeranianSleeping",
+      "sleeping_common_parts": 14,
+      "gait_parts": 4,
+      "checks": {
+        "geometry_exact": true,
+        "part_nodes": true,
+        "cube_count": true,
+        "child_edges": true,
+        "gait_assignments": true,
+        "sitting_pose": true,
+        "sleeping_pose": true
+      },
+      "status": "pass"
+    },
+    {
+      "model": "ModelPoodle",
+      "family": "dogs",
+      "source": "upstream/Animania-1.12/src/main/java/com/animania/addons/catsdogs/client/models/dogs/ModelPoodle.java",
+      "source_sha256": "2535d2ac4a2db9d2aa6066152a6a99e25f9cc46e1c807cdc57c18d15d3539f08",
+      "parts": 37,
+      "cubes": 37,
+      "child_edges": 36,
+      "sitting_parts": 9,
+      "sleeping_pose": "PosePoodleSleeping",
+      "sleeping_common_parts": 37,
+      "gait_parts": 4,
+      "checks": {
+        "geometry_exact": true,
+        "part_nodes": true,
+        "cube_count": true,
+        "child_edges": true,
+        "gait_assignments": true,
+        "sitting_pose": true,
+        "sleeping_pose": true
+      },
+      "status": "pass"
+    },
+    {
+      "model": "ModelPug",
+      "family": "dogs",
+      "source": "upstream/Animania-1.12/src/main/java/com/animania/addons/catsdogs/client/models/dogs/ModelPug.java",
+      "source_sha256": "2596f201316050acfb9319edea7935e0265994e9b17c11dac35d4270f5261928",
+      "parts": 12,
+      "cubes": 12,
+      "child_edges": 11,
+      "sitting_parts": 6,
+      "sleeping_pose": "PosePugSleeping",
+      "sleeping_common_parts": 12,
+      "gait_parts": 4,
+      "checks": {
+        "geometry_exact": true,
+        "part_nodes": true,
+        "cube_count": true,
+        "child_edges": true,
+        "gait_assignments": true,
+        "sitting_pose": true,
+        "sleeping_pose": true
+      },
+      "status": "pass"
+    },
+    {
+      "model": "ModelWolf",
+      "family": "dogs",
+      "source": "upstream/Animania-1.12/src/main/java/com/animania/addons/catsdogs/client/models/dogs/ModelWolf.java",
+      "source_sha256": "c9dc91ad2332adab19a295641c258452cec5771510210cda9dd79db1bfb6cb2e",
+      "parts": 30,
+      "cubes": 30,
+      "child_edges": 29,
+      "sitting_parts": 9,
+      "sleeping_pose": "PoseStandardDogSleeping",
+      "sleeping_common_parts": 25,
+      "gait_parts": 4,
+      "checks": {
+        "geometry_exact": true,
+        "part_nodes": true,
+        "cube_count": true,
+        "child_edges": true,
+        "gait_assignments": true,
+        "sitting_pose": true,
+        "sleeping_pose": true
+      },
+      "status": "pass"
+    },
+    {
+      "model": "ModelPetBowl",
+      "family": "blocks",
+      "source": "upstream/Animania-1.12/src/main/java/com/animania/addons/catsdogs/client/models/blocks/ModelPetBowl.java",
+      "source_sha256": "b29b6d87e0ec2442b9a51cc6bacf212d08290a805229602ea2d5f808a2cf89e9",
+      "parts": 84,
+      "colored_food_parts": 71,
+      "checks": {
+        "shell_present": true,
+        "all_parts_converted": false,
+        "colored_food_rendered": false
+      },
+      "status": "requires_implementation"
+    }
+  ],
+  "entities": [
+    {
+      "id": "animania_catsdogs:female_blood_hound",
+      "model": "ModelBloodHound",
+      "scale": 0.9,
+      "translation": [
+        0.0,
+        -0.1,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:female_chihuahua",
+      "model": "ModelChihuahua",
+      "scale": 0.5,
+      "translation": [
+        0.0,
+        0.1,
+        -0.5
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:female_collie",
+      "model": "ModelCollie",
+      "scale": 0.9,
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:female_corgi",
+      "model": "ModelCorgi",
+      "scale": 0.9,
+      "translation": [
+        0.0,
+        -0.05,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:female_dachshund",
+      "model": "ModelDachshund",
+      "scale": 1.1,
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:female_fox",
+      "model": "ModelFox",
+      "scale": 0.9,
+      "translation": [
+        0.0,
+        0.1,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:female_german_shepherd",
+      "model": "ModelGermanShepherd",
+      "scale": 0.9,
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:female_great_dane",
+      "model": "ModelGreatDane",
+      "scale": 0.9,
+      "translation": [
+        0.0,
+        -0.1,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:female_greyhound",
+      "model": "ModelGreyhound",
+      "scale": 0.7,
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:female_husky",
+      "model": "ModelHusky",
+      "scale": 0.9,
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:female_labrador",
+      "model": "ModelLabrador",
+      "scale": 0.9,
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:female_pomeranian",
+      "model": "ModelPomeranian",
+      "scale": 0.5,
+      "translation": [
+        0.0,
+        0.0,
+        -0.5
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:female_poodle",
+      "model": "ModelPoodle",
+      "scale": 0.9,
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:female_pug",
+      "model": "ModelPug",
+      "scale": 0.7,
+      "translation": [
+        0.0,
+        0.0,
+        -0.5
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:female_wolf",
+      "model": "ModelWolf",
+      "scale": 0.9,
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:kitten_american_shorthair",
+      "model": "ModelCatAmericanShorthair",
+      "scale": 0.3,
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:kitten_asiatic",
+      "model": "ModelCatAsiatic",
+      "scale": 0.35,
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:kitten_exotic",
+      "model": "ModelCatExotic",
+      "scale": 0.3,
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:kitten_norwegian",
+      "model": "ModelCatRagdoll",
+      "scale": 0.3,
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:kitten_ocelot",
+      "model": "ModelCatOcelot",
+      "scale": 0.3,
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:kitten_ragdoll",
+      "model": "ModelCatRagdoll",
+      "scale": 0.3,
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:kitten_siamese",
+      "model": "ModelCatSiamese",
+      "scale": 0.3,
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:kitten_tabby",
+      "model": "ModelCatTabby",
+      "scale": 0.3,
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:male_blood_hound",
+      "model": "ModelBloodHound",
+      "scale": 1.0,
+      "translation": [
+        0.0,
+        -0.1,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:male_chihuahua",
+      "model": "ModelChihuahua",
+      "scale": 0.6,
+      "translation": [
+        0.0,
+        0.1,
+        -0.5
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:male_collie",
+      "model": "ModelCollie",
+      "scale": 1.0,
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:male_corgi",
+      "model": "ModelCorgi",
+      "scale": 1.0,
+      "translation": [
+        0.0,
+        -0.05,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:male_dachshund",
+      "model": "ModelDachshund",
+      "scale": 1.2,
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:male_fox",
+      "model": "ModelFox",
+      "scale": 1.0,
+      "translation": [
+        0.0,
+        0.1,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:male_german_shepherd",
+      "model": "ModelGermanShepherd",
+      "scale": 1.0,
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:male_great_dane",
+      "model": "ModelGreatDane",
+      "scale": 1.0,
+      "translation": [
+        0.0,
+        -0.1,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:male_greyhound",
+      "model": "ModelGreyhound",
+      "scale": 0.8,
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:male_husky",
+      "model": "ModelHusky",
+      "scale": 1.0,
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:male_labrador",
+      "model": "ModelLabrador",
+      "scale": 1.0,
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:male_pomeranian",
+      "model": "ModelPomeranian",
+      "scale": 0.6,
+      "translation": [
+        0.0,
+        0.0,
+        -0.5
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:male_poodle",
+      "model": "ModelPoodle",
+      "scale": 1.0,
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:male_pug",
+      "model": "ModelPug",
+      "scale": 0.8,
+      "translation": [
+        0.0,
+        0.0,
+        -0.5
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:male_wolf",
+      "model": "ModelWolf",
+      "scale": 1.0,
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:puppy_blood_hound",
+      "model": "ModelBloodHound",
+      "scale": 0.5,
+      "translation": [
+        0.0,
+        -0.1,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:puppy_chihuahua",
+      "model": "ModelChihuahua",
+      "scale": 0.3,
+      "translation": [
+        0.0,
+        0.1,
+        -0.5
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:puppy_collie",
+      "model": "ModelCollie",
+      "scale": 0.5,
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:puppy_corgi",
+      "model": "ModelCorgi",
+      "scale": 0.5,
+      "translation": [
+        0.0,
+        -0.05,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:puppy_dachshund",
+      "model": "ModelDachshund",
+      "scale": 0.6,
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:puppy_fox",
+      "model": "ModelFox",
+      "scale": 0.5,
+      "translation": [
+        0.0,
+        0.1,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:puppy_german_shepherd",
+      "model": "ModelGermanShepherd",
+      "scale": 0.5,
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:puppy_great_dane",
+      "model": "ModelGreatDane",
+      "scale": 0.5,
+      "translation": [
+        0.0,
+        -0.1,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:puppy_greyhound",
+      "model": "ModelGreyhound",
+      "scale": 0.4,
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:puppy_husky",
+      "model": "ModelHusky",
+      "scale": 0.5,
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:puppy_labrador",
+      "model": "ModelLabrador",
+      "scale": 0.5,
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:puppy_pomeranian",
+      "model": "ModelPomeranian",
+      "scale": 0.3,
+      "translation": [
+        0.0,
+        0.0,
+        -0.25
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:puppy_poodle",
+      "model": "ModelPoodle",
+      "scale": 0.5,
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:puppy_pug",
+      "model": "ModelPug",
+      "scale": 0.4,
+      "translation": [
+        0.0,
+        0.0,
+        -0.25
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:puppy_wolf",
+      "model": "ModelWolf",
+      "scale": 0.5,
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:queen_american_shorthair",
+      "model": "ModelCatAmericanShorthair",
+      "scale": 0.635,
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:queen_asiatic",
+      "model": "ModelCatAsiatic",
+      "scale": 0.765,
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:queen_exotic",
+      "model": "ModelCatExotic",
+      "scale": 0.585,
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:queen_norwegian",
+      "model": "ModelCatRagdoll",
+      "scale": 0.575,
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:queen_ocelot",
+      "model": "ModelCatOcelot",
+      "scale": 0.82,
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:queen_ragdoll",
+      "model": "ModelCatRagdoll",
+      "scale": 0.655,
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:queen_siamese",
+      "model": "ModelCatSiamese",
+      "scale": 0.555,
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:queen_tabby",
+      "model": "ModelCatTabby",
+      "scale": 0.68,
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:tom_american_shorthair",
+      "model": "ModelCatAmericanShorthair",
+      "scale": 0.65,
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:tom_asiatic",
+      "model": "ModelCatAsiatic",
+      "scale": 0.78,
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:tom_exotic",
+      "model": "ModelCatExotic",
+      "scale": 0.6,
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:tom_norwegian",
+      "model": "ModelCatRagdoll",
+      "scale": 0.59,
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:tom_ocelot",
+      "model": "ModelCatOcelot",
+      "scale": 0.85,
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:tom_ragdoll",
+      "model": "ModelCatRagdoll",
+      "scale": 0.67,
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:tom_siamese",
+      "model": "ModelCatSiamese",
+      "scale": 0.57,
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "animania_catsdogs:tom_tabby",
+      "model": "ModelCatTabby",
+      "scale": 0.7,
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "checks": {
+        "model": true,
+        "scale": true,
+        "translation": true
+      },
+      "status": "pass"
+    }
+  ]
+}
