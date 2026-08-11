@@ -38,7 +38,11 @@ public final class CatsDogsPetFacilityRenderer implements BlockEntityRenderer<Ca
         pose.mulPose(Axis.YP.rotationDegrees(entity.getBlockState()
                 .getValue(HorizontalDirectionalBlock.FACING).toYRot()));
         ResourceLocation texture = new ResourceLocation("animania_catsdogs", "textures/entity/tileentities/" + id + ".png");
-        model.render(pose, buffers.getBuffer(RenderType.entityCutoutNoCull(texture)), packedLight, OverlayTexture.NO_OVERLAY);
+        // CraftStudio rendered these solid facility meshes with the normal
+        // Minecraft cull state.  Rendering both sides exposes overlapping
+        // internal faces, whose unused texture canvas is white, as exterior
+        // panels on cat towers, beds and dog houses.
+        model.render(pose, buffers.getBuffer(RenderType.entityCutout(texture)), packedLight, OverlayTexture.NO_OVERLAY);
         pose.popPose();
     }
 }

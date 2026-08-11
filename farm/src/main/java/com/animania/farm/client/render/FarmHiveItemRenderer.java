@@ -39,7 +39,9 @@ public final class FarmHiveItemRenderer extends BlockEntityWithoutLevelRenderer 
         pose.translate(0.5D, wild ? 1.0D : 1.5D, 0.5D);
         pose.scale(1.0F, -1.0F, -1.0F);
         if (context == ItemDisplayContext.GUI) pose.mulPose(Axis.YP.rotationDegrees(35.0F));
-        model.render(pose, buffers.getBuffer(RenderType.entityCutoutNoCull(TEXTURE)),
+        // Match block rendering and the legacy inventory renderer.  The hive
+        // is an opaque stacked mesh, so its reverse faces must be culled.
+        model.render(pose, buffers.getBuffer(RenderType.entityCutout(TEXTURE)),
                 packedLight, OverlayTexture.NO_OVERLAY);
         pose.popPose();
     }

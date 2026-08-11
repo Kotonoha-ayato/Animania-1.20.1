@@ -45,7 +45,9 @@ public final class FarmHiveRenderer implements BlockEntityRenderer<FarmHiveBlock
         }
         pose.scale(1.0F, -1.0F, -1.0F);
         pose.mulPose(Axis.YP.rotationDegrees(entity.getBlockState().getValue(FarmHiveBlock.FACING).toYRot()));
-        model.render(pose, buffers.getBuffer(RenderType.entityCutoutNoCull(texture)), packedLight, OverlayTexture.NO_OVERLAY);
+        // Keep the legacy solid-hive cull state: no-cull leaks the hidden
+        // faces of the stacked hive pieces, including white texture canvas.
+        model.render(pose, buffers.getBuffer(RenderType.entityCutout(texture)), packedLight, OverlayTexture.NO_OVERLAY);
         pose.popPose();
     }
 }
