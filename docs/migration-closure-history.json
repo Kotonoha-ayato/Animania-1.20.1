@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "purpose": "audit-history-only",
+  "superseded_by": "docs/migration-matrix.json",
+  "superseded_at": "2026-08-11",
+  "previous_claimed_entries": 2033,
+  "previous_claimed_closed": 2033,
+  "previous_claim_is_valid": false,
+  "reason": "The former closure evidence used broad existence/compile checks and did not bind every requirement to an executed test. It is retained as history and is never read by the central writer.",
+  "reset_command": "python tools/build_migration_matrix.py --source upstream/Animania-1.12 --output docs/migration-matrix.json --reset-closure"
+}

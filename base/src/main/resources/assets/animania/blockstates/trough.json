@@ -1,6 +1,15 @@
 {
   "variants": {
-    "": {
+    "facing=north": {
+      "model": "animania:block/trough"
+    },
+    "facing=east": {
+      "model": "animania:block/trough"
+    },
+    "facing=south": {
+      "model": "animania:block/trough"
+    },
+    "facing=west": {
       "model": "animania:block/trough"
     }
   }

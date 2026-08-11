@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:smelting",
+  "category": "food",
+  "ingredient": {
+    "item": "animania_farm:raw_prime_chicken"
+  },
+  "result": "animania_farm:cooked_prime_chicken",
+  "experience": 0.3,
+  "cookingtime": 200
+}

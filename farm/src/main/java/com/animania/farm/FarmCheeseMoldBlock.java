@@ -1,10 +1,8 @@
 package com.animania.farm;
 
 import com.animania.common.block.AnimaniaContainerBlock;
-import com.animania.common.block.AnimaniaStorageBlockEntity;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -13,8 +11,13 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.util.StringRepresentable;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -24,8 +27,29 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 /** Cheese-mould block with a real storage block entity and automation path. */
 public final class FarmCheeseMoldBlock extends AnimaniaContainerBlock {
+    public static final EnumProperty<Variant> VARIANT = EnumProperty.create("variant", Variant.class);
+    private static final VoxelShape SHAPE = net.minecraft.world.level.block.Block.box(0, 0, 0, 16, 10, 16);
+
     public FarmCheeseMoldBlock(BlockBehaviour.Properties properties) {
         super(properties, FarmCheeseMoldBlockEntity::new);
+        registerDefaultState(defaultBlockState().setValue(VARIANT, Variant.EMPTY));
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<net.minecraft.world.level.block.Block, BlockState> builder) {
+        builder.add(VARIANT);
+    }
+
+    @Override
+    public VoxelShape getShape(BlockState state, net.minecraft.world.level.BlockGetter level, BlockPos pos,
+                               CollisionContext context) {
+        return SHAPE;
+    }
+
+    @Override
+    public VoxelShape getCollisionShape(BlockState state, net.minecraft.world.level.BlockGetter level, BlockPos pos,
+                                        CollisionContext context) {
+        return SHAPE;
     }
 
     @Override
@@ -62,14 +86,6 @@ public final class FarmCheeseMoldBlock extends AnimaniaContainerBlock {
         return super.use(state, level, pos, player, hand, hit);
     }
 
-    @Override
-    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState replacement, boolean moving) {
-        if (!state.is(replacement.getBlock()) && level.getBlockEntity(pos) instanceof AnimaniaStorageBlockEntity storage) {
-            Containers.dropContents(level, pos, storage);
-        }
-        super.onRemove(state, level, pos, replacement, moving);
-    }
-
     private static boolean isMilkBottle(ItemStack stack) {
         var id = ForgeRegistries.ITEMS.getKey(stack.getItem());
         return id != null && AnimaniaFarm.MOD_ID.equals(id.getNamespace()) && id.getPath().equals("milk_bottle");
@@ -88,5 +104,24 @@ public final class FarmCheeseMoldBlock extends AnimaniaContainerBlock {
             held.shrink(1);
             if (!player.addItem(replacement)) player.drop(replacement, false);
         } else player.setItemInHand(hand, replacement);
+    }
+
+    public enum Variant implements StringRepresentable {
+        EMPTY("empty"), HOLSTEIN_MILK("holstein_milk"), HOLSTEIN_CHEESE("holstein_cheese"),
+        FRIESIAN_MILK("friesian_milk"), FRIESIAN_CHEESE("friesian_cheese"),
+        GOAT_MILK("goat_milk"), GOAT_CHEESE("goat_cheese"),
+        SHEEP_MILK("sheep_milk"), SHEEP_CHEESE("sheep_cheese"),
+        WATER("water"), SALT("salt"), JERSEY_MILK("jersey_milk"), JERSEY_CHEESE("jersey_cheese");
+
+        private final String serializedName;
+
+        Variant(String serializedName) {
+            this.serializedName = serializedName;
+        }
+
+        @Override
+        public String getSerializedName() {
+            return serializedName;
+        }
     }
 }

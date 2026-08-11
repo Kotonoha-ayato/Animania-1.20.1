@@ -1,5 +1,6 @@
 package com.animania.farm;
 
+import com.animania.common.item.AnimaniaFoodItem;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
@@ -10,7 +11,7 @@ import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 
 /** Drinkable Animania milk bottle with the 1.12 container and cure semantics. */
-public final class FarmMilkBottleItem extends Item {
+public final class FarmMilkBottleItem extends AnimaniaFoodItem {
     public FarmMilkBottleItem() {
         super(new Item.Properties().stacksTo(4)
                 .food(new net.minecraft.world.food.FoodProperties.Builder().nutrition(4).saturationMod(1.0F).alwaysEat().build())

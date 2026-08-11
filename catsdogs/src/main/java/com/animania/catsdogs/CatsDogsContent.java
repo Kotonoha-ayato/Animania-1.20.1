@@ -29,6 +29,7 @@ public final class CatsDogsContent {
             BlockBehaviour.Properties.of().mapColor(MapColor.WOOD).strength(1.2f).sound(SoundType.WOOD).noOcclusion()));
     public static final RegistryObject<BlockEntityType<CatsDogsPetBowlBlockEntity>> PET_BOWL_BE = BLOCK_ENTITIES.register("pet_bowl",
             () -> BlockEntityType.Builder.of(CatsDogsPetBowlBlockEntity::new, PET_BOWL.get()).build(null));
+    public static final RegistryObject<BlockEntityType<CatsDogsPetFacilityBlockEntity>> PET_PROP_BE;
 
     static {
         ITEM_IDS.forEach(id -> {
@@ -37,7 +38,6 @@ public final class CatsDogsContent {
         });
         ITEM_ENTRIES.put("pet_bowl", ITEMS.register("pet_bowl", () -> new net.minecraft.world.item.BlockItem(PET_BOWL.get(), new Item.Properties())));
         CatsDogsLegacyIds.ALL.forEach(id -> registerGenericItem("entity_egg_" + id));
-        List.of("cat_random", "dog_random").forEach(id -> registerEggItem(id, id));
         BLOCK_IDS.forEach(id -> {
             RegistryObject<Block> block = BLOCKS.register(id, () -> new CatsDogsPetFacilityBlock(id,
                     BlockBehaviour.Properties.of().mapColor(id.equals("litter_box") ? MapColor.SAND : MapColor.WOOD)
@@ -45,6 +45,9 @@ public final class CatsDogsContent {
             BLOCK_ENTRIES.put(id, block);
             ITEM_ENTRIES.put(id, ITEMS.register(id, () -> new net.minecraft.world.item.BlockItem(block.get(), new Item.Properties())));
         });
+        PET_PROP_BE = BLOCK_ENTITIES.register("pet_prop", () -> BlockEntityType.Builder.of(
+                CatsDogsPetFacilityBlockEntity::new,
+                BLOCK_IDS.stream().map(id -> BLOCK_ENTRIES.get(id).get()).toArray(Block[]::new)).build(null));
     }
 
     private static void registerGenericItem(String id) {
@@ -61,7 +64,7 @@ public final class CatsDogsContent {
     private static void registerEggItem(String id, String target) {
         if (!ITEM_ENTRIES.containsKey(id)) {
             ITEM_ENTRIES.put(id, ITEMS.register(id, () -> new AnimaniaEntityEggItem(
-                    () -> eggCandidates(target), new Item.Properties(), true)));
+                    () -> eggCandidates(target), new Item.Properties(), true, target)));
         }
     }
 

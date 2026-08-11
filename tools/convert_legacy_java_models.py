@@ -36,6 +36,29 @@ def args(text: str) -> list[float]:
     return [number(value) for value in text.split(",")]
 
 
+def expand_indexed_part_loops(text: str) -> str:
+    """Expand simple constructor loops used to create ModelRenderer arrays (hamster cheeks)."""
+    lengths = {name: int(size) for name, size in re.findall(
+        r"(?:this\.)?(\w+)\s*=\s*new\s+ModelRenderer\s*\[\s*(\d+)\s*\]", text)}
+    pattern = re.compile(
+        r"for\s*\(\s*int\s+(\w+)\s*=\s*0\s*;\s*\1\s*<\s*(?:this\.)?(\w+)\.length\s*;\s*\1\+\+\s*\)\s*\{(.*?)\}",
+        re.S)
+
+    def expand(match: re.Match[str]) -> str:
+        index, array, body = match.groups()
+        if array not in lengths:
+            return match.group(0)
+        copies = []
+        for value in range(lengths[array]):
+            copy = re.sub(rf"(?:this\.)?{re.escape(array)}\s*\[\s*{re.escape(index)}\s*\]",
+                          f"this.{array}{value}", body)
+            copy = re.sub(rf"\b{re.escape(index)}\b", str(value), copy)
+            copies.append(copy)
+        return "\n".join(copies)
+
+    return pattern.sub(expand, text)
+
+
 def f(value: float) -> str:
     if abs(value) < 0.0000001:
         value = 0
@@ -51,9 +74,14 @@ class Part:
     uv: tuple[int, int] = (0, 0)
     boxes: list[tuple[float, ...]] = field(default_factory=list)
     pos: tuple[float, float, float] = (0, 0, 0)
+    # ModelRendererAnimania applies this translation after its rotation.  It
+    # is deliberately distinct from ``pos`` (the pre-rotation pivot).
+    offset: tuple[float, float, float] = (0, 0, 0)
     rot: tuple[float, float, float] = (0, 0, 0)
     children: list[str] = field(default_factory=list)
     mirror: bool = False
+    gait_phase: int | None = None
+    colored: bool = False
 
 
 @dataclass
@@ -62,62 +90,130 @@ class Model:
     width: int
     height: int
     parts: dict[str, Part]
+    private_parts: set[str]
+
+
+def method_body(text: str, signature: re.Pattern[str]) -> str | None:
+    """Return the body for a Java method/constructor matched through ``{``."""
+    match = signature.search(text)
+    if match is None:
+        return None
+    start = text.find("{", match.start(), match.end())
+    if start < 0:
+        return None
+    depth = 0
+    for index in range(start, len(text)):
+        if text[index] == "{":
+            depth += 1
+        elif text[index] == "}":
+            depth -= 1
+            if depth == 0:
+                return text[start + 1:index]
+    return None
 
 
 def parse_model(path: Path) -> Model:
-    text = re.sub(r"//.*", "", path.read_text(encoding="utf-8", errors="replace"))
+    # Geometry in a commented-out prototype must never become live again in
+    # the converted model (the Angus source, for example, documents unused
+    # horns in a block comment). Strip both Java comment forms before any
+    # ModelRenderer pattern is considered.
+    text = path.read_text(encoding="utf-8", errors="replace")
+    text = re.sub(r"/\*.*?\*/", "", text, flags=re.S)
+    text = re.sub(r"//[^\n]*", "", text)
+    text = expand_indexed_part_loops(text)
+    constructor = method_body(
+        text,
+        re.compile(rf"\bpublic\s+{re.escape(path.stem)}\s*\(\s*\)\s*\{{"),
+    )
+    # Geometry and default pivots belong to the no-argument constructor.
+    # Scanning the full file accidentally promoted literal values in
+    # setLivingAnimations/setRotationAngles (notably dog sitting poses) into
+    # the initial mesh pose.
+    geometry = constructor if constructor is not None else text
+    defaults = geometry
+    if constructor is not None and re.search(r"(?:this\.)?setupAngles\s*\(\s*\)", constructor):
+        setup = method_body(text, re.compile(r"\b(?:public|private|protected)?\s*(?:final\s+)?void\s+setupAngles\s*\(\s*\)\s*\{"))
+        if setup is not None:
+            defaults += "\n" + setup
+    constants = {name: value for name, value in re.findall(
+        r"\b(?:float|double)\s+(\w+)\s*=\s*([+-]?(?:\d+(?:\.\d*)?|\.\d+)[fFdD]?)\s*;", geometry)}
+
+    def model_args(raw: str) -> list[float]:
+        for name, value in constants.items():
+            raw = re.sub(rf"\b{re.escape(name)}\b", value, raw)
+        return args(raw)
+
     parts: dict[str, Part] = {}
-    for match in re.finditer(r"(?:this\.)?(\w+)\s*=\s*new\s+ModelRenderer(?:Animania)?\s*\(\s*(?:this\s*,\s*)?([^)]*)\)", text):
-        name, raw = match.groups()
-        values = args(raw) if raw.strip() else []
+    for match in re.finditer(r"(?:this\.)?(\w+)\s*=\s*new\s+(ModelRenderer(?:Animania|Colored)?)\s*\(\s*(?:this\s*,\s*)?([^)]*)\)", geometry):
+        name, renderer_type, raw = match.groups()
+        values = model_args(raw) if raw.strip() else []
         uv = (int(values[-2]), int(values[-1])) if len(values) >= 2 else (0, 0)
-        parts[name] = Part(name, uv)
-    width = height = 64
-    for match in re.finditer(r"(?:this\.)?(\w+)\.setTextureSize\s*\(([^)]*)\)", text):
+        parts[name] = Part(name, uv, colored=renderer_type == "ModelRendererColored")
+    # ModelBase defaults to 64x32. Starting height at 64 silently doubled UV
+    # space for the many legacy models that rely on that default.
+    width, height = 64, 32
+    for match in re.finditer(r"(?:this\.)?texture(Width|Height)\s*=\s*(\d+)", geometry):
+        if match.group(1) == "Width":
+            width = max(width, int(match.group(2)))
+        else:
+            height = max(height, int(match.group(2)))
+    for match in re.finditer(r"(?:this\.)?(\w+)\.setTextureSize\s*\(([^)]*)\)", geometry):
         try:
-            values = args(match.group(2)); width = max(width, int(values[0])); height = max(height, int(values[1]))
+            values = model_args(match.group(2)); width = max(width, int(values[0])); height = max(height, int(values[1]))
         except (ValueError, IndexError):
             pass
-    for match in re.finditer(r"(?:this\.)?(\w+)\.addBox\s*\(([^)]*)\)", text):
+    for match in re.finditer(r"(?:this\.)?(\w+)\.addBox\s*\(([^)]*)\)", geometry):
         name = match.group(1)
         if name not in parts: continue
         try:
-            values = tuple(args(match.group(2)))
+            values = tuple(model_args(match.group(2)))
             if len(values) >= 6: parts[name].boxes.append(values[:7])
         except ValueError:
             pass
-    for match in re.finditer(r"(?:this\.)?(\w+)\.setRotationPoint\s*\(([^)]*)\)", text):
-        if match.group(1) in parts:
-            try: parts[match.group(1)].pos = tuple(args(match.group(2))[:3])
+    positioned: set[str] = set()
+    for match in re.finditer(r"(?:this\.)?(\w+)\.setRotationPoint\s*\(([^)]*)\)", geometry):
+        if match.group(1) in parts and match.group(1) not in positioned:
+            try: parts[match.group(1)].pos = tuple(model_args(match.group(2))[:3])
             except ValueError: pass
-    for match in re.finditer(r"(?:this\.)?(\w+)\.setOffset\s*\(([^)]*)\)", text):
+            else: positioned.add(match.group(1))
+    for match in re.finditer(r"(?:this\.)?(\w+)\.setOffset\s*\(([^)]*)\)", geometry):
         if match.group(1) in parts:
             try:
-                offset = args(match.group(2))[:3]
-                old = parts[match.group(1)].pos
-                parts[match.group(1)].pos = tuple(old[i] + offset[i] for i in range(3))
+                parts[match.group(1)].offset = tuple(model_args(match.group(2))[:3])
             except ValueError: pass
     rotations: dict[str, list[float]] = {name: [0, 0, 0] for name in parts}
     axes = {"X": 0, "Y": 1, "Z": 2}
-    for match in re.finditer(r"(?:this\.)?(\w+)\.rotateAngle([XYZ])\s*=\s*([^;]+);", text):
+    for match in re.finditer(r"(?:this\.)?(\w+)\.rotateAngle([XYZ])\s*=\s*([^;]+);", defaults):
         name, axis, raw = match.groups()
         if name in rotations:
             try: rotations[name][axes[axis]] = number(raw)
             except ValueError: pass
-    for match in re.finditer(r"setRotateAngle\s*\(\s*(?:this\.)?(\w+)\s*,([^)]*)\)", text):
+    for match in re.finditer(r"(?:this\.)?set(?:RotateAngle|Rotation)\s*\(\s*(?:this\.)?(\w+)\s*,([^)]*)\)", defaults):
         if match.group(1) in rotations:
-            try: rotations[match.group(1)] = args(match.group(2))[:3]
+            try: rotations[match.group(1)] = model_args(match.group(2))[:3]
             except ValueError: pass
     for name, rotation in rotations.items(): parts[name].rot = tuple(rotation)
-    for match in re.finditer(r"(?:this\.)?(\w+)\.addChild\s*\(\s*(?:this\.)?(\w+)\s*\)", text):
+    # Extract the original walk cycle phase instead of guessing from the side
+    # of the body. Quadrupeds animate diagonal pairs together; grouping all
+    # left legs together produces an visibly incorrect pacing gait.
+    for match in re.finditer(r"(?:this\.)?(\w+)\.rotateAngleX\s*=\s*(MathHelper\.cos\s*\([^;]+);", text):
+        name, expression = match.groups()
+        if name in parts:
+            parts[name].gait_phase = 1 if re.search(r"Math\.PI|3\.14159", expression) else 0
+    for match in re.finditer(r"(?:this\.)?(\w+)\.addChild\s*\(\s*(?:this\.)?(\w+)\s*\)", geometry):
         parent, child = match.groups()
         if parent in parts and child in parts and child not in parts[parent].children:
             parts[parent].children.append(child)
-    for match in re.finditer(r"(?:this\.)?(\w+)\.mirror\s*=\s*true", text):
+    for match in re.finditer(r"(?:this\.)?(\w+)\.mirror\s*=\s*true", geometry):
         if match.group(1) in parts: parts[match.group(1)].mirror = True
+    private_parts: set[str] = set()
+    for block in re.finditer(r"if\s*\(\s*AnimaniaConfig\.gameRules\.showParts\s*\)\s*\{(.*?)\}", text, re.S):
+        for rendered in re.findall(r"(?:this\.)?(\w+)\.render\s*\(", block.group(1)):
+            if rendered in parts:
+                private_parts.add(rendered)
     if not parts:
         raise ValueError(f"no ModelRenderer geometry in {path}")
-    return Model(path.stem, width, height, parts)
+    return Model(path.stem, width, height, parts, private_parts)
 
 
 def find_model(source: Path, name: str) -> Path | None:
@@ -152,25 +248,119 @@ def mappings(root: Path, module: str) -> dict[str, tuple[str, float]]:
         handler = addon / "client/CatsDogsAddonRenderHandler.java"
         text = handler.read_text(encoding="utf-8", errors="replace")
         pattern = r"Entity(\w+)\.class\s*,\s*new\s+\w+\.Factory\s*\(\s*new\s+(Model\w+)\s*\(\)"
-        for entity, model in re.findall(pattern, text): result[snake(entity)] = (model, 1.0)
+        for line in text.splitlines():
+            match = re.search(pattern, line)
+            if not match:
+                continue
+            entity, model = match.groups()
+            remainder = line[match.end():]
+            scale_match = re.search(r",\s*(-?[0-9]+(?:\.[0-9]+)?)f(?:\s*[,\)])", remainder)
+            result[snake(entity)] = (model, float(scale_match.group(1)) if scale_match else 1.0)
         # Fox uses a dedicated renderer but the same Java model conversion path.
         for role in ("male", "female", "puppy"): result[f"{role}_fox"] = ("ModelFox", 1.0)
     return result
 
 
-def emit_part(lines: list[str], model: Model, part: Part, variable: str, indent: str) -> None:
+def emit_part(lines: list[str], model: Model, part: Part, variable: str, indent: str,
+              inherited_offset: tuple[float, float, float] = (0, 0, 0)) -> None:
     builder = "CubeListBuilder.create()"
     if part.mirror: builder += ".mirror()"
     for box in part.boxes:
-        builder += f".texOffs({part.uv[0]}, {part.uv[1]}).addBox({', '.join(f(v) for v in box[:6])}"
+        # 1.12 ModelRendererAnimania is T(pivot) * R(rotation) * T(offset).
+        # A LayerDefinition has no post-rotation part offset, so move each
+        # cube locally and add the parent's offset to the child's pivot below.
+        local_box = (box[0] + part.offset[0], box[1] + part.offset[1], box[2] + part.offset[2], *box[3:])
+        builder += f".texOffs({part.uv[0]}, {part.uv[1]}).addBox({', '.join(f(v) for v in local_box[:6])}"
         if len(box) == 7: builder += f", new CubeDeformation({f(box[6])})"
         builder += ")"
-    x, y, z = part.pos; rx, ry, rz = part.rot
+    x = part.pos[0] + inherited_offset[0]
+    y = part.pos[1] + inherited_offset[1]
+    z = part.pos[2] + inherited_offset[2]
+    rx, ry, rz = part.rot
     pose = f"PartPose.offsetAndRotation({f(x)}, {f(y)}, {f(z)}, {f(rx)}, {f(ry)}, {f(rz)})"
     safe = snake(part.name)
     lines.append(f'{indent}PartDefinition {safe} = {variable}.addOrReplaceChild("{safe}", {builder}, {pose});')
     for child in part.children:
-        emit_part(lines, model, model.parts[child], safe, indent)
+        emit_part(lines, model, model.parts[child], safe, indent, part.offset)
+
+
+def animation_profile(model: Model) -> tuple[list[str], list[str], list[str], list[str], list[str], list[str], list[str], list[str]]:
+    children = {child for part in model.parts.values() for child in part.children}
+    entries: list[tuple[str, str, tuple[str, ...]]] = []
+
+    def walk(name: str, path: tuple[str, ...], ancestors: tuple[str, ...]) -> None:
+        safe = snake(name)
+        current = path + (safe,)
+        entries.append(("/".join(current), safe, ancestors))
+        for child in model.parts[name].children:
+            walk(child, current, ancestors + (safe,))
+
+    for name in model.parts:
+        if name not in children:
+            walk(name, (), ())
+
+    def roots_with(token: str) -> list[str]:
+        def is_part_token(name: str) -> bool:
+            # `detail` ends in `tail`; matching arbitrary substrings made an
+            # upper jaw animate as a tail. A model-part token is either the
+            # full name, an underscore-delimited extension, or a numeric
+            # sequence such as tail2.
+            suffix = name[len(token):] if name.startswith(token) else None
+            return suffix == "" or (suffix is not None and (suffix.startswith("_") or suffix.isdigit()))
+
+        return [path for path, name, ancestors in entries
+                if is_part_token(name) and not any(is_part_token(ancestor) for ancestor in ancestors)]
+
+    heads = roots_with("head")
+    if not heads: heads = roots_with("neck")[:1]
+    limbs = [(path, name) for path, name, ancestors in entries
+             if any(token in name for token in ("leg", "foot", "arm"))
+             and not any(any(token in ancestor for token in ("leg", "foot", "arm")) for ancestor in ancestors)]
+
+    def side(name: str, left: bool) -> bool:
+        # Do not use a raw "_l" substring: every snake-cased "_leg"
+        # contains it, which previously classified right legs as left legs.
+        word = "left" if left else "right"
+        suffix = "l" if left else "r"
+        return (re.search(rf"(?:^|_){word}(?:_|$)", name) is not None
+                or re.search(rf"(?:__|_){suffix}$", name) is not None
+                or re.search(rf"(?:leg|foot|arm){suffix}(?:_|$)", name) is not None)
+
+    part_by_safe_name = {snake(part.name): part for part in model.parts.values()}
+    phase_a = [path for path, name in limbs if part_by_safe_name.get(name) is not None
+               and part_by_safe_name[name].gait_phase == 0]
+    phase_b = [path for path, name in limbs if part_by_safe_name.get(name) is not None
+               and part_by_safe_name[name].gait_phase == 1]
+    unassigned = [(path, name) for path, name in limbs
+                  if part_by_safe_name.get(name) is None or part_by_safe_name[name].gait_phase is None]
+    # Old models without an explicit cosine assignment still get a stable
+    # diagonal fallback: back-left/front-right versus back-right/front-left.
+    for index, (path, name) in enumerate(unassigned):
+        left_side = side(name, True)
+        right_side = side(name, False)
+        front = "front" in name
+        back = "back" in name or "rear" in name
+        if (left_side and back) or (right_side and front):
+            phase_a.append(path)
+        elif (right_side and back) or (left_side and front):
+            phase_b.append(path)
+        elif index % 2 == 0:
+            phase_a.append(path)
+        else:
+            phase_b.append(path)
+    tails = roots_with("tail")
+    wings = roots_with("wing")
+    bodies = [path for path, name, ancestors in entries
+              if "body" in name and not any("body" in ancestor for ancestor in ancestors)]
+    private_names = {snake(name) for name in model.private_parts}
+    private_parts = [path for path, name, ancestors in entries if name in private_names]
+    colored_names = {snake(name) for name, part in model.parts.items() if part.colored}
+    colored_parts = [path for path, name, ancestors in entries if name in colored_names]
+    return heads[:2], phase_a[:8], phase_b[:8], tails[:2], wings[:2], bodies[:2], private_parts, colored_parts
+
+
+def java_array(values: list[str]) -> str:
+    return "new String[]{" + ", ".join(f'"{value}"' for value in values) + "}"
 
 
 def emit(root: Path, module: str) -> None:
@@ -196,10 +386,11 @@ def emit(root: Path, module: str) -> None:
              "import net.minecraft.client.model.geom.builders.CubeDeformation;", "import net.minecraft.client.model.geom.builders.CubeListBuilder;",
              "import net.minecraft.client.model.geom.builders.LayerDefinition;", "import net.minecraft.client.model.geom.builders.MeshDefinition;",
              "import net.minecraft.client.model.geom.builders.PartDefinition;", "import net.minecraft.resources.ResourceLocation;", "",
+             "import com.animania.client.model.LegacyAnimationProfile;", "",
              f"public final class {class_name} {{", "    public static final Map<String, ModelLayerLocation> LAYERS = new LinkedHashMap<>();",
              "    static {"]
     for entity in ids:
-        lines.append(f'        LAYERS.put("{entity}", new ModelLayerLocation(new ResourceLocation("{MOD_IDS[module]}", "{entity}"), "main"));')
+        lines.append(f'        LAYERS.put("{entity}", new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("{MOD_IDS[module]}", "{entity}"), "main"));')
     lines += ["    }", f"    private {class_name}() {{}}", "    public static LayerDefinition create(String id) {", "        return switch (id) {"]
     reverse: dict[str, list[str]] = {}
     for entity in ids: reverse.setdefault(mapping[entity][0], []).append(entity)
@@ -207,6 +398,20 @@ def emit(root: Path, module: str) -> None:
         labels = ", ".join(f'"{entity}"' for entity in entity_ids)
         lines.append(f"            case {labels} -> {snake(model_name)}();")
     lines += ['            default -> throw new IllegalArgumentException("Unknown legacy model " + id);', "        };", "    }"]
+    lines += ["    public static LegacyAnimationProfile profile(String id) {", "        return switch (id) {"]
+    for model_name, entity_ids in reverse.items():
+        labels = ", ".join(f'"{entity}"' for entity in entity_ids)
+        profile = animation_profile(models[model_name])
+        constructor = ", ".join(java_array(values) for values in profile)
+        lines.append(f"            case {labels} -> new LegacyAnimationProfile({constructor});")
+    lines += ["            default -> LegacyAnimationProfile.EMPTY;", "        };", "    }"]
+    lines += ["    public static float scale(String id) {", "        return switch (id) {"]
+    by_scale: dict[float, list[str]] = {}
+    for entity in ids: by_scale.setdefault(mapping[entity][1], []).append(entity)
+    for scale, entity_ids in by_scale.items():
+        labels = ", ".join(f'"{entity}"' for entity in entity_ids)
+        lines.append(f"            case {labels} -> {f(scale)};")
+    lines += ["            default -> 1.0F;", "        };", "    }"]
     for name, model in models.items():
         method = snake(name)
         lines += [f"    private static LayerDefinition {method}() {{", "        MeshDefinition mesh = new MeshDefinition();", "        PartDefinition root = mesh.getRoot();"]
@@ -224,10 +429,56 @@ def emit(root: Path, module: str) -> None:
     print(module, len(ids), len(models), output)
 
 
+def emit_base_facilities(root: Path) -> None:
+    """Convert the four Base Java-rendered facilities/items that are not entities."""
+    model_root = root / "upstream/Animania-1.12/src/main/java/com/animania/client/models"
+    sources = {
+        "salt_lick": model_root / "blocks/ModelSaltLick.java",
+        "nest": model_root / "ModelNest.java",
+        "trough": model_root / "ModelTrough.java",
+        "water_bottle": model_root / "ModelWaterBottle.java",
+    }
+    models = {key: parse_model(path) for key, path in sources.items()}
+    class_name = "BaseLegacyModelLayers"
+    lines = ["package com.animania.client.model;", "",
+             "// Generated from the pinned LGPL-3.0 Animania 1.12 Java models; do not edit by hand.",
+             "import java.util.LinkedHashMap;", "import java.util.Map;",
+             "import net.minecraft.client.model.geom.ModelLayerLocation;", "import net.minecraft.client.model.geom.PartPose;",
+             "import net.minecraft.client.model.geom.builders.CubeDeformation;", "import net.minecraft.client.model.geom.builders.CubeListBuilder;",
+             "import net.minecraft.client.model.geom.builders.LayerDefinition;", "import net.minecraft.client.model.geom.builders.MeshDefinition;",
+             "import net.minecraft.client.model.geom.builders.PartDefinition;", "import net.minecraft.resources.ResourceLocation;", "",
+             f"public final class {class_name} {{", "    public static final Map<String, ModelLayerLocation> LAYERS = new LinkedHashMap<>();",
+             "    static {"]
+    for key in models:
+        lines.append(f'        LAYERS.put("{key}", new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath("animania", "legacy/{key}"), "main"));')
+    lines += ["    }", f"    private {class_name}() {{}}", "    public static LayerDefinition create(String id) {", "        return switch (id) {"]
+    for key in models:
+        lines.append(f'            case "{key}" -> {key}();')
+    lines += ['            default -> throw new IllegalArgumentException("Unknown Base legacy model " + id);', "        };", "    }"]
+    for key, model in models.items():
+        lines += [f"    private static LayerDefinition {key}() {{", "        MeshDefinition mesh = new MeshDefinition();", "        PartDefinition root = mesh.getRoot();"]
+        children = {child for part in model.parts.values() for child in part.children}
+        for part in model.parts.values():
+            if part.name not in children:
+                emit_part(lines, model, part, "root", "        ")
+        lines += [f"        return LayerDefinition.create(mesh, {model.width}, {model.height});", "    }"]
+    lines.append("}")
+    output = root / "base/src/main/java/com/animania/client/model/BaseLegacyModelLayers.java"
+    output.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    print("base", len(models), output)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(); parser.add_argument("--root", type=Path, required=True)
+    parser.add_argument("--modules", nargs="+", choices=("base", "farm", "extra", "catsdogs"),
+                        help="only regenerate the selected model-layer modules")
     opts = parser.parse_args()
-    for module in ("farm", "extra", "catsdogs"): emit(opts.root, module)
+    modules = opts.modules or ("base", "farm", "extra", "catsdogs")
+    if "base" in modules:
+        emit_base_facilities(opts.root)
+    for module in ("farm", "extra", "catsdogs"):
+        if module in modules:
+            emit(opts.root, module)
 
 
 if __name__ == "__main__": main()

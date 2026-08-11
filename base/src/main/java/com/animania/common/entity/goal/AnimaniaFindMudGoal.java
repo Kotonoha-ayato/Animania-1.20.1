@@ -1,0 +1,106 @@
+package com.animania.common.entity.goal;
+
+import com.animania.common.AnimaniaBlocks;
+import com.animania.common.config.AnimaniaConfig;
+import com.animania.common.entity.AnimaniaAnimalEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.level.block.Block;
+import net.minecraftforge.registries.ForgeRegistries;
+
+import java.util.EnumSet;
+
+/** Server-authoritative port of the farm pig mud-seeking care goal. */
+public final class AnimaniaFindMudGoal extends Goal {
+    private final AnimaniaAnimalEntity pig;
+    private BlockPos target;
+    private int delay;
+
+    public AnimaniaFindMudGoal(AnimaniaAnimalEntity pig) {
+        this.pig = pig;
+        setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
+    }
+
+    @Override
+    public boolean canUse() {
+        if (!supports(pig) || pig.isPlaying() || pig.isSleeping() || pig.isSitting()
+                || pig.isLeashed() || pig.isPassenger() || !pig.level().isDay()) return false;
+        if (++delay < configured(AnimaniaConfig.AI_TICKS_BETWEEN_FIRINGS, 100)) return false;
+        delay = 0;
+        if (isMud(pig.level().getBlockState(pig.blockPosition()).getBlock())
+                || isMud(pig.level().getBlockState(pig.blockPosition().below()).getBlock())) {
+            pig.enterMud();
+            return false;
+        }
+        target = findNearestMud();
+        return target != null && pig.getRandom().nextInt(200) != 0;
+    }
+
+    @Override
+    public void start() {
+        if (target != null) pig.getNavigation().moveTo(
+                target.getX() + 0.5D, target.getY() + 1.0D, target.getZ() + 0.5D, 1.2D);
+    }
+
+    @Override
+    public boolean canContinueToUse() {
+        return target != null && !pig.getNavigation().isDone() && !pig.isPlaying()
+                && !pig.isSleeping() && pig.level().isDay();
+    }
+
+    @Override
+    public void tick() {
+        if (target == null) return;
+        if (pig.distanceToSqr(target.getX() + 0.5D, target.getY() + 1.0D, target.getZ() + 0.5D) <= 2.25D
+                || isMud(pig.level().getBlockState(pig.blockPosition()).getBlock())
+                || isMud(pig.level().getBlockState(pig.blockPosition().below()).getBlock())) {
+            pig.getNavigation().stop();
+            pig.enterMud();
+        }
+    }
+
+    @Override
+    public void stop() {
+        target = null;
+    }
+
+    public BlockPos targetMud() {
+        return target;
+    }
+
+    private BlockPos findNearestMud() {
+        BlockPos origin = pig.blockPosition();
+        BlockPos best = null;
+        double bestDistance = Double.MAX_VALUE;
+        for (BlockPos candidate : BlockPos.betweenClosed(origin.offset(-10, -2, -10), origin.offset(9, 1, 9))) {
+            if (!isMud(pig.level().getBlockState(candidate).getBlock())) continue;
+            long nearbyPigs = pig.level().getEntitiesOfClass(AnimaniaAnimalEntity.class,
+                    new net.minecraft.world.phys.AABB(candidate).inflate(2.0D), AnimaniaFindMudGoal::supports).size();
+            if (nearbyPigs >= 2) continue;
+            double distance = candidate.distSqr(origin);
+            if (distance < bestDistance) {
+                best = candidate.immutable();
+                bestDistance = distance;
+            }
+        }
+        return best;
+    }
+
+    private static boolean isMud(Block block) {
+        if (block == AnimaniaBlocks.MUD.get()) return true;
+        ResourceLocation id = ForgeRegistries.BLOCKS.getKey(block);
+        return id != null && id.getPath().equals("mud");
+    }
+
+    public static boolean supports(AnimaniaAnimalEntity animal) {
+        ResourceLocation id = ForgeRegistries.ENTITY_TYPES.getKey(animal.getType());
+        if (id == null) return false;
+        String path = id.getPath();
+        return path.startsWith("sow_") || path.startsWith("hog_") || path.startsWith("piglet_");
+    }
+
+    private static int configured(net.minecraftforge.common.ForgeConfigSpec.IntValue value, int fallback) {
+        try { return value.get(); } catch (IllegalStateException ignored) { return fallback; }
+    }
+}

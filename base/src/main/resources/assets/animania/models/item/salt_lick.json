@@ -1,3 +1,6 @@
 {
-  "parent": "animania:block/salt_lick"
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "animania:item/salt_lick"
+  }
 }

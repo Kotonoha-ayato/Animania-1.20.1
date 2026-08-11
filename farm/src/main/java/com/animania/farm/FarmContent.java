@@ -7,6 +7,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import com.animania.common.item.AnimaniaVehicleItem;
 import com.animania.common.item.AnimaniaEntityEggItem;
+import com.animania.common.item.AnimaniaFoodItem;
 import com.animania.common.entity.AnimaniaAnimalEntity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -93,18 +94,15 @@ public final class FarmContent {
             if (id.equals("brown_egg")) return new FarmBrownEggItem();
             if (id.equals("carving_knife")) return new FarmCarvingKnifeItem();
             if (id.equals("riding_crop")) return new FarmRidingCropItem();
-            return new Item(itemProperties(id));
+            return new AnimaniaFoodItem(itemProperties(id));
             }));
         });
         FarmLegacyIds.ALL.stream().filter(id -> !FarmLegacyIds.isVehicle(id)).forEach(id -> registerGenericItem("entity_egg_" + id));
-        // Compatibility aliases emitted by early 1.20 development builds;
-        // the canonical 1.12 ID remains entity_egg_<family>_random.
-        List.of("cow_random", "chicken_random", "pig_random", "goat_random", "sheep_random")
-                .forEach(id -> registerEggItem(id, id));
         BLOCK_IDS.forEach(id -> {
-            RegistryObject<Block> block = BLOCKS.register(id, () -> new Block(BlockBehaviour.Properties.of().mapColor(MapColor.WOOD).strength(1.0f).sound(SoundType.WOOD)));
+            RegistryObject<Block> block = BLOCKS.register(id, () -> new FarmWoolBlock(
+                    BlockBehaviour.Properties.of().mapColor(MapColor.WOOL).strength(0.8f).sound(SoundType.WOOL)));
             BLOCK_ENTRIES.put(id, block);
-            ITEM_ENTRIES.put(id, ITEMS.register(id, () -> new BlockItem(block.get(), new Item.Properties())));
+            ITEM_ENTRIES.put(id, ITEMS.register(id, () -> new FarmWoolBlockItem(block.get(), new Item.Properties())));
         });
         CHEESE_BLOCKS.forEach((family, block) -> {
             BLOCK_ENTRIES.put("cheese_" + family, block);
@@ -132,7 +130,7 @@ public final class FarmContent {
     private static void registerEggItem(String id, String target) {
         if (!ITEM_ENTRIES.containsKey(id)) {
             ITEM_ENTRIES.put(id, ITEMS.register(id, () -> new AnimaniaEntityEggItem(
-                    () -> eggCandidates(target), new Item.Properties(), true)));
+                    () -> eggCandidates(target), new Item.Properties(), true, target)));
         }
     }
 
@@ -184,7 +182,8 @@ public final class FarmContent {
             case "cooked_prime_mutton" -> food.nutrition(12).saturationMod(0.5F);
             case "friesian_cheese_wedge", "holstein_cheese_wedge", "jersey_cheese_wedge", "goat_cheese_wedge", "sheep_cheese_wedge" -> food.nutrition(3).saturationMod(0.9F);
             default -> {
-                if (id.startsWith("raw_")) food.nutrition(1).saturationMod(1.0F).effect(() -> new MobEffectInstance(MobEffects.CONFUSION, 200, 3), 1.0F);
+                com.animania.common.item.LegacyRawFoodProfile raw = com.animania.common.item.LegacyRawFoodProfile.forItemId(id);
+                if (raw != null) raw.apply(food);
                 else edible = false;
             }
         }

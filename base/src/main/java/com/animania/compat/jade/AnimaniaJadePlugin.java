@@ -1,6 +1,8 @@
 package com.animania.compat.jade;
 
 import com.animania.Animania;
+import com.animania.api.IAnimaniaProbeBlock;
+import com.animania.compat.AnimaniaProbeComponents;
 import com.animania.common.block.AnimaniaContainerBlock;
 import com.animania.common.block.AnimaniaStorageBlockEntity;
 import com.animania.common.entity.AnimaniaAnimalEntity;
@@ -10,6 +12,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Block;
 import snownee.jade.api.EntityAccessor;
 import snownee.jade.api.IEntityComponentProvider;
 import snownee.jade.api.IBlockComponentProvider;
@@ -63,6 +66,9 @@ public final class AnimaniaJadePlugin implements IWailaPlugin {
         registration.registerEntityComponent(VehicleProvider.INSTANCE, AnimaniaVehicleEntity.class);
         registration.registerBlockComponent(BlockProvider.INSTANCE, AnimaniaContainerBlock.class);
         registration.registerBlockComponent(BlockProvider.INSTANCE, com.animania.common.block.AnimaniaSaltLickBlock.class);
+        // Addons expose status through IAnimaniaProbeBlock, so Base does not
+        // acquire a compile-time or runtime dependency on addon classes.
+        registration.registerBlockComponent(BlockProvider.INSTANCE, Block.class);
     }
 
     private static final class AnimalProvider implements IEntityComponentProvider {
@@ -72,10 +78,7 @@ public final class AnimaniaJadePlugin implements IWailaPlugin {
         @Override
         public void appendTooltip(ITooltip tooltip, EntityAccessor accessor, IPluginConfig config) {
             if (accessor.getEntity() instanceof AnimaniaAnimalEntity animal) {
-                tooltip.add(Component.translatable("jade.animania.animal_state",
-                        animal.getHunger(), animal.getThirst()));
-                if (animal.isPregnant()) tooltip.add(Component.translatable("jade.animania.pregnant"));
-                if (animal.isTamed()) tooltip.add(Component.translatable("jade.animania.tamed"));
+                AnimaniaProbeComponents.animal(animal).forEach(tooltip::add);
             }
         }
     }
@@ -101,6 +104,9 @@ public final class AnimaniaJadePlugin implements IWailaPlugin {
             }
             if (accessor.getBlockEntity() instanceof AnimaniaSaltLickBlockEntity salt) {
                 tooltip.add(Component.translatable("jade.animania.salt_uses", salt.usesLeft()));
+            }
+            if (accessor.getBlockEntity() instanceof IAnimaniaProbeBlock probe) {
+                probe.getAnimaniaProbeInfo().forEach(tooltip::add);
             }
         }
     }

@@ -12,7 +12,16 @@ public final class ExtraTab {
     public static final RegistryObject<CreativeModeTab> MAIN = TABS.register("extra", () -> CreativeModeTab.builder()
             .title(Component.translatable("itemGroup.animania_extra"))
             .icon(() -> new ItemStack(ExtraContent.ITEM_ENTRIES.get("hamster_food").get()))
-            .displayItems((parameters, output) -> ExtraContent.ITEM_ENTRIES.values().forEach(item -> output.accept(item.get())))
+            .displayItems((parameters, output) -> ExtraContent.ITEM_ENTRIES.values().forEach(entry -> {
+                net.minecraft.world.item.Item item = entry.get();
+                if (item instanceof AnimaniaHamsterBallItem ball && ball.isColored()) {
+                    for (int color = 0; color < 16; color++) {
+                        output.accept(AnimaniaHamsterBallItem.stackForColor(item, color));
+                    }
+                } else {
+                    output.accept(item);
+                }
+            }))
             .build());
 
     private ExtraTab() { }

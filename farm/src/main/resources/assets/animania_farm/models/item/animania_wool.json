@@ -1,3 +1,41 @@
 {
-  "parent": "animania_farm:block/animania_wool"
+  "parent": "animania_farm:block/wool_dorset_brown",
+  "overrides": [
+    {
+      "predicate": {
+        "animania_farm:wool_variant": 0.2
+      },
+      "model": "animania_farm:item/wool_friesian_black"
+    },
+    {
+      "predicate": {
+        "animania_farm:wool_variant": 0.3
+      },
+      "model": "animania_farm:item/wool_friesian_brown"
+    },
+    {
+      "predicate": {
+        "animania_farm:wool_variant": 0.4
+      },
+      "model": "animania_farm:item/wool_jacob"
+    },
+    {
+      "predicate": {
+        "animania_farm:wool_variant": 0.5
+      },
+      "model": "animania_farm:item/wool_merino_brown"
+    },
+    {
+      "predicate": {
+        "animania_farm:wool_variant": 0.6
+      },
+      "model": "animania_farm:item/wool_merino_white"
+    },
+    {
+      "predicate": {
+        "animania_farm:wool_variant": 0.7
+      },
+      "model": "animania_farm:item/wool_suffolk_brown"
+    }
+  ]
 }

@@ -29,4 +29,30 @@ class ConfigMigratorTest {
         assertTrue(Files.readString(report).contains("unmigratable"));
         assertThrows(IllegalStateException.class, () -> ConfigMigrator.main(new String[]{"--input", input.toString(), "--output", output.toString()}));
     }
+
+    @Test
+    void rewritesLegacyRegistryIdsAndKeepsExactSourceDerivedDefaults() throws Exception {
+        Path input = Files.createTempDirectory("animania-old-ids");
+        Path output = Files.createTempDirectory("animania-new-ids");
+        Files.writeString(input.resolve("addons.cfg"), """
+                chickenBed=animania:block_straw
+                dogBed=animania:dog_pillow
+                ferretFood=["animania:brown_egg","animania:peacock_egg_blue","animania:prime_mutton","animania:prime_rabbit","animania_prime_chicken"]
+                """);
+        ConfigMigrator.main(new String[]{"--input", input.toString(), "--output", output.toString()});
+        String farm = Files.readString(output.resolve("animania_farm-common.toml"));
+        String extra = Files.readString(output.resolve("animania_extra-common.toml"));
+        String catsDogs = Files.readString(output.resolve("animania_catsdogs-common.toml"));
+        assertTrue(farm.contains("chickenBed=\"animania:straw\""));
+        assertTrue(extra.contains("animania_farm:brown_egg"));
+        assertTrue(extra.contains("animania_extra:peacock_egg_blue"));
+        assertTrue(extra.contains("animania_farm:raw_prime_mutton"));
+        assertTrue(extra.contains("animania_extra:raw_prime_rabbit"));
+        assertTrue(extra.contains("animania_farm:raw_prime_chicken"));
+        assertTrue(catsDogs.contains("dogBed=\"animania_catsdogs:dog_pillow\""));
+        assertTrue(farm.contains("simplecorn:corncob"));
+        assertTrue(extra.contains("harvestcraft:cornitem"));
+        assertTrue(catsDogs.contains("catFood=[\"minecraft:fish\"]"));
+        assertTrue(catsDogs.contains("dogFood=[\"listAllbeefraw\"]"));
+    }
 }

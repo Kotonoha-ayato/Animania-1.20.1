@@ -43,7 +43,7 @@
       "trigger": "animania:feed_animal",
       "conditions": {
         "optional": {
-          "item": "animania_extra:brown_egg"
+          "item": "animania_farm:brown_egg"
         },
         "entity": "animania_extra:ferret_white"
       }
@@ -52,7 +52,7 @@
       "trigger": "animania:feed_animal",
       "conditions": {
         "optional": {
-          "item": "animania_extra:raw_prime_chicken"
+          "item": "animania_farm:raw_prime_chicken"
         },
         "entity": "animania_extra:ferret_white"
       }
@@ -61,7 +61,7 @@
       "trigger": "animania:feed_animal",
       "conditions": {
         "optional": {
-          "item": "animania_extra:raw_prime_mutton"
+          "item": "animania_farm:raw_prime_mutton"
         },
         "entity": "animania_extra:ferret_white"
       }

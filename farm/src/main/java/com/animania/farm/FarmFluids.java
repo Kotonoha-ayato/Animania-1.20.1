@@ -7,8 +7,11 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraftforge.fluids.FluidType;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -16,6 +19,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  * Modern Forge fluid registrations for the five legacy milk fluids and
@@ -43,12 +47,22 @@ public final class FarmFluids {
     private static FluidRegistration register(String id, int density, int viscosity) {
         FluidRegistration registration = new FluidRegistration(id);
         registration.type = FLUID_TYPES.register(id,
-                () -> new FluidType(FluidType.Properties.create().density(density).viscosity(viscosity).canSwim(false)));
+                () -> new FluidType(FluidType.Properties.create().density(density).viscosity(viscosity).canSwim(false)) {
+                    @Override
+                    public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
+                        consumer.accept(new IClientFluidTypeExtensions() {
+                            @Override public ResourceLocation getStillTexture() { return stillTexture(id); }
+                            @Override public ResourceLocation getFlowingTexture() { return flowingTexture(id); }
+                        });
+                    }
+                });
         registration.source = FLUIDS.register(id, () -> new ForgeFlowingFluid.Source(registration.properties()));
         registration.flowing = FLUIDS.register("flowing_" + id,
                 () -> new ForgeFlowingFluid.Flowing(registration.properties()));
-        registration.block = BLOCKS.register(id, () -> new LiquidBlock(registration.source,
-                BlockBehaviour.Properties.copy(Blocks.WATER).noLootTable()));
+        boolean honey = id.equals("animania_honey");
+        registration.block = BLOCKS.register(id, () -> new FarmLegacyFluidBlock(registration.source,
+                BlockBehaviour.Properties.copy(Blocks.WATER)
+                        .mapColor(honey ? MapColor.COLOR_YELLOW : MapColor.SNOW).noLootTable(), honey));
         registration.bucket = ITEMS.register(id + "_bucket",
                 () -> new BucketItem(registration.source,
                         new Item.Properties().stacksTo(1).craftRemainder(net.minecraft.world.item.Items.BUCKET)));
@@ -58,6 +72,14 @@ public final class FarmFluids {
 
     public static FluidRegistration byId(String id) {
         return ALL.get(id);
+    }
+
+    public static ResourceLocation stillTexture(String id) {
+        return ResourceLocation.fromNamespaceAndPath(AnimaniaFarm.MOD_ID, "fluids/" + id + "_still");
+    }
+
+    public static ResourceLocation flowingTexture(String id) {
+        return ResourceLocation.fromNamespaceAndPath(AnimaniaFarm.MOD_ID, "fluids/" + id + "_flow");
     }
 
     public static final class FluidRegistration {

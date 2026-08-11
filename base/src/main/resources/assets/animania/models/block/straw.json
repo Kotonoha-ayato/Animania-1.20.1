@@ -1,6 +1,7 @@
 {
-  "parent": "minecraft:block/cube_all",
+  "parent": "minecraft:block/carpet",
   "textures": {
-    "all": "animania:block/straw"
+    "wool": "animania:block/straw",
+    "particle": "animania:block/straw"
   }
 }

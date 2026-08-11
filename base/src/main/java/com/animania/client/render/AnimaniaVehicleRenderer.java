@@ -1,6 +1,5 @@
 package com.animania.client.render;
 
-import com.animania.client.AnimaniaClient;
 import com.animania.client.model.AnimaniaVehicleModel;
 import com.animania.common.entity.AnimaniaVehicleEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -8,15 +7,18 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.animation.AnimationDefinition;
+import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 
-/** Native renderer for farm pullables; no CraftStudio runtime dependency. */
+/** Native renderer for farm pullables; no legacy model runtime dependency. */
 public final class AnimaniaVehicleRenderer extends EntityRenderer<AnimaniaVehicleEntity> {
     private final AnimaniaVehicleModel model;
 
-    public AnimaniaVehicleRenderer(EntityRendererProvider.Context context) {
+    public AnimaniaVehicleRenderer(EntityRendererProvider.Context context, ModelLayerLocation layer,
+                                   AnimationDefinition movementAnimation) {
         super(context);
-        this.model = new AnimaniaVehicleModel(context.bakeLayer(AnimaniaClient.VEHICLE_LAYER));
+        this.model = new AnimaniaVehicleModel(context.bakeLayer(layer), movementAnimation);
         this.shadowRadius = 0.55F;
     }
 

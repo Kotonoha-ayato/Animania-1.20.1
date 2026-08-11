@@ -44,7 +44,7 @@ public final class CatsDogsConfig {
         CAT_BED = builder.define("catBed", "animania_catsdogs:cat_bed_1");
         CAT_BED2 = builder.define("catBed2", "animania_catsdogs:cat_bed_2");
         DOG_BED = builder.define("dogBed", "animania_catsdogs:dog_pillow");
-        DOG_BED2 = builder.define("dogBed2", "animania_catsdogs:dog_house");
+        DOG_BED2 = builder.define("dogBed2", "animania:straw");
         CAT_FOOD = builder.defineList("catFood", List.of("minecraft:fish"), value -> value instanceof String);
         DOG_FOOD = builder.defineList("dogFood", List.of("listAllbeefraw"), value -> value instanceof String);
         PET_BOWL_FOOD = builder.defineList("petBowlFood", List.of("minecraft:fish", "listAllbeefraw", "animania_extra:hamster_food"), value -> value instanceof String);

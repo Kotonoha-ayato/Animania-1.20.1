@@ -4,6 +4,8 @@ import com.animania.common.AnimaniaBlocks;
 import com.animania.common.AnimaniaItems;
 import com.animania.common.AnimaniaFluids;
 import com.animania.common.AnimaniaTabs;
+import com.animania.common.AnimaniaSounds;
+import com.animania.common.recipe.AnimaniaRecipes;
 import com.animania.common.config.AnimaniaConfig;
 import com.animania.common.advancement.FeedAnimalTrigger;
 import com.animania.network.AnimaniaNetwork;
@@ -18,6 +20,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.data.event.GatherDataEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 /** Entry point for the shared Animania API and content. */
 @Mod(Animania.MOD_ID)
@@ -36,18 +39,37 @@ public final class Animania {
         AnimaniaBlocks.ITEMS.register(modBus);
         AnimaniaBlocks.BLOCK_ENTITIES.register(modBus);
         AnimaniaTabs.TABS.register(modBus);
+        AnimaniaSounds.SOUNDS.register(modBus);
+        AnimaniaRecipes.SERIALIZERS.register(modBus);
         AnimaniaNetwork.register();
         modBus.addListener(this::registerGameTests);
+        modBus.addListener(this::commonSetup);
         // Do not resolve TOP's optional classes unless TOP is actually loaded;
         // datagen and dedicated-server classpaths intentionally omit it.
         if (ModList.get().isLoaded("theoneprobe")) {
             DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> com.animania.compat.top.AnimaniaTopProbeCompat.bootstrap());
         }
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, AnimaniaConfig.COMMON_SPEC);
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () ->
+                ModLoadingContext.get().registerExtensionPoint(
+                        net.minecraftforge.client.ConfigScreenHandler.ConfigScreenFactory.class,
+                        () -> new net.minecraftforge.client.ConfigScreenHandler.ConfigScreenFactory(
+                                com.animania.client.config.AnimaniaConfigScreen::new)));
         MinecraftForge.EVENT_BUS.register(new AnimaniaServerEvents());
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> modBus.addListener(com.animania.client.AnimaniaClient::registerLayers));
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> modBus.addListener(com.animania.client.AnimaniaClient::registerBlockEntityRenderers));
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> modBus.addListener(com.animania.client.AnimaniaClient::clientSetup));
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> modBus.addListener(com.animania.client.AnimaniaClient::registerItemColors));
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> com.animania.client.AnimaniaClient.registerCarryRenderer());
         modBus.addListener(this::gatherData);
+    }
+
+    private void commonSetup(FMLCommonSetupEvent event) {
+        event.enqueueWork(() -> {
+            com.animania.common.AnimaniaSeedPlacement.registerDispenserBehaviors();
+            com.animania.common.item.AnimaniaEntityEggItem.registerDispenserBehavior(
+                    (com.animania.common.item.AnimaniaEntityEggItem) AnimaniaItems.ENTITY_EGG_RANDOM.get());
+        });
     }
 
     private void gatherData(GatherDataEvent event) {

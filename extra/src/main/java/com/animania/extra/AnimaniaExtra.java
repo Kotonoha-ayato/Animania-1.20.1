@@ -4,6 +4,7 @@ import com.animania.api.AnimaniaApi;
 import com.animania.api.data.AnimalGender;
 import com.animania.api.data.SpeciesDefinition;
 import com.animania.common.entity.AnimaniaAnimalEntity;
+import com.animania.common.entity.AnimaniaSleepProfiles;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -19,15 +20,22 @@ import net.minecraftforge.event.RegisterGameTestsEvent;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraftforge.event.entity.living.MobSpawnEvent;
+import net.minecraftforge.eventbus.api.Event;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.phys.AABB;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -52,18 +60,46 @@ public final class AnimaniaExtra {
     public AnimaniaExtra() {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         ENTITY_TYPES.register(bus);
+        ExtraSounds.SOUNDS.register(bus);
+        ExtraWorldgen.BIOME_MODIFIER_SERIALIZERS.register(bus);
         ExtraContent.ITEMS.register(bus);
         ExtraContent.BLOCKS.register(bus);
         ExtraContent.BLOCK_ENTITIES.register(bus);
         ExtraTab.TABS.register(bus);
         AnimaniaApi.registerFoodMatcher(MOD_ID, (id, stack) -> ExtraConfig.matchesSpeciesFood(id, stack));
+        AnimaniaSleepProfiles.register(MOD_ID, AnimaniaExtra::sleepProfile);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ExtraConfig.SPEC);
         bus.addListener(this::attributes);
         bus.addListener(this::spawnPlacements);
         bus.addListener(this::registerGameTests);
+        bus.addListener(this::commonSetup);
+        bus.addListener(this::gatherData);
         MinecraftForge.EVENT_BUS.addListener(AnimaniaExtra::replaceVanillaRabbit);
+        MinecraftForge.EVENT_BUS.addListener(AnimaniaExtra::extraAnimalTick);
+        MinecraftForge.EVENT_BUS.addListener(AnimaniaExtra::limitNaturalExtraSpawns);
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> bus.addListener(AnimaniaExtraClient::onClientSetup));
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> bus.addListener(AnimaniaExtraClient::registerLayers));
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> bus.addListener(AnimaniaExtraClient::registerRenderers));
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> bus.addListener(AnimaniaExtraClient::registerItemColors));
+    }
+
+    private void commonSetup(FMLCommonSetupEvent event) {
+        event.enqueueWork(() -> ExtraContent.ITEM_ENTRIES.values().forEach(entry -> {
+            if (entry.get() instanceof com.animania.common.item.AnimaniaEntityEggItem egg) {
+                com.animania.common.item.AnimaniaEntityEggItem.registerDispenserBehavior(egg);
+            }
+        }));
+    }
+
+    private void gatherData(GatherDataEvent event) {
+        event.getGenerator().addProvider(event.includeServer(),
+                new ExtraDataProvider(event.getGenerator().getPackOutput()));
+    }
+
+    private static void extraAnimalTick(LivingEvent.LivingTickEvent event) {
+        if (!(event.getEntity() instanceof AnimaniaAnimalEntity animal) || animal.level().isClientSide) return;
+        ResourceLocation id = ForgeRegistries.ENTITY_TYPES.getKey(animal.getType());
+        if (id != null && MOD_ID.equals(id.getNamespace()) && id.getPath().startsWith("peahen_")) animal.tryLayPeafowlEgg();
     }
 
     private void attributes(EntityAttributeCreationEvent event) {
@@ -88,6 +124,45 @@ public final class AnimaniaExtra {
         } catch (IllegalStateException ignored) {
             return true;
         }
+    }
+
+    public static void limitNaturalExtraSpawns(MobSpawnEvent.PositionCheck event) {
+        if (!(event.getEntity() instanceof AnimaniaAnimalEntity animal)
+                || (event.getSpawnType() != MobSpawnType.NATURAL && event.getSpawnType() != MobSpawnType.CHUNK_GENERATION)) return;
+        ResourceLocation id = ForgeRegistries.ENTITY_TYPES.getKey(animal.getType());
+        if (id == null || !MOD_ID.equals(id.getNamespace())) return;
+        String family = spawnFamily(id.getPath());
+        int limit = switch (family) {
+            case "hedgehog" -> configured(ExtraConfig.SPAWN_LIMIT_HEDGEHOGS, 40);
+            case "ferret" -> configured(ExtraConfig.SPAWN_LIMIT_FERRETS, 40);
+            case "hamster" -> configured(ExtraConfig.SPAWN_LIMIT_HAMSTERS, 30);
+            case "peafowl" -> configured(ExtraConfig.SPAWN_LIMIT_PEACOCKS, 30);
+            case "amphibian" -> configured(ExtraConfig.SPAWN_LIMIT_AMPHIBIANS, 30);
+            case "rabbit" -> configured(ExtraConfig.SPAWN_LIMIT_RABBITS, 40);
+            default -> Integer.MAX_VALUE;
+        };
+        AABB range = new AABB(event.getX(), event.getY(), event.getZ(), event.getX(), event.getY(), event.getZ()).inflate(100.0D);
+        int nearby = event.getLevel().getLevel().getEntitiesOfClass(AnimaniaAnimalEntity.class, range, other -> {
+            ResourceLocation otherId = ForgeRegistries.ENTITY_TYPES.getKey(other.getType());
+            return otherId != null && MOD_ID.equals(otherId.getNamespace())
+                    && family.equals(spawnFamily(otherId.getPath()));
+        }).size();
+        if (nearby >= limit) event.setResult(Event.Result.DENY);
+    }
+
+    private static String spawnFamily(String id) {
+        if (id.startsWith("hedgehog")) return "hedgehog";
+        if (id.startsWith("ferret_")) return "ferret";
+        if (id.equals("hamster")) return "hamster";
+        if (id.startsWith("peacock_") || id.startsWith("peahen_") || id.startsWith("peachick_")) return "peafowl";
+        if (id.equals("frog") || id.equals("toad") || id.equals("dartfrog")) return "amphibian";
+        if (id.startsWith("buck_") || id.startsWith("doe_") || id.startsWith("kit_")) return "rabbit";
+        return id;
+    }
+
+    private static int configured(net.minecraftforge.common.ForgeConfigSpec.IntValue value, int fallback) {
+        try { return value.get(); }
+        catch (IllegalStateException ignored) { return fallback; }
     }
 
     private static boolean familySpawnsEnabled(String id) {
@@ -124,7 +199,7 @@ public final class AnimaniaExtra {
         replacement.setCustomName(vanilla.getCustomName());
         replacement.setCustomNameVisible(vanilla.isCustomNameVisible());
         replacement.setPersistenceRequired();
-        if (baby) replacement.setAge(-Math.max(1, com.animania.common.config.AnimaniaConfig.BABY_GROWTH_TICKS.get()));
+        if (baby) replacement.setAge(-AnimaniaAnimalEntity.childGrowthDuration());
         event.getLevel().addFreshEntity(replacement);
         event.setCanceled(true);
     }
@@ -142,6 +217,24 @@ public final class AnimaniaExtra {
     private static String family(String id) {
         int underscore = id.indexOf('_');
         return underscore > 0 ? id.substring(underscore + 1) : id;
+    }
+
+    private static AnimaniaSleepProfiles.Profile sleepProfile(String id) {
+        String family = id.startsWith("ferret_") ? "ferret"
+                : id.equals("hamster") ? "hamster"
+                : id.startsWith("hedgehog") ? "hedgehog"
+                : id.startsWith("peacock_") || id.startsWith("peahen_") || id.startsWith("peachick_") ? "peacock"
+                : id.startsWith("buck_") || id.startsWith("doe_") || id.startsWith("kit_") ? "rabbit" : null;
+        if (family == null) return null;
+        java.util.function.LongPredicate schedule = family.equals("hamster") || family.equals("hedgehog")
+                ? AnimaniaSleepProfiles.DAY : family.equals("rabbit") ? AnimaniaSleepProfiles.RABBIT : AnimaniaSleepProfiles.NIGHT;
+        return new AnimaniaSleepProfiles.Profile(
+                () -> configured(ExtraConfig.BED_BLOCKS.get(family + "Bed")),
+                () -> configured(ExtraConfig.BED_BLOCKS.get(family + "Bed2")), schedule);
+    }
+
+    private static String configured(net.minecraftforge.common.ForgeConfigSpec.ConfigValue<String> value) {
+        try { return value.get(); } catch (IllegalStateException ignored) { return value.getDefault(); }
     }
 
     private static float sizeFor(String id, boolean width) {

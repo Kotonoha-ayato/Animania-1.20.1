@@ -9,6 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -42,7 +43,18 @@ public final class AnimaniaApi {
 
     /** Resolve the registered species for an entity without exposing internals. */
     public static synchronized Optional<SpeciesDefinition> speciesOf(IAnimaniaAnimal animal) {
+        return speciesOf((com.animania.api.IAnimaniaAnimal) animal);
+    }
+
+    /**
+     * Resolve the registered species for any implementation of the stable
+     * root API.  The overload retaining the historical interfaces-package
+     * signature above keeps already compiled addons binary compatible.
+     */
+    public static synchronized Optional<SpeciesDefinition> speciesOf(com.animania.api.IAnimaniaAnimal animal) {
         if (animal == null) return Optional.empty();
+        ResourceLocation id = animal.typeId();
+        if (id != null) return species(id);
         AnimalSnapshot snapshot = animal.snapshot();
         return snapshot == null ? Optional.empty() : species(snapshot.type());
     }
@@ -50,6 +62,19 @@ public final class AnimaniaApi {
     /** Stable ID view used by addons when building tabs, probes, or JEI lists. */
     public static synchronized Set<ResourceLocation> speciesIds() {
         return Collections.unmodifiableSet(new java.util.LinkedHashSet<>(SPECIES.keySet()));
+    }
+
+    /** Return the species registered by one addon namespace. */
+    public static synchronized Collection<SpeciesDefinition> speciesForAddon(String namespace) {
+        if (namespace == null || namespace.isBlank()) return List.of();
+        return Collections.unmodifiableList(SPECIES.values().stream()
+                .filter(definition -> namespace.equals(definition.id().getNamespace()))
+                .toList());
+    }
+
+    /** Whether a concrete species id is known, without throwing on absent addons. */
+    public static synchronized boolean hasSpecies(ResourceLocation id) {
+        return id != null && SPECIES.containsKey(id);
     }
 
     /**
@@ -89,7 +114,7 @@ public final class AnimaniaApi {
     }
 
     public static boolean isAnimaniaAnimal(Object value) {
-        return value instanceof IAnimaniaAnimal;
+        return value instanceof com.animania.api.IAnimaniaAnimal;
     }
 
     public static boolean isAddonLoaded(String modId) {

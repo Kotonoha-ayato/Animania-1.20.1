@@ -24,12 +24,9 @@ public final class AnimaniaTabs {
                 output.accept(AnimaniaItems.WATER_BOTTLE.get());
                 output.accept(AnimaniaBlocks.TROUGH.get());
                 output.accept(AnimaniaBlocks.NEST.get());
-                output.accept(AnimaniaBlocks.CHEESE_MOLD.get());
-                output.accept(AnimaniaBlocks.PET_BOWL.get());
                 output.accept(AnimaniaBlocks.SALT_LICK.get());
                 output.accept(AnimaniaBlocks.MUD.get());
                 output.accept(AnimaniaBlocks.STRAW.get());
-                output.accept(AnimaniaBlocks.HAMSTER_WHEEL.get());
             }).build());
 
     private AnimaniaTabs() { }

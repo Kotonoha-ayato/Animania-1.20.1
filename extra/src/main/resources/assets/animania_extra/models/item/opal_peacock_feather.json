@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "animania_extra:item/opal_peacock_feather"
+    "layer0": "animania_extra:item/peacock_feather_opal"
   }
 }

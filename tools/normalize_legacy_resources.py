@@ -332,6 +332,14 @@ def normalize_advancement(data: dict[str, Any], module: str) -> dict[str, Any]:
 
 
 def normalize_recipe(data: dict[str, Any], module: str) -> dict[str, Any]:
+    old_type = data.get("type")
+    if old_type == "animania:no_bucket_recipe":
+        result = data.get("result")
+        result_item = result.get("item") if isinstance(result, dict) else None
+        if result_item == "forge:bucketfilled":
+            return {"type": "animania:slop", "category": "misc"}
+        if result_item == "minecraft:milk_bucket":
+            return {"type": "animania_farm:milk_conversion", "category": "misc"}
     out = normalize_value(data, module)
     old_type = out.get("type")
     if old_type in {"forge:ore_shaped", "minecraft:crafting_shaped"}:
@@ -384,6 +392,10 @@ def rewrite_texture_refs(value: Any, module: str) -> Any:
         path = "block/" + path[len("blocks/"):]
     if module == "base":
         return f"{namespace}:{path}"
+    # Spawn-egg tint/sex overlays are public Base assets shared by every
+    # mandatory addon. They must not be moved into an addon namespace.
+    if namespace == "animania" and path.startswith("item/egg_layer_"):
+        return f"animania:{path}"
     # The old addon model files lived below assets/<addon>/animania but their
     # textures lived at assets/<addon>/textures.  Remove that artificial path
     # component and use the modern addon namespace.
@@ -394,12 +406,50 @@ def rewrite_texture_refs(value: Any, module: str) -> Any:
     return value
 
 
+def normalize_sounds(value: Any, module: str) -> Any:
+    """Convert Forge 1.12 sound definitions to legal modern IDs.
+
+    Resource locations have required lowercase paths since 1.13.  The old
+    addon packs also kept samples in the shared ``animania`` namespace even
+    though the four 1.20.1 JARs own separate resource namespaces.
+    """
+    if not isinstance(value, dict):
+        return value
+    namespace = MODULE_IDS[module]
+    result: dict[str, Any] = {}
+    for legacy_key, raw in value.items():
+        key = str(legacy_key).lower()
+        event = dict(raw) if isinstance(raw, dict) else raw
+        if isinstance(event, dict):
+            event.pop("animania", None)  # obsolete 1.12 category metadata
+            sounds = []
+            for sound in event.get("sounds", []):
+                if isinstance(sound, str):
+                    name = sound.split(":", 1)[-1]
+                    sounds.append(f"{namespace}:{name}")
+                elif isinstance(sound, dict):
+                    item = dict(sound)
+                    if isinstance(item.get("name"), str):
+                        name = item["name"].split(":", 1)[-1]
+                        item["name"] = f"{namespace}:{name}"
+                    sounds.append(item)
+                else:
+                    sounds.append(sound)
+            event["sounds"] = sounds
+        if key in result:
+            raise ValueError(f"sound ID collision after lowercasing: {legacy_key} -> {key}")
+        result[key] = event
+    return result
+
+
 def process_json(path: Path, module: str) -> None:
     try:
         data = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError):
         return
-    if "recipes" in path.parts and isinstance(data, dict):
+    if path.name.lower() == "sounds.json":
+        data = normalize_sounds(data, module)
+    elif "recipes" in path.parts and isinstance(data, dict):
         data = normalize_recipe(data, module)
     elif "loot_tables" in path.parts:
         data = normalize_loot(data, module)
@@ -425,7 +475,7 @@ def main() -> None:
             # actual mod namespace used by modern model lookup.
             nested = resource_root / "assets" / module / "animania"
             canonical = resource_root / "assets" / MODULE_IDS[module]
-            for directory in ("textures", "models", "blockstates", "sounds"):
+            for directory in ("textures", "models", "blockstates", "sounds", "manual"):
                 source_dir = nested / directory
                 if not source_dir.exists():
                     continue
@@ -436,6 +486,14 @@ def main() -> None:
                     destination.parent.mkdir(parents=True, exist_ok=True)
                     if not destination.exists():
                         shutil.copy2(source_file, destination)
+            # sounds.json is a file directly below the legacy namespace, not
+            # a directory.  Copy it explicitly or modern entity sound keys
+            # resolve to the wrong `farm`/`extra`/`catsdogs` namespace.
+            legacy_sounds = nested / "sounds.json"
+            canonical_sounds = canonical / "sounds.json"
+            if legacy_sounds.exists() and not canonical_sounds.exists():
+                canonical_sounds.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(legacy_sounds, canonical_sounds)
         # 1.12 stored some recipes below assets/<namespace>/recipes.  Move a
         # normalized copy into the only location the 1.20.1 data loader reads.
         mod_namespace = MODULE_IDS[module]

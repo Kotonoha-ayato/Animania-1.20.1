@@ -1,0 +1,1716 @@
+{
+  "schema_version": 1,
+  "expected": {
+    "java_model": 104,
+    "craftstudio_model": 18,
+    "animation": 8
+  },
+  "verified": {
+    "java_model": 104,
+    "craftstudio_model": 18,
+    "animation": 8
+  },
+  "total": 130,
+  "error_count": 0,
+  "errors": [],
+  "entries": [
+    {
+      "key": "catsdogs:java_model:src/main/java/com/animania/addons/catsdogs/client/models/blocks/ModelPetBowl.java",
+      "kind": "java_model",
+      "module": "catsdogs",
+      "target_paths": [
+        "catsdogs/src/main/java/com/animania/catsdogs/client/model/CatsDogsNativeModelLayers.java",
+        "catsdogs/src/main/java/com/animania/catsdogs/client/render/CatsDogsPetBowlRenderer.java"
+      ],
+      "tests": [
+        "catsdogs/src/test/java/com/animania/catsdogs/CatsDogsNativeModelConversionTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "catsdogs:java_model:src/main/java/com/animania/addons/catsdogs/client/models/cats/ModelCatAmericanShorthair.java",
+      "kind": "java_model",
+      "module": "catsdogs",
+      "target_paths": [
+        "catsdogs/src/main/java/com/animania/catsdogs/client/model/CatsDogsLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "catsdogs/src/test/java/com/animania/catsdogs/CatsDogsRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "catsdogs:java_model:src/main/java/com/animania/addons/catsdogs/client/models/cats/ModelCatAsiatic.java",
+      "kind": "java_model",
+      "module": "catsdogs",
+      "target_paths": [
+        "catsdogs/src/main/java/com/animania/catsdogs/client/model/CatsDogsLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "catsdogs/src/test/java/com/animania/catsdogs/CatsDogsRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "catsdogs:java_model:src/main/java/com/animania/addons/catsdogs/client/models/cats/ModelCatExotic.java",
+      "kind": "java_model",
+      "module": "catsdogs",
+      "target_paths": [
+        "catsdogs/src/main/java/com/animania/catsdogs/client/model/CatsDogsLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "catsdogs/src/test/java/com/animania/catsdogs/CatsDogsRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "catsdogs:java_model:src/main/java/com/animania/addons/catsdogs/client/models/cats/ModelCatOcelot.java",
+      "kind": "java_model",
+      "module": "catsdogs",
+      "target_paths": [
+        "catsdogs/src/main/java/com/animania/catsdogs/client/model/CatsDogsLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "catsdogs/src/test/java/com/animania/catsdogs/CatsDogsRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "catsdogs:java_model:src/main/java/com/animania/addons/catsdogs/client/models/cats/ModelCatRagdoll.java",
+      "kind": "java_model",
+      "module": "catsdogs",
+      "target_paths": [
+        "catsdogs/src/main/java/com/animania/catsdogs/client/model/CatsDogsLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "catsdogs/src/test/java/com/animania/catsdogs/CatsDogsRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "catsdogs:java_model:src/main/java/com/animania/addons/catsdogs/client/models/cats/ModelCatSiamese.java",
+      "kind": "java_model",
+      "module": "catsdogs",
+      "target_paths": [
+        "catsdogs/src/main/java/com/animania/catsdogs/client/model/CatsDogsLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "catsdogs/src/test/java/com/animania/catsdogs/CatsDogsRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "catsdogs:java_model:src/main/java/com/animania/addons/catsdogs/client/models/cats/ModelCatTabby.java",
+      "kind": "java_model",
+      "module": "catsdogs",
+      "target_paths": [
+        "catsdogs/src/main/java/com/animania/catsdogs/client/model/CatsDogsLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "catsdogs/src/test/java/com/animania/catsdogs/CatsDogsRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "catsdogs:java_model:src/main/java/com/animania/addons/catsdogs/client/models/dogs/ModelBloodHound.java",
+      "kind": "java_model",
+      "module": "catsdogs",
+      "target_paths": [
+        "catsdogs/src/main/java/com/animania/catsdogs/client/model/CatsDogsLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "catsdogs/src/test/java/com/animania/catsdogs/CatsDogsRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "catsdogs:java_model:src/main/java/com/animania/addons/catsdogs/client/models/dogs/ModelChihuahua.java",
+      "kind": "java_model",
+      "module": "catsdogs",
+      "target_paths": [
+        "catsdogs/src/main/java/com/animania/catsdogs/client/model/CatsDogsLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "catsdogs/src/test/java/com/animania/catsdogs/CatsDogsRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "catsdogs:java_model:src/main/java/com/animania/addons/catsdogs/client/models/dogs/ModelCollie.java",
+      "kind": "java_model",
+      "module": "catsdogs",
+      "target_paths": [
+        "catsdogs/src/main/java/com/animania/catsdogs/client/model/CatsDogsLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "catsdogs/src/test/java/com/animania/catsdogs/CatsDogsRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "catsdogs:java_model:src/main/java/com/animania/addons/catsdogs/client/models/dogs/ModelCorgi.java",
+      "kind": "java_model",
+      "module": "catsdogs",
+      "target_paths": [
+        "catsdogs/src/main/java/com/animania/catsdogs/client/model/CatsDogsLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "catsdogs/src/test/java/com/animania/catsdogs/CatsDogsRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "catsdogs:java_model:src/main/java/com/animania/addons/catsdogs/client/models/dogs/ModelDachshund.java",
+      "kind": "java_model",
+      "module": "catsdogs",
+      "target_paths": [
+        "catsdogs/src/main/java/com/animania/catsdogs/client/model/CatsDogsLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "catsdogs/src/test/java/com/animania/catsdogs/CatsDogsRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "catsdogs:java_model:src/main/java/com/animania/addons/catsdogs/client/models/dogs/ModelFox.java",
+      "kind": "java_model",
+      "module": "catsdogs",
+      "target_paths": [
+        "catsdogs/src/main/java/com/animania/catsdogs/client/model/CatsDogsLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "catsdogs/src/test/java/com/animania/catsdogs/CatsDogsRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "catsdogs:java_model:src/main/java/com/animania/addons/catsdogs/client/models/dogs/ModelGermanShepherd.java",
+      "kind": "java_model",
+      "module": "catsdogs",
+      "target_paths": [
+        "catsdogs/src/main/java/com/animania/catsdogs/client/model/CatsDogsLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "catsdogs/src/test/java/com/animania/catsdogs/CatsDogsRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "catsdogs:java_model:src/main/java/com/animania/addons/catsdogs/client/models/dogs/ModelGreatDane.java",
+      "kind": "java_model",
+      "module": "catsdogs",
+      "target_paths": [
+        "catsdogs/src/main/java/com/animania/catsdogs/client/model/CatsDogsLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "catsdogs/src/test/java/com/animania/catsdogs/CatsDogsRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "catsdogs:java_model:src/main/java/com/animania/addons/catsdogs/client/models/dogs/ModelGreyhound.java",
+      "kind": "java_model",
+      "module": "catsdogs",
+      "target_paths": [
+        "catsdogs/src/main/java/com/animania/catsdogs/client/model/CatsDogsLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "catsdogs/src/test/java/com/animania/catsdogs/CatsDogsRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "catsdogs:java_model:src/main/java/com/animania/addons/catsdogs/client/models/dogs/ModelHusky.java",
+      "kind": "java_model",
+      "module": "catsdogs",
+      "target_paths": [
+        "catsdogs/src/main/java/com/animania/catsdogs/client/model/CatsDogsLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "catsdogs/src/test/java/com/animania/catsdogs/CatsDogsRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "catsdogs:java_model:src/main/java/com/animania/addons/catsdogs/client/models/dogs/ModelLabrador.java",
+      "kind": "java_model",
+      "module": "catsdogs",
+      "target_paths": [
+        "catsdogs/src/main/java/com/animania/catsdogs/client/model/CatsDogsLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "catsdogs/src/test/java/com/animania/catsdogs/CatsDogsRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "catsdogs:java_model:src/main/java/com/animania/addons/catsdogs/client/models/dogs/ModelPomeranian.java",
+      "kind": "java_model",
+      "module": "catsdogs",
+      "target_paths": [
+        "catsdogs/src/main/java/com/animania/catsdogs/client/model/CatsDogsLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "catsdogs/src/test/java/com/animania/catsdogs/CatsDogsRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "catsdogs:java_model:src/main/java/com/animania/addons/catsdogs/client/models/dogs/ModelPoodle.java",
+      "kind": "java_model",
+      "module": "catsdogs",
+      "target_paths": [
+        "catsdogs/src/main/java/com/animania/catsdogs/client/model/CatsDogsLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "catsdogs/src/test/java/com/animania/catsdogs/CatsDogsRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "catsdogs:java_model:src/main/java/com/animania/addons/catsdogs/client/models/dogs/ModelPug.java",
+      "kind": "java_model",
+      "module": "catsdogs",
+      "target_paths": [
+        "catsdogs/src/main/java/com/animania/catsdogs/client/model/CatsDogsLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "catsdogs/src/test/java/com/animania/catsdogs/CatsDogsRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "catsdogs:java_model:src/main/java/com/animania/addons/catsdogs/client/models/dogs/ModelWolf.java",
+      "kind": "java_model",
+      "module": "catsdogs",
+      "target_paths": [
+        "catsdogs/src/main/java/com/animania/catsdogs/client/model/CatsDogsLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "catsdogs/src/test/java/com/animania/catsdogs/CatsDogsRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "extra:java_model:src/main/java/com/animania/addons/extra/client/model/amphibians/ModelFrog.java",
+      "kind": "java_model",
+      "module": "extra",
+      "target_paths": [
+        "extra/src/main/java/com/animania/extra/client/model/ExtraLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "extra/src/test/java/com/animania/extra/ExtraRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "extra:java_model:src/main/java/com/animania/addons/extra/client/model/amphibians/ModelToad.java",
+      "kind": "java_model",
+      "module": "extra",
+      "target_paths": [
+        "extra/src/main/java/com/animania/extra/client/model/ExtraLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "extra/src/test/java/com/animania/extra/ExtraRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "extra:java_model:src/main/java/com/animania/addons/extra/client/model/peafowl/ModelPeachick.java",
+      "kind": "java_model",
+      "module": "extra",
+      "target_paths": [
+        "extra/src/main/java/com/animania/extra/client/model/ExtraLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "extra/src/test/java/com/animania/extra/ExtraRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "extra:java_model:src/main/java/com/animania/addons/extra/client/model/peafowl/ModelPeacock.java",
+      "kind": "java_model",
+      "module": "extra",
+      "target_paths": [
+        "extra/src/main/java/com/animania/extra/client/model/ExtraLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "extra/src/test/java/com/animania/extra/ExtraRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "extra:java_model:src/main/java/com/animania/addons/extra/client/model/peafowl/ModelPeafowl.java",
+      "kind": "java_model",
+      "module": "extra",
+      "target_paths": [
+        "extra/src/main/java/com/animania/extra/client/model/ExtraLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "extra/src/test/java/com/animania/extra/ExtraRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "extra:java_model:src/main/java/com/animania/addons/extra/client/model/rabbits/ModelChinchilla.java",
+      "kind": "java_model",
+      "module": "extra",
+      "target_paths": [
+        "extra/src/main/java/com/animania/extra/client/model/ExtraLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "extra/src/test/java/com/animania/extra/ExtraRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "extra:java_model:src/main/java/com/animania/addons/extra/client/model/rabbits/ModelCottontail.java",
+      "kind": "java_model",
+      "module": "extra",
+      "target_paths": [
+        "extra/src/main/java/com/animania/extra/client/model/ExtraLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "extra/src/test/java/com/animania/extra/ExtraRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "extra:java_model:src/main/java/com/animania/addons/extra/client/model/rabbits/ModelDutch.java",
+      "kind": "java_model",
+      "module": "extra",
+      "target_paths": [
+        "extra/src/main/java/com/animania/extra/client/model/ExtraLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "extra/src/test/java/com/animania/extra/ExtraRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "extra:java_model:src/main/java/com/animania/addons/extra/client/model/rabbits/ModelHavana.java",
+      "kind": "java_model",
+      "module": "extra",
+      "target_paths": [
+        "extra/src/main/java/com/animania/extra/client/model/ExtraLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "extra/src/test/java/com/animania/extra/ExtraRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "extra:java_model:src/main/java/com/animania/addons/extra/client/model/rabbits/ModelJack.java",
+      "kind": "java_model",
+      "module": "extra",
+      "target_paths": [
+        "extra/src/main/java/com/animania/extra/client/model/ExtraLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "extra/src/test/java/com/animania/extra/ExtraRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "extra:java_model:src/main/java/com/animania/addons/extra/client/model/rabbits/ModelLop.java",
+      "kind": "java_model",
+      "module": "extra",
+      "target_paths": [
+        "extra/src/main/java/com/animania/extra/client/model/ExtraLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "extra/src/test/java/com/animania/extra/ExtraRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "extra:java_model:src/main/java/com/animania/addons/extra/client/model/rabbits/ModelNewZealand.java",
+      "kind": "java_model",
+      "module": "extra",
+      "target_paths": [
+        "extra/src/main/java/com/animania/extra/client/model/ExtraLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "extra/src/test/java/com/animania/extra/ExtraRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "extra:java_model:src/main/java/com/animania/addons/extra/client/model/rabbits/ModelRex.java",
+      "kind": "java_model",
+      "module": "extra",
+      "target_paths": [
+        "extra/src/main/java/com/animania/extra/client/model/ExtraLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "extra/src/test/java/com/animania/extra/ExtraRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "extra:java_model:src/main/java/com/animania/addons/extra/client/model/rodents/ModelBall.java",
+      "kind": "java_model",
+      "module": "extra",
+      "target_paths": [
+        "base/src/main/java/com/animania/client/model/AnimaniaHamsterBallModel.java",
+        "base/src/main/java/com/animania/client/render/AnimaniaHamsterBallLayer.java"
+      ],
+      "tests": [
+        "base/src/test/java/com/animania/client/AnimaniaHamsterBallModelTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "extra:java_model:src/main/java/com/animania/addons/extra/client/model/rodents/ModelFerret.java",
+      "kind": "java_model",
+      "module": "extra",
+      "target_paths": [
+        "extra/src/main/java/com/animania/extra/client/model/ExtraLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "extra/src/test/java/com/animania/extra/ExtraRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "extra:java_model:src/main/java/com/animania/addons/extra/client/model/rodents/ModelHamster.java",
+      "kind": "java_model",
+      "module": "extra",
+      "target_paths": [
+        "extra/src/main/java/com/animania/extra/client/model/ExtraLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "extra/src/test/java/com/animania/extra/ExtraRegistryTest.java",
+        "extra/src/test/java/com/animania/extra/ExtraModelLayerTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "extra:java_model:src/main/java/com/animania/addons/extra/client/model/rodents/ModelHedgehog.java",
+      "kind": "java_model",
+      "module": "extra",
+      "target_paths": [
+        "extra/src/main/java/com/animania/extra/client/model/ExtraLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "extra/src/test/java/com/animania/extra/ExtraRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "extra:java_model:src/main/java/com/animania/addons/extra/client/model/rodents/ModelRendererBall.java",
+      "kind": "java_model",
+      "module": "extra",
+      "target_paths": [
+        "base/src/main/java/com/animania/client/model/AnimaniaHamsterBallModel.java",
+        "base/src/main/java/com/animania/client/render/AnimaniaHamsterBallLayer.java"
+      ],
+      "tests": [
+        "base/src/test/java/com/animania/client/AnimaniaHamsterBallModelTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "extra:java_model:src/main/java/com/animania/addons/extra/client/model/tileentity/ModelHamsterWheel.java",
+      "kind": "java_model",
+      "module": "extra",
+      "target_paths": [
+        "extra/src/main/java/com/animania/extra/client/model/ExtraNativeModelLayers.java",
+        "extra/src/main/java/com/animania/extra/client/render/ExtraHamsterWheelRenderer.java"
+      ],
+      "tests": [
+        "extra/src/test/java/com/animania/extra/ExtraNativeModelConversionTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:java_model:src/main/java/com/animania/addons/farm/client/model/chicken/ModelChick.java",
+      "kind": "java_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:java_model:src/main/java/com/animania/addons/farm/client/model/chicken/ModelHen.java",
+      "kind": "java_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:java_model:src/main/java/com/animania/addons/farm/client/model/chicken/ModelRooster.java",
+      "kind": "java_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:java_model:src/main/java/com/animania/addons/farm/client/model/cow/ModelBull.java",
+      "kind": "java_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:java_model:src/main/java/com/animania/addons/farm/client/model/cow/ModelBullAngus.java",
+      "kind": "java_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:java_model:src/main/java/com/animania/addons/farm/client/model/cow/ModelBullHereford.java",
+      "kind": "java_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:java_model:src/main/java/com/animania/addons/farm/client/model/cow/ModelBullLonghorn.java",
+      "kind": "java_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:java_model:src/main/java/com/animania/addons/farm/client/model/cow/ModelCalf.java",
+      "kind": "java_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:java_model:src/main/java/com/animania/addons/farm/client/model/cow/ModelCalfAngus.java",
+      "kind": "java_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:java_model:src/main/java/com/animania/addons/farm/client/model/cow/ModelCalfLonghorn.java",
+      "kind": "java_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:java_model:src/main/java/com/animania/addons/farm/client/model/cow/ModelCow.java",
+      "kind": "java_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:java_model:src/main/java/com/animania/addons/farm/client/model/cow/ModelCowAngus.java",
+      "kind": "java_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:java_model:src/main/java/com/animania/addons/farm/client/model/cow/ModelCowHereford.java",
+      "kind": "java_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:java_model:src/main/java/com/animania/addons/farm/client/model/cow/ModelCowLonghorn.java",
+      "kind": "java_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:java_model:src/main/java/com/animania/addons/farm/client/model/goats/ModelBuckAlpine.java",
+      "kind": "java_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:java_model:src/main/java/com/animania/addons/farm/client/model/goats/ModelBuckAngora.java",
+      "kind": "java_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:java_model:src/main/java/com/animania/addons/farm/client/model/goats/ModelBuckFainting.java",
+      "kind": "java_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:java_model:src/main/java/com/animania/addons/farm/client/model/goats/ModelBuckKiko.java",
+      "kind": "java_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:java_model:src/main/java/com/animania/addons/farm/client/model/goats/ModelBuckKinder.java",
+      "kind": "java_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:java_model:src/main/java/com/animania/addons/farm/client/model/goats/ModelBuckNigerianDwarf.java",
+      "kind": "java_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:java_model:src/main/java/com/animania/addons/farm/client/model/goats/ModelBuckPygmy.java",
+      "kind": "java_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:java_model:src/main/java/com/animania/addons/farm/client/model/goats/ModelDoeAlpine.java",
+      "kind": "java_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:java_model:src/main/java/com/animania/addons/farm/client/model/goats/ModelDoeAngora.java",
+      "kind": "java_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:java_model:src/main/java/com/animania/addons/farm/client/model/goats/ModelDoeFainting.java",
+      "kind": "java_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:java_model:src/main/java/com/animania/addons/farm/client/model/goats/ModelDoeKiko.java",
+      "kind": "java_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:java_model:src/main/java/com/animania/addons/farm/client/model/goats/ModelDoeKinder.java",
+      "kind": "java_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:java_model:src/main/java/com/animania/addons/farm/client/model/goats/ModelDoeNigerianDwarf.java",
+      "kind": "java_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:java_model:src/main/java/com/animania/addons/farm/client/model/goats/ModelDoePygmy.java",
+      "kind": "java_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:java_model:src/main/java/com/animania/addons/farm/client/model/goats/ModelKidAlpine.java",
+      "kind": "java_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:java_model:src/main/java/com/animania/addons/farm/client/model/goats/ModelKidAngora.java",
+      "kind": "java_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:java_model:src/main/java/com/animania/addons/farm/client/model/goats/ModelKidFainting.java",
+      "kind": "java_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:java_model:src/main/java/com/animania/addons/farm/client/model/goats/ModelKidKiko.java",
+      "kind": "java_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:java_model:src/main/java/com/animania/addons/farm/client/model/goats/ModelKidKinder.java",
+      "kind": "java_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:java_model:src/main/java/com/animania/addons/farm/client/model/goats/ModelKidNigerianDwarf.java",
+      "kind": "java_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:java_model:src/main/java/com/animania/addons/farm/client/model/goats/ModelKidPygmy.java",
+      "kind": "java_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:java_model:src/main/java/com/animania/addons/farm/client/model/horse/ModelDraftHorseFoal.java",
+      "kind": "java_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:java_model:src/main/java/com/animania/addons/farm/client/model/horse/ModelDraftHorseMare.java",
+      "kind": "java_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:java_model:src/main/java/com/animania/addons/farm/client/model/horse/ModelDraftHorseStallion.java",
+      "kind": "java_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:java_model:src/main/java/com/animania/addons/farm/client/model/pig/ModelHog.java",
+      "kind": "java_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:java_model:src/main/java/com/animania/addons/farm/client/model/pig/ModelHogHampshire.java",
+      "kind": "java_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:java_model:src/main/java/com/animania/addons/farm/client/model/pig/ModelHogLargeBlack.java",
+      "kind": "java_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:java_model:src/main/java/com/animania/addons/farm/client/model/pig/ModelPiglet.java",
+      "kind": "java_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:java_model:src/main/java/com/animania/addons/farm/client/model/pig/ModelPigletHampshire.java",
+      "kind": "java_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:java_model:src/main/java/com/animania/addons/farm/client/model/pig/ModelSow.java",
+      "kind": "java_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:java_model:src/main/java/com/animania/addons/farm/client/model/pig/ModelSowHampshire.java",
+      "kind": "java_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:java_model:src/main/java/com/animania/addons/farm/client/model/pig/ModelSowLargeBlack.java",
+      "kind": "java_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:java_model:src/main/java/com/animania/addons/farm/client/model/sheep/ModelDorperSheep.java",
+      "kind": "java_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:java_model:src/main/java/com/animania/addons/farm/client/model/sheep/ModelDorsetEwe.java",
+      "kind": "java_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:java_model:src/main/java/com/animania/addons/farm/client/model/sheep/ModelDorsetRam.java",
+      "kind": "java_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:java_model:src/main/java/com/animania/addons/farm/client/model/sheep/ModelFriesianSheep.java",
+      "kind": "java_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:java_model:src/main/java/com/animania/addons/farm/client/model/sheep/ModelJacobSheep.java",
+      "kind": "java_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:java_model:src/main/java/com/animania/addons/farm/client/model/sheep/ModelMerinoEwe.java",
+      "kind": "java_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:java_model:src/main/java/com/animania/addons/farm/client/model/sheep/ModelMerinoRam.java",
+      "kind": "java_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:java_model:src/main/java/com/animania/addons/farm/client/model/sheep/ModelSuffolkEwe.java",
+      "kind": "java_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:java_model:src/main/java/com/animania/addons/farm/client/model/sheep/ModelSuffolkRam.java",
+      "kind": "java_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "base:java_model:src/main/java/com/animania/api/rendering/ModelPose.java",
+      "kind": "java_model",
+      "module": "base",
+      "target_paths": [
+        "base/src/main/java/com/animania/client/model/LegacyAnimalModel.java",
+        "base/src/main/java/com/animania/client/model/LegacyAnimationProfile.java"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmRegistryTest.java",
+        "extra/src/test/java/com/animania/extra/ExtraRegistryTest.java",
+        "catsdogs/src/test/java/com/animania/catsdogs/CatsDogsRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "base:java_model:src/main/java/com/animania/client/models/blocks/ModelSaltLick.java",
+      "kind": "java_model",
+      "module": "base",
+      "target_paths": [
+        "base/src/main/java/com/animania/client/model/BaseLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py",
+        "base/src/main/java/com/animania/client/render/BaseSaltLickRenderer.java"
+      ],
+      "tests": [
+        "base/src/test/java/com/animania/client/BaseLegacyModelConversionTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "base:java_model:src/main/java/com/animania/client/models/ModelNest.java",
+      "kind": "java_model",
+      "module": "base",
+      "target_paths": [
+        "base/src/main/java/com/animania/client/model/BaseLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py",
+        "base/src/main/java/com/animania/client/render/BaseNestRenderer.java"
+      ],
+      "tests": [
+        "base/src/test/java/com/animania/client/BaseLegacyModelConversionTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "base:java_model:src/main/java/com/animania/client/models/ModelTrough.java",
+      "kind": "java_model",
+      "module": "base",
+      "target_paths": [
+        "base/src/main/java/com/animania/client/model/BaseLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py",
+        "base/src/main/java/com/animania/client/render/BaseTroughRenderer.java"
+      ],
+      "tests": [
+        "base/src/test/java/com/animania/client/BaseLegacyModelConversionTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "base:java_model:src/main/java/com/animania/client/models/ModelWaterBottle.java",
+      "kind": "java_model",
+      "module": "base",
+      "target_paths": [
+        "base/src/main/java/com/animania/client/model/BaseLegacyModelLayers.java",
+        "tools/convert_legacy_java_models.py"
+      ],
+      "tests": [
+        "base/src/test/java/com/animania/client/BaseLegacyModelConversionTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "base:java_model:src/main/java/com/animania/client/models/render/ModelRendererAnimania.java",
+      "kind": "java_model",
+      "module": "base",
+      "target_paths": [
+        "base/src/main/java/com/animania/client/model/LegacyAnimalModel.java",
+        "base/src/main/java/com/animania/client/model/LegacyAnimationProfile.java"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmRegistryTest.java",
+        "extra/src/test/java/com/animania/extra/ExtraRegistryTest.java",
+        "catsdogs/src/test/java/com/animania/catsdogs/CatsDogsRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "base:java_model:src/main/java/com/animania/client/models/render/ModelRendererColored.java",
+      "kind": "java_model",
+      "module": "base",
+      "target_paths": [
+        "base/src/main/java/com/animania/client/model/LegacyAnimalModel.java",
+        "farm/src/main/java/com/animania/farm/client/model/FarmLegacyModelLayers.java"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmRegistryTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "catsdogs:craftstudio_model:assets/catsdogs/animania/craftstudio/models/blocks/model_cat_bed_1.csjsmodel",
+      "kind": "craftstudio_model",
+      "module": "catsdogs",
+      "target_paths": [
+        "catsdogs/src/main/java/com/animania/catsdogs/client/model/CatsDogsNativeModelLayers.java",
+        "tools/convert_craftstudio_models.py"
+      ],
+      "tests": [
+        "catsdogs/src/test/java/com/animania/catsdogs/CatsDogsNativeModelConversionTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "catsdogs:craftstudio_model:assets/catsdogs/animania/craftstudio/models/blocks/model_cat_bed_2.csjsmodel",
+      "kind": "craftstudio_model",
+      "module": "catsdogs",
+      "target_paths": [
+        "catsdogs/src/main/java/com/animania/catsdogs/client/model/CatsDogsNativeModelLayers.java",
+        "tools/convert_craftstudio_models.py"
+      ],
+      "tests": [
+        "catsdogs/src/test/java/com/animania/catsdogs/CatsDogsNativeModelConversionTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "catsdogs:craftstudio_model:assets/catsdogs/animania/craftstudio/models/blocks/model_cat_tower.csjsmodel",
+      "kind": "craftstudio_model",
+      "module": "catsdogs",
+      "target_paths": [
+        "catsdogs/src/main/java/com/animania/catsdogs/client/model/CatsDogsNativeModelLayers.java",
+        "tools/convert_craftstudio_models.py"
+      ],
+      "tests": [
+        "catsdogs/src/test/java/com/animania/catsdogs/CatsDogsNativeModelConversionTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "catsdogs:craftstudio_model:assets/catsdogs/animania/craftstudio/models/blocks/model_dog_house.csjsmodel",
+      "kind": "craftstudio_model",
+      "module": "catsdogs",
+      "target_paths": [
+        "catsdogs/src/main/java/com/animania/catsdogs/client/model/CatsDogsNativeModelLayers.java",
+        "tools/convert_craftstudio_models.py"
+      ],
+      "tests": [
+        "catsdogs/src/test/java/com/animania/catsdogs/CatsDogsNativeModelConversionTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "catsdogs:craftstudio_model:assets/catsdogs/animania/craftstudio/models/blocks/model_dog_pillow.csjsmodel",
+      "kind": "craftstudio_model",
+      "module": "catsdogs",
+      "target_paths": [
+        "catsdogs/src/main/java/com/animania/catsdogs/client/model/CatsDogsNativeModelLayers.java",
+        "tools/convert_craftstudio_models.py"
+      ],
+      "tests": [
+        "catsdogs/src/test/java/com/animania/catsdogs/CatsDogsNativeModelConversionTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "catsdogs:craftstudio_model:assets/catsdogs/animania/craftstudio/models/blocks/model_litter_box.csjsmodel",
+      "kind": "craftstudio_model",
+      "module": "catsdogs",
+      "target_paths": [
+        "catsdogs/src/main/java/com/animania/catsdogs/client/model/CatsDogsNativeModelLayers.java",
+        "tools/convert_craftstudio_models.py"
+      ],
+      "tests": [
+        "catsdogs/src/test/java/com/animania/catsdogs/CatsDogsNativeModelConversionTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "catsdogs:craftstudio_model:assets/catsdogs/animania/craftstudio/models/blocks/model_pet_bowl.csjsmodel",
+      "kind": "craftstudio_model",
+      "module": "catsdogs",
+      "target_paths": [
+        "catsdogs/src/main/java/com/animania/catsdogs/client/model/CatsDogsNativeModelLayers.java",
+        "tools/convert_craftstudio_models.py"
+      ],
+      "tests": [
+        "catsdogs/src/test/java/com/animania/catsdogs/CatsDogsNativeModelConversionTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "catsdogs:craftstudio_model:assets/catsdogs/animania/craftstudio/models/entity/model_ragdoll.csjsmodel",
+      "kind": "craftstudio_model",
+      "module": "catsdogs",
+      "target_paths": [
+        "catsdogs/src/main/java/com/animania/catsdogs/client/model/CatsDogsNativeModelLayers.java",
+        "tools/convert_craftstudio_models.py"
+      ],
+      "tests": [
+        "catsdogs/src/test/java/com/animania/catsdogs/CatsDogsNativeModelConversionTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "extra:animation:assets/extra/animania/craftstudio/animations/blocks/anim_hamster_wheel.csjsmodelanim",
+      "kind": "animation",
+      "module": "extra",
+      "target_paths": [
+        "extra/src/main/java/com/animania/extra/client/model/ExtraNativeAnimations.java",
+        "tools/convert_craftstudio_models.py"
+      ],
+      "tests": [
+        "extra/src/test/java/com/animania/extra/ExtraNativeModelConversionTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "extra:animation:assets/extra/animania/craftstudio/animations/entity/hamster_run.csjsmodelanim",
+      "kind": "animation",
+      "module": "extra",
+      "target_paths": [
+        "extra/src/main/java/com/animania/extra/client/model/ExtraNativeAnimations.java",
+        "tools/convert_craftstudio_models.py"
+      ],
+      "tests": [
+        "extra/src/test/java/com/animania/extra/ExtraNativeModelConversionTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "extra:craftstudio_model:assets/extra/animania/craftstudio/models/blocks/model_hamster_wheel.csjsmodel",
+      "kind": "craftstudio_model",
+      "module": "extra",
+      "target_paths": [
+        "extra/src/main/java/com/animania/extra/client/model/ExtraNativeModelLayers.java",
+        "tools/convert_craftstudio_models.py"
+      ],
+      "tests": [
+        "extra/src/test/java/com/animania/extra/ExtraNativeModelConversionTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "extra:craftstudio_model:assets/extra/animania/craftstudio/models/entity/hamster.csjsmodel",
+      "kind": "craftstudio_model",
+      "module": "extra",
+      "target_paths": [
+        "extra/src/main/java/com/animania/extra/client/model/ExtraNativeModelLayers.java",
+        "tools/convert_craftstudio_models.py"
+      ],
+      "tests": [
+        "extra/src/test/java/com/animania/extra/ExtraNativeModelConversionTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:animation:assets/farm/animania/craftstudio/animations/blocks/anim_bees.csjsmodelanim",
+      "kind": "animation",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmNativeAnimations.java",
+        "tools/convert_craftstudio_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmNativeModelConversionTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:animation:assets/farm/animania/craftstudio/animations/blocks/anim_bees_wild.csjsmodelanim",
+      "kind": "animation",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmNativeAnimations.java",
+        "tools/convert_craftstudio_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmNativeModelConversionTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:animation:assets/farm/animania/craftstudio/animations/entity/anim_cart.csjsmodelanim",
+      "kind": "animation",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmNativeAnimations.java",
+        "tools/convert_craftstudio_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmNativeModelConversionTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:animation:assets/farm/animania/craftstudio/animations/entity/anim_cart_chest.csjsmodelanim",
+      "kind": "animation",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmNativeAnimations.java",
+        "tools/convert_craftstudio_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmNativeModelConversionTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:animation:assets/farm/animania/craftstudio/animations/entity/anim_tiller.csjsmodelanim",
+      "kind": "animation",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmNativeAnimations.java",
+        "tools/convert_craftstudio_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmNativeModelConversionTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:animation:assets/farm/animania/craftstudio/animations/entity/anim_wagon.csjsmodelanim",
+      "kind": "animation",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmNativeAnimations.java",
+        "tools/convert_craftstudio_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmNativeModelConversionTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:craftstudio_model:assets/farm/animania/craftstudio/models/blocks/model_bee_hive.csjsmodel",
+      "kind": "craftstudio_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmNativeModelLayers.java",
+        "tools/convert_craftstudio_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmNativeModelConversionTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:craftstudio_model:assets/farm/animania/craftstudio/models/blocks/model_wild_hive.csjsmodel",
+      "kind": "craftstudio_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmNativeModelLayers.java",
+        "tools/convert_craftstudio_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmNativeModelConversionTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:craftstudio_model:assets/farm/animania/craftstudio/models/entity/model_cart.csjsmodel",
+      "kind": "craftstudio_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmNativeModelLayers.java",
+        "tools/convert_craftstudio_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmNativeModelConversionTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:craftstudio_model:assets/farm/animania/craftstudio/models/entity/model_cart_chest.csjsmodel",
+      "kind": "craftstudio_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmNativeModelLayers.java",
+        "tools/convert_craftstudio_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmNativeModelConversionTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:craftstudio_model:assets/farm/animania/craftstudio/models/entity/model_tiller.csjsmodel",
+      "kind": "craftstudio_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmNativeModelLayers.java",
+        "tools/convert_craftstudio_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmNativeModelConversionTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "farm:craftstudio_model:assets/farm/animania/craftstudio/models/entity/model_wagon.csjsmodel",
+      "kind": "craftstudio_model",
+      "module": "farm",
+      "target_paths": [
+        "farm/src/main/java/com/animania/farm/client/model/FarmNativeModelLayers.java",
+        "tools/convert_craftstudio_models.py"
+      ],
+      "tests": [
+        "farm/src/test/java/com/animania/farm/FarmNativeModelConversionTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "base:craftstudio_model:assets/player_anim/craftstudio/models/entity/player.csjsmodel",
+      "kind": "craftstudio_model",
+      "module": "base",
+      "target_paths": [
+        "base/src/main/java/com/animania/client/model/BaseNativeModelLayers.java",
+        "tools/convert_craftstudio_models.py"
+      ],
+      "tests": [
+        "base/src/test/java/com/animania/client/BaseNativeModelConversionTest.java"
+      ],
+      "verified": true
+    },
+    {
+      "key": "base:craftstudio_model:assets/player_anim/craftstudio/models/entity/player_sit.csjsmodel",
+      "kind": "craftstudio_model",
+      "module": "base",
+      "target_paths": [
+        "base/src/main/java/com/animania/client/model/BaseNativeModelLayers.java",
+        "tools/convert_craftstudio_models.py"
+      ],
+      "tests": [
+        "base/src/test/java/com/animania/client/BaseNativeModelConversionTest.java"
+      ],
+      "verified": true
+    }
+  ]
+}

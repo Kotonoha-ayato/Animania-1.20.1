@@ -9,7 +9,7 @@ import static net.minecraft.client.animation.AnimationChannel.Targets.ROTATION;
 import static net.minecraft.client.animation.KeyframeAnimations.degreeVec;
 
 /**
- * Native 1.20.1 animation definitions replacing the 1.12 CraftStudio clips.
+ * Native 1.20.1 animation definitions replacing the 1.12 legacy model clips.
  *
  * The definitions deliberately use the same stable bone names as
  * {@link AnimaniaAnimalModel}.  Addons can reference these clips without a

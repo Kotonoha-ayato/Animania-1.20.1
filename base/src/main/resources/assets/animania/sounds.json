@@ -1,6 +1,5 @@
 {
   "combo": {
-    "animania": "master",
     "sounds": [
       {
         "name": "animania:combo",
@@ -9,7 +8,6 @@
     ]
   },
   "zap": {
-    "animania": "master",
     "sounds": [
       {
         "name": "animania:zap",

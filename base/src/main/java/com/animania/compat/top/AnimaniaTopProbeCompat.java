@@ -1,6 +1,8 @@
 package com.animania.compat.top;
 
 import com.animania.Animania;
+import com.animania.api.IAnimaniaProbeBlock;
+import com.animania.compat.AnimaniaProbeComponents;
 import com.animania.common.entity.AnimaniaAnimalEntity;
 import com.animania.common.entity.AnimaniaVehicleEntity;
 import com.animania.common.block.AnimaniaStorageBlockEntity;
@@ -50,6 +52,9 @@ public final class AnimaniaTopProbeCompat {
                 if (level.getBlockEntity(hitData.getPos()) instanceof AnimaniaSaltLickBlockEntity salt) {
                     info.text(Component.translatable("top.animania.salt_uses", salt.usesLeft()));
                 }
+                if (level.getBlockEntity(hitData.getPos()) instanceof IAnimaniaProbeBlock probe) {
+                    probe.getAnimaniaProbeInfo().forEach(info::text);
+                }
             }
         }
     }
@@ -62,8 +67,7 @@ public final class AnimaniaTopProbeCompat {
         public void addProbeEntityInfo(ProbeMode mode, IProbeInfo info, Player player, Level level,
                                        Entity entity, IProbeHitEntityData hitData) {
             if (entity instanceof AnimaniaAnimalEntity animal) {
-                info.text(Component.translatable("top.animania.animal_state", animal.getHunger(), animal.getThirst()));
-                if (animal.isTamed()) info.text(Component.translatable("top.animania.tamed"));
+                AnimaniaProbeComponents.animal(animal).forEach(info::text);
             } else if (entity instanceof AnimaniaVehicleEntity vehicle) {
                 info.text(Component.translatable("top.animania.vehicle_cargo", vehicle.getContainerSize()));
             }

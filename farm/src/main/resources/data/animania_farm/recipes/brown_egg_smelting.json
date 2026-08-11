@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:smelting",
+  "category": "food",
+  "ingredient": {"item": "animania_farm:brown_egg"},
+  "result": "animania_farm:plain_omelette",
+  "experience": 0.3,
+  "cookingtime": 200
+}

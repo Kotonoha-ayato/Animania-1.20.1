@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kawer95/Animania-1.20.1/schema/migration-matrix-v2.json",
+  "title": "Animania migration matrix v2",
+  "type": "object",
+  "required": ["schema_version", "source_revision", "target", "modules", "entries", "release_audit"],
+  "properties": {
+    "schema_version": {"const": 2},
+    "source_revision": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "target": {"type": "object", "required": ["minecraft", "forge", "java", "release"]},
+    "modules": {"type": "array", "items": {"enum": ["base", "farm", "extra", "catsdogs"]}},
+    "entries": {"type": "array", "minItems": 2033, "items": {"$ref": "#/$defs/entry"}},
+    "release_audit": {"$ref": "#/$defs/releaseAudit"}
+  },
+  "$defs": {
+    "requirement": {"enum": ["implementation", "behavior", "serialization", "resource", "client", "integration"]},
+    "entry": {
+      "type": "object",
+      "required": ["entry_id", "kind", "module", "source", "sha256", "status", "implemented", "verified", "baseline", "requirements", "target_evidence", "closure"],
+      "properties": {
+        "entry_id": {"type": "string", "pattern": "^[0-9a-f]{24}$"},
+        "kind": {"enum": ["java", "resource"]},
+        "module": {"enum": ["base", "farm", "extra", "catsdogs"]},
+        "source": {"type": "string", "minLength": 1},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "status": {"enum": ["unstarted", "in_progress", "implemented_unverified", "blocked_external", "closed"]},
+        "implemented": {"type": "boolean"},
+        "verified": {"type": "boolean"},
+        "requirements": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/requirement"}, "uniqueItems": true},
+        "baseline": {"type": "object", "required": ["registry_ids", "classes", "numeric_values", "behaviors", "save_fields", "client_representation"]},
+        "target_evidence": {"$ref": "#/$defs/targetEvidence"},
+        "closure": {"anyOf": [{"type": "null"}, {"$ref": "#/$defs/closure"}]}
+      }
+    },
+    "targetEvidence": {
+      "type": "object",
+      "required": ["paths", "behavior_tests", "serialization_tests", "client_tests", "notes"],
+      "properties": {
+        "paths": {"type": "array", "items": {"type": "string"}},
+        "behavior_tests": {"type": "array", "items": {"type": "string"}},
+        "serialization_tests": {"type": "array", "items": {"type": "string"}},
+        "client_tests": {"type": "array", "items": {"type": "string"}},
+        "notes": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "closure": {
+      "type": "object",
+      "required": ["audit_version", "evidence_digest", "requirements", "source_sha256", "auditor_fingerprints", "source_code_fingerprints", "test_fingerprints", "evidence_summary", "closed_at"],
+      "properties": {
+        "audit_version": {"type": "string", "minLength": 1},
+        "evidence_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "source_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "requirements": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "auditor_fingerprints": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+        "source_code_fingerprints": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+        "test_fingerprints": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+        "evidence_summary": {"type": "object"},
+        "closed_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "releaseAudit": {
+      "type": "object",
+      "required": ["schema_version", "unstarted", "open", "unverified", "closed", "release_allowed"],
+      "properties": {
+        "schema_version": {"const": 2},
+        "unstarted": {"type": "integer", "minimum": 0},
+        "open": {"type": "integer", "minimum": 0},
+        "unverified": {"type": "integer", "minimum": 0},
+        "closed": {"type": "integer", "minimum": 0},
+        "release_allowed": {"type": "boolean"},
+        "global_gates": {"type": "boolean"},
+        "closure_states": {
+          "type": "object",
+          "additionalProperties": {"type": "integer", "minimum": 0}
+        }
+      }
+    }
+  }
+}

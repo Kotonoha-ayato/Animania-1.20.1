@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:smelting",
+  "category": "food",
+  "ingredient": {
+    "item": "animania_farm:raw_prime_steak"
+  },
+  "result": "animania_farm:cooked_prime_steak",
+  "experience": 0.3,
+  "cookingtime": 200
+}

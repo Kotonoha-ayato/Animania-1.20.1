@@ -10,6 +10,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.Containers;
 import net.minecraft.world.phys.BlockHitResult;
 
 import java.util.function.BiFunction;
@@ -42,5 +43,13 @@ public class AnimaniaContainerBlock extends BaseEntityBlock {
         return (tickLevel, tickPos, tickState, blockEntity) -> {
             if (blockEntity instanceof AnimaniaStorageBlockEntity storage) storage.serverTick();
         };
+    }
+
+    @Override
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState replacement, boolean moving) {
+        if (!state.is(replacement.getBlock()) && level.getBlockEntity(pos) instanceof AnimaniaStorageBlockEntity storage) {
+            Containers.dropContents(level, pos, storage);
+        }
+        super.onRemove(state, level, pos, replacement, moving);
     }
 }

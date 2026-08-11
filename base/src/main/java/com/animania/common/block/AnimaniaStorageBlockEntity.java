@@ -9,6 +9,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ChestMenu;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -21,33 +22,56 @@ import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import java.util.function.Predicate;
 
 /** Small server-side inventory used by troughs, nests, bowls and cheese moulds. */
 public abstract class AnimaniaStorageBlockEntity extends BlockEntity implements Container, MenuProvider {
-    private final NonNullList<ItemStack> items = NonNullList.withSize(9, ItemStack.EMPTY);
+    private final NonNullList<ItemStack> items;
     private boolean syncingCapability;
-    private final ItemStackHandler itemCapability = new ItemStackHandler(9) {
-        @Override
-        protected void onContentsChanged(int slot) {
-            if (!syncingCapability) syncFromCapability();
-        }
-    };
-    protected final FluidTank fluidCapability = new FluidTank(8000) {
-        @Override
-        protected void onContentsChanged() {
-            setChanged();
-        }
-
-        @Override
-        public boolean isFluidValid(FluidStack stack) {
-            return AnimaniaStorageBlockEntity.this.isFluidValid(stack);
-        }
-    };
-    private final LazyOptional<ItemStackHandler> itemCapabilityOptional = LazyOptional.of(() -> itemCapability);
-    private final LazyOptional<FluidTank> fluidCapabilityOptional = LazyOptional.of(() -> fluidCapability);
+    private final ItemStackHandler itemCapability;
+    protected final FluidTank fluidCapability;
+    private final LazyOptional<ItemStackHandler> itemCapabilityOptional;
+    private final LazyOptional<FluidTank> fluidCapabilityOptional;
 
     protected AnimaniaStorageBlockEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        this(type, pos, state, 9, 8000);
+    }
+
+    protected AnimaniaStorageBlockEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> type, BlockPos pos,
+                                         BlockState state, int slots, int fluidCapacity) {
         super(type, pos, state);
+        this.items = NonNullList.withSize(slots, ItemStack.EMPTY);
+        this.itemCapability = new ItemStackHandler(slots) {
+            @Override
+            public int getSlotLimit(int slot) {
+                return AnimaniaStorageBlockEntity.this.getMaxStackSize();
+            }
+
+            @Override
+            public boolean isItemValid(int slot, ItemStack stack) {
+                return AnimaniaStorageBlockEntity.this.isItemValid(slot, stack);
+            }
+
+            @Override
+            protected void onContentsChanged(int slot) {
+                if (!syncingCapability) syncFromCapability();
+            }
+        };
+        this.fluidCapability = new FluidTank(fluidCapacity) {
+            @Override
+            protected void onContentsChanged() {
+                setChanged();
+            }
+
+            @Override
+            public boolean isFluidValid(FluidStack stack) {
+                return AnimaniaStorageBlockEntity.this.isFluidValid(stack);
+            }
+        };
+        this.itemCapabilityOptional = LazyOptional.of(() -> itemCapability);
+        this.fluidCapabilityOptional = LazyOptional.of(() -> fluidCapability);
     }
 
     /** Hook for server-only facility processing (nest laying, cheese moulds). */
@@ -61,6 +85,58 @@ public abstract class AnimaniaStorageBlockEntity extends BlockEntity implements 
      */
     protected boolean isFluidValid(FluidStack stack) {
         return stack != null && !stack.isEmpty();
+    }
+
+    protected boolean isItemValid(int slot, ItemStack stack) {
+        return stack != null && !stack.isEmpty();
+    }
+
+    /** Whether hoppers, pipes and other sided automation may see this store. */
+    protected boolean allowsAutomation() {
+        return true;
+    }
+
+    public int fluidAmount(Predicate<FluidStack> filter) {
+        FluidStack stored = fluidCapability.getFluid();
+        return stored.isEmpty() || !filter.test(stored) ? 0 : stored.getAmount();
+    }
+
+    public int drainFluid(int amount, Predicate<FluidStack> filter, IFluidHandler.FluidAction action) {
+        FluidStack stored = fluidCapability.getFluid();
+        if (amount <= 0 || stored.isEmpty() || !filter.test(stored)) return 0;
+        return fluidCapability.drain(amount, action).getAmount();
+    }
+
+    public FluidStack fluidSnapshot() {
+        return fluidCapability.getFluid().copy();
+    }
+
+    public int fillFluid(FluidStack stack, IFluidHandler.FluidAction action) {
+        return fluidCapability.fill(stack, action);
+    }
+
+    @Override
+    public CompoundTag getUpdateTag() {
+        return saveWithoutMetadata();
+    }
+
+    @Override
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
+    }
+
+    @Override
+    public void onDataPacket(Connection connection, ClientboundBlockEntityDataPacket packet) {
+        CompoundTag tag = packet.getTag();
+        if (tag != null) load(tag);
+    }
+
+    @Override
+    public void setChanged() {
+        super.setChanged();
+        if (level != null && !level.isClientSide) {
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
+        }
     }
 
     @Override
@@ -119,6 +195,13 @@ public abstract class AnimaniaStorageBlockEntity extends BlockEntity implements 
 
     @Override
     public <T> LazyOptional<T> getCapability(Capability<T> capability, Direction side) {
+        // Unsided access is retained for the owning block's direct player
+        // interaction. Forge automation is sided and follows the legacy
+        // allowTroughAutomation switch in trough/bowl subclasses.
+        if (side != null && !allowsAutomation()
+                && (capability == ForgeCapabilities.ITEM_HANDLER || capability == ForgeCapabilities.FLUID_HANDLER)) {
+            return LazyOptional.empty();
+        }
         if (capability == ForgeCapabilities.ITEM_HANDLER) return itemCapabilityOptional.cast();
         if (capability == ForgeCapabilities.FLUID_HANDLER) return fluidCapabilityOptional.cast();
         return super.getCapability(capability, side);
@@ -153,7 +236,8 @@ public abstract class AnimaniaStorageBlockEntity extends BlockEntity implements 
 
     @Override
     public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
-        return ChestMenu.threeRows(id, inventory, this);
+        if (getContainerSize() < 9) return null;
+        return new ChestMenu(MenuType.GENERIC_9x1, id, inventory, this, 1);
     }
 
     @Override

@@ -1,3 +1,6 @@
 {
-  "parent": "animania_catsdogs:block/pet_bowl"
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "animania_catsdogs:item/pet_bowl"
+  }
 }

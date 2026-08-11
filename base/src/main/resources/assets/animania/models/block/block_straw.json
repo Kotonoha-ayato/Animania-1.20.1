@@ -1,5 +1,5 @@
 {
-  "parent": "block/carpet",
+  "parent": "minecraft:block/carpet",
   "textures": {
     "wool": "animania:block/straw",
     "particle": "animania:block/straw"

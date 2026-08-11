@@ -1,7 +1,25 @@
 {
   "variants": {
-    "": {
-      "model": "animania_farm:block/animania_wool"
+    "variant=dorset_brown": {
+      "model": "animania_farm:block/wool_dorset_brown"
+    },
+    "variant=friesian_black": {
+      "model": "animania_farm:block/wool_friesian_black"
+    },
+    "variant=friesian_brown": {
+      "model": "animania_farm:block/wool_friesian_brown"
+    },
+    "variant=jacob": {
+      "model": "animania_farm:block/wool_jacob"
+    },
+    "variant=merino_brown": {
+      "model": "animania_farm:block/wool_merino_brown"
+    },
+    "variant=merino_white": {
+      "model": "animania_farm:block/wool_merino_white"
+    },
+    "variant=suffolk_brown": {
+      "model": "animania_farm:block/wool_suffolk_brown"
     }
   }
 }

@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:smelting",
+  "category": "food",
+  "ingredient": {
+    "item": "animania_extra:raw_frog_legs"
+  },
+  "result": "animania_extra:cooked_frog_legs",
+  "experience": 0.3,
+  "cookingtime": 200
+}

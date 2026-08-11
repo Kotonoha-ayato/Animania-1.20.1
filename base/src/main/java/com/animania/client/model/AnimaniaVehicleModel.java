@@ -1,8 +1,8 @@
 package com.animania.client.model;
 
 import com.animania.common.entity.AnimaniaVehicleEntity;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.HierarchicalModel;
+import net.minecraft.client.animation.AnimationDefinition;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
@@ -13,11 +13,11 @@ import net.minecraft.client.model.geom.builders.PartDefinition;
 /** Native ModelPart prop model for cart, wagon and tiller. */
 public final class AnimaniaVehicleModel extends HierarchicalModel<AnimaniaVehicleEntity> {
     private final ModelPart root;
-    private final ModelPart body;
+    private final AnimationDefinition movementAnimation;
 
-    public AnimaniaVehicleModel(ModelPart root) {
+    public AnimaniaVehicleModel(ModelPart root, AnimationDefinition movementAnimation) {
         this.root = root;
-        this.body = root.getChild("body");
+        this.movementAnimation = movementAnimation;
     }
 
     public static LayerDefinition createBodyLayer() {
@@ -37,6 +37,9 @@ public final class AnimaniaVehicleModel extends HierarchicalModel<AnimaniaVehicl
     @Override
     public void setupAnim(AnimaniaVehicleEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         root.getAllParts().forEach(ModelPart::resetPose);
-        body.yRot = -entity.getYRot() * ((float) Math.PI / 180F);
+        if (movementAnimation != null) {
+            float speed = (float) Math.min(1.0D, entity.getDeltaMovement().horizontalDistance() * 8.0D);
+            animateWalk(movementAnimation, ageInTicks, Math.max(0.05F, speed), 1.0F, 1.0F);
+        }
     }
 }

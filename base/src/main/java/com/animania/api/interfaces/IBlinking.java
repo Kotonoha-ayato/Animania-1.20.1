@@ -1,2 +1,8 @@
 package com.animania.api.interfaces;
-public interface IBlinking { }
+
+/** Stable client-state contract for animals whose renderer supports blinking. */
+public interface IBlinking {
+    int getBlinkTimer();
+
+    void setBlinkTimer(int ticks);
+}

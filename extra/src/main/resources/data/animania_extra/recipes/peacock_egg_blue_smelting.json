@@ -1,0 +1,14 @@
+{
+  "type": "forge:conditional",
+  "recipes": [{
+    "conditions": [{"type": "forge:mod_loaded", "modid": "animania_farm"}],
+    "recipe": {
+      "type": "minecraft:smelting",
+      "category": "food",
+      "ingredient": {"item": "animania_extra:peacock_egg_blue"},
+      "result": "animania_farm:plain_omelette",
+      "experience": 0.3,
+      "cookingtime": 200
+    }
+  }]
+}

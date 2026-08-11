@@ -58,7 +58,8 @@ public final class ExtraHamsterWheelBlockEntity extends AnimaniaStorageBlockEnti
                         new AABB(worldPosition).inflate(1.5D)).stream()
                 .filter(entity -> {
                     ResourceLocation id = ForgeRegistries.ENTITY_TYPES.getKey(entity.getType());
-                    return id != null && AnimaniaExtra.MOD_ID.equals(id.getNamespace()) && "hamster".equals(id.getPath());
+                    return id != null && AnimaniaExtra.MOD_ID.equals(id.getNamespace()) && "hamster".equals(id.getPath())
+                            && !entity.isInBall();
                 })
                 .findFirst().orElse(null);
     }

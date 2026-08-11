@@ -1,3 +1,6 @@
 {
-  "parent": "animania:block/nest"
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "animania:block/nest"
+  }
 }

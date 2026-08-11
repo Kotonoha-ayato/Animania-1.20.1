@@ -23,6 +23,11 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.CropBlock;
+import net.minecraft.world.level.block.FarmBlock;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
@@ -47,6 +52,7 @@ public class AnimaniaVehicleEntity extends Entity implements Container, MenuProv
     private Entity puller;
     @Nullable
     private UUID pullerUuid;
+    private BlockPos lastTillOrigin;
 
     public AnimaniaVehicleEntity(EntityType<? extends AnimaniaVehicleEntity> type, Level level) {
         super(type, level);
@@ -85,6 +91,7 @@ public class AnimaniaVehicleEntity extends Entity implements Container, MenuProv
                     moveTo(target.x, target.y, target.z, getYRot(), getXRot());
                 }
                 setDeltaMovement(Vec3.ZERO);
+                if (isTiller()) tillAtCurrentPosition();
             }
         } else {
             Entity rider = getFirstPassenger();
@@ -219,14 +226,25 @@ public class AnimaniaVehicleEntity extends Entity implements Container, MenuProv
         entityData.set(PULLER, Optional.of(pullerUuid));
         setDeltaMovement(Vec3.ZERO);
         setChanged();
+        playHitchSound("hitch");
         return true;
     }
 
     public void detachPuller() {
+        boolean attached = puller != null || pullerUuid != null;
         puller = null;
         pullerUuid = null;
         entityData.set(PULLER, Optional.empty());
         setChanged();
+        if (attached) playHitchSound("unhitch");
+    }
+
+    private void playHitchSound(String id) {
+        if (level().isClientSide) return;
+        net.minecraft.sounds.SoundEvent sound = ForgeRegistries.SOUND_EVENTS.getValue(
+                ResourceLocation.fromNamespaceAndPath("animania_farm", id));
+        if (sound != null) level().playSound(null, blockPosition(), sound,
+                net.minecraft.sounds.SoundSource.NEUTRAL, 0.7F, 1.5F);
     }
 
     public boolean isPulled() {
@@ -251,9 +269,61 @@ public class AnimaniaVehicleEntity extends Entity implements Container, MenuProv
         return id != null && "wagon".equals(id.getPath());
     }
 
+    private boolean isTiller() {
+        ResourceLocation id = ForgeRegistries.ENTITY_TYPES.getKey(getType());
+        return id != null && "tiller".equals(id.getPath());
+    }
+
+    /** Three-wide 1.12 tiller pass, with server-side inventory seed consumption. */
+    private void tillAtCurrentPosition() {
+        if (level().isClientSide) return;
+        BlockPos origin = blockPosition().below();
+        if (origin.equals(lastTillOrigin)) return;
+        lastTillOrigin = origin.immutable();
+        Direction side = Direction.fromYRot(getYRot()).getClockWise();
+        tillGround(origin);
+        tillGround(origin.relative(side));
+        tillGround(origin.relative(side.getOpposite()));
+    }
+
+    private void tillGround(BlockPos pos) {
+        var state = level().getBlockState(pos);
+        if (!(state.is(Blocks.GRASS_BLOCK) || state.is(Blocks.DIRT) || state.is(Blocks.COARSE_DIRT) || state.is(Blocks.FARMLAND))) return;
+        level().setBlock(pos, Blocks.FARMLAND.defaultBlockState().setValue(FarmBlock.MOISTURE, 7), 3);
+        BlockPos cropPos = pos.above();
+        var above = level().getBlockState(cropPos);
+        if (above.getBlock() instanceof CropBlock) return;
+        if (!above.isAir() && above.canBeReplaced()) level().destroyBlock(cropPos, false);
+        if (!level().getBlockState(cropPos).isAir()) return;
+        for (int slot = 0; slot < Math.min(10, items.size()); slot++) {
+            ItemStack seed = items.get(slot);
+            var crop = cropFor(seed);
+            if (crop == null) continue;
+            // Never consume inventory when another mod or a world rule rejects
+            // the placement.  This keeps the tiller transactional under event
+            // cancellation and prevents silent seed loss on protected land.
+            if (!crop.canSurvive(level(), cropPos) || !level().setBlock(cropPos, crop, 3)
+                    || !level().getBlockState(cropPos).is(crop.getBlock())) continue;
+            seed.shrink(1);
+            if (seed.isEmpty()) items.set(slot, ItemStack.EMPTY);
+            setChanged();
+            break;
+        }
+    }
+
+    @Nullable
+    private static net.minecraft.world.level.block.state.BlockState cropFor(ItemStack stack) {
+        if (stack.is(net.minecraft.world.item.Items.WHEAT_SEEDS)) return Blocks.WHEAT.defaultBlockState();
+        if (stack.is(net.minecraft.world.item.Items.BEETROOT_SEEDS)) return Blocks.BEETROOTS.defaultBlockState();
+        if (stack.is(net.minecraft.world.item.Items.MELON_SEEDS)) return Blocks.MELON_STEM.defaultBlockState();
+        if (stack.is(net.minecraft.world.item.Items.PUMPKIN_SEEDS)) return Blocks.PUMPKIN_STEM.defaultBlockState();
+        return null;
+    }
+
     @Override
     public void remove(RemovalReason reason) {
-        if (!level().isClientSide && reason == RemovalReason.KILLED && !dropsSpawned) {
+        if (!level().isClientSide && reason == RemovalReason.KILLED && !dropsSpawned
+                && level().getGameRules().getBoolean(net.minecraft.world.level.GameRules.RULE_DOENTITYDROPS)) {
             dropsSpawned = true;
             ResourceLocation id = ForgeRegistries.ENTITY_TYPES.getKey(getType());
             if (id != null) {

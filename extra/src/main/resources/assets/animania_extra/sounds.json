@@ -1,0 +1,418 @@
+{
+  "hamsterdeath": {
+    "sounds": [
+      {
+        "name": "animania_extra:hamsters/deathsound",
+        "stream": false
+      }
+    ]
+  },
+  "hamstereat1": {
+    "sounds": [
+      {
+        "name": "animania_extra:hamsters/eatsound1",
+        "stream": false
+      }
+    ]
+  },
+  "hamstereat2": {
+    "sounds": [
+      {
+        "name": "animania_extra:hamsters/eatsound2",
+        "stream": false
+      }
+    ]
+  },
+  "hamsterhurt1": {
+    "sounds": [
+      {
+        "name": "animania_extra:hamsters/hurtsound1",
+        "stream": false
+      }
+    ]
+  },
+  "hamsterliving1": {
+    "sounds": [
+      {
+        "name": "animania_extra:hamsters/livingsound1",
+        "stream": false
+      }
+    ]
+  },
+  "hamsterliving2": {
+    "sounds": [
+      {
+        "name": "animania_extra:hamsters/livingsound2",
+        "stream": false
+      }
+    ]
+  },
+  "hamsterliving3": {
+    "sounds": [
+      {
+        "name": "animania_extra:hamsters/livingsound3",
+        "stream": false
+      }
+    ]
+  },
+  "frogliving1": {
+    "sounds": [
+      {
+        "name": "animania_extra:amphibians/frogliving1",
+        "stream": false
+      }
+    ]
+  },
+  "reeee": {
+    "sounds": [
+      {
+        "name": "animania_extra:amphibians/reeee",
+        "stream": false
+      }
+    ]
+  },
+  "ooooohh": {
+    "sounds": [
+      {
+        "name": "animania_extra:amphibians/ooooohh",
+        "stream": false
+      }
+    ]
+  },
+  "frogliving2": {
+    "sounds": [
+      {
+        "name": "animania_extra:amphibians/frogliving2",
+        "stream": false
+      }
+    ]
+  },
+  "frogliving3": {
+    "sounds": [
+      {
+        "name": "animania_extra:amphibians/frogliving3",
+        "stream": false
+      }
+    ]
+  },
+  "toadliving1": {
+    "sounds": [
+      {
+        "name": "animania_extra:amphibians/toadliving1",
+        "stream": false
+      }
+    ]
+  },
+  "toadliving2": {
+    "sounds": [
+      {
+        "name": "animania_extra:amphibians/toadliving2",
+        "stream": false
+      }
+    ]
+  },
+  "toadliving3": {
+    "sounds": [
+      {
+        "name": "animania_extra:amphibians/toadliving3",
+        "stream": false
+      }
+    ]
+  },
+  "toadliving4": {
+    "sounds": [
+      {
+        "name": "animania_extra:amphibians/toadliving4",
+        "stream": false
+      }
+    ]
+  },
+  "dartfrogliving1": {
+    "sounds": [
+      {
+        "name": "animania_extra:amphibians/dartfrogliving1",
+        "stream": false
+      }
+    ]
+  },
+  "dartfrogliving2": {
+    "sounds": [
+      {
+        "name": "animania_extra:amphibians/dartfrogliving2",
+        "stream": false
+      }
+    ]
+  },
+  "dartfrogliving3": {
+    "sounds": [
+      {
+        "name": "animania_extra:amphibians/dartfrogliving3",
+        "stream": false
+      }
+    ]
+  },
+  "dartfrogliving4": {
+    "sounds": [
+      {
+        "name": "animania_extra:amphibians/dartfrogliving4",
+        "stream": false
+      }
+    ]
+  },
+  "ferrethurt1": {
+    "sounds": [
+      {
+        "name": "animania_extra:ferrets/hurt1",
+        "stream": false
+      }
+    ]
+  },
+  "ferretliving1": {
+    "sounds": [
+      {
+        "name": "animania_extra:ferrets/living1",
+        "stream": false
+      }
+    ]
+  },
+  "ferretliving2": {
+    "sounds": [
+      {
+        "name": "animania_extra:ferrets/living2",
+        "stream": false
+      }
+    ]
+  },
+  "ferretliving3": {
+    "sounds": [
+      {
+        "name": "animania_extra:ferrets/living3",
+        "stream": false
+      }
+    ]
+  },
+  "ferretliving4": {
+    "sounds": [
+      {
+        "name": "animania_extra:ferrets/living4",
+        "stream": false
+      }
+    ]
+  },
+  "ferretliving5": {
+    "sounds": [
+      {
+        "name": "animania_extra:ferrets/living5",
+        "stream": false
+      }
+    ]
+  },
+  "ferretliving6": {
+    "sounds": [
+      {
+        "name": "animania_extra:ferrets/living6",
+        "stream": false
+      }
+    ]
+  },
+  "rabbit1": {
+    "sounds": [
+      {
+        "name": "animania_extra:rabbits/rabbit1",
+        "stream": false
+      }
+    ]
+  },
+  "rabbit2": {
+    "sounds": [
+      {
+        "name": "animania_extra:rabbits/rabbit2",
+        "stream": false
+      }
+    ]
+  },
+  "rabbit3": {
+    "sounds": [
+      {
+        "name": "animania_extra:rabbits/rabbit3",
+        "stream": false
+      }
+    ]
+  },
+  "rabbit4": {
+    "sounds": [
+      {
+        "name": "animania_extra:rabbits/rabbit4",
+        "stream": false
+      }
+    ]
+  },
+  "rabbithurt1": {
+    "sounds": [
+      {
+        "name": "animania_extra:rabbits/rabbithurt1",
+        "stream": false
+      }
+    ]
+  },
+  "rabbithurt2": {
+    "sounds": [
+      {
+        "name": "animania_extra:rabbits/rabbithurt2",
+        "stream": false
+      }
+    ]
+  },
+  "hedgehoghurt1": {
+    "sounds": [
+      {
+        "name": "animania_extra:hedgehogs/hurt1",
+        "stream": false
+      }
+    ]
+  },
+  "hedgehoghurt2": {
+    "sounds": [
+      {
+        "name": "animania_extra:hedgehogs/hurt1",
+        "stream": false
+      }
+    ]
+  },
+  "hedgehogliving1": {
+    "sounds": [
+      {
+        "name": "animania_extra:hedgehogs/living1",
+        "stream": false
+      }
+    ]
+  },
+  "hedgehogliving2": {
+    "sounds": [
+      {
+        "name": "animania_extra:hedgehogs/living2",
+        "stream": false
+      }
+    ]
+  },
+  "hedgehogliving3": {
+    "sounds": [
+      {
+        "name": "animania_extra:hedgehogs/living3",
+        "stream": false
+      }
+    ]
+  },
+  "hedgehogliving4": {
+    "sounds": [
+      {
+        "name": "animania_extra:hedgehogs/living4",
+        "stream": false
+      }
+    ]
+  },
+  "hedgehogliving5": {
+    "sounds": [
+      {
+        "name": "animania_extra:hedgehogs/living5",
+        "stream": false
+      }
+    ]
+  },
+  "peacock1": {
+    "sounds": [
+      {
+        "name": "animania_extra:peacocks/peacock1",
+        "stream": false
+      }
+    ]
+  },
+  "peacock2": {
+    "sounds": [
+      {
+        "name": "animania_extra:peacocks/peacock2",
+        "stream": false
+      }
+    ]
+  },
+  "peacock3": {
+    "sounds": [
+      {
+        "name": "animania_extra:peacocks/peacock3",
+        "stream": false
+      }
+    ]
+  },
+  "peacock4": {
+    "sounds": [
+      {
+        "name": "animania_extra:peacocks/peacock4",
+        "stream": false
+      }
+    ]
+  },
+  "peacock5": {
+    "sounds": [
+      {
+        "name": "animania_extra:peacocks/peacock5",
+        "stream": false
+      }
+    ]
+  },
+  "peacock6": {
+    "sounds": [
+      {
+        "name": "animania_extra:peacocks/peacock6",
+        "stream": false
+      }
+    ]
+  },
+  "peacock7": {
+    "sounds": [
+      {
+        "name": "animania_extra:peacocks/peacock7",
+        "stream": false
+      }
+    ]
+  },
+  "peacock8": {
+    "sounds": [
+      {
+        "name": "animania_extra:peacocks/peacock8",
+        "stream": false
+      }
+    ]
+  },
+  "peacock9": {
+    "sounds": [
+      {
+        "name": "animania_extra:peacocks/peacock9",
+        "stream": false
+      }
+    ]
+  },
+  "peacock10": {
+    "sounds": [
+      {
+        "name": "animania_extra:peacocks/peacock10",
+        "stream": false
+      }
+    ]
+  },
+  "peacockhurt1": {
+    "sounds": [
+      {
+        "name": "animania_extra:peacocks/peacockhurt1",
+        "stream": false
+      }
+    ]
+  },
+  "peacockhurt2": {
+    "sounds": [
+      {
+        "name": "animania_extra:peacocks/peacockhurt2",
+        "stream": false
+      }
+    ]
+  }
+}

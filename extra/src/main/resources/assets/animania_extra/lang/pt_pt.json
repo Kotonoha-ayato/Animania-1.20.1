@@ -7,7 +7,7 @@
   "item.animania_extra.peach_peacock_feather": "Peach Peacock Feather",
   "item.animania_extra.purple_peacock_feather": "Purple Peacock Feather",
   "item.animania_extra.taupe_peacock_feather": "Taupe Peacock Feather",
-  "item.animania_extra.hamster_food": "Hamster Food",
+  "item.animania_extra.hamster_food": "Comida de hamster",
   "item.animania_extra.hamster_ball_clear": "Hamster Ball Clear",
   "item.animania_extra.hamster_ball_colored": "Hamster Ball Colored",
   "item.animania_extra.peacock_egg_blue": "Peacock Egg Blue",
@@ -78,5 +78,14 @@
   "entity.animania_extra.peahen_purple": "Peahen Purple",
   "entity.animania_extra.peahen_taupe": "Peahen Taupe",
   "entity.animania_extra.peahen_white": "Peahen White",
-  "entity.animania_extra.toad": "Toad"
+  "entity.animania_extra.toad": "Toad",
+  "item.animania_extra.entity_egg_hamster": "Hamster",
+  "item.animania_extra.entity_egg_ferret_white": "Furão albino",
+  "item.animania_extra.entity_egg_ferret_grey": "Furão cinza",
+  "item.animania_extra.entity_egg_peacock_blue": "Pavão Indiano azul",
+  "item.animania_extra.entity_egg_peachick_blue": "Pavão filhote Indiano azul",
+  "item.animania_extra.entity_egg_peahen_blue": "Pavoa Indiano azul",
+  "item.animania_extra.entity_egg_peacock_white": "Pavão Albino",
+  "item.animania_extra.entity_egg_peachick_white": "Pavão filhote Albino",
+  "item.animania_extra.entity_egg_peahen_white": "Pavoa Albina"
 }

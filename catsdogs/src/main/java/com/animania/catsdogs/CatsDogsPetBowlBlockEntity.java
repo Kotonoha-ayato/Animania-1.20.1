@@ -16,6 +16,12 @@ public final class CatsDogsPetBowlBlockEntity extends AnimaniaStorageBlockEntity
         super(CatsDogsContent.PET_BOWL_BE.get(), pos, state);
     }
 
+    @Override
+    protected boolean allowsAutomation() {
+        try { return com.animania.common.config.AnimaniaConfig.ALLOW_TROUGH_AUTOMATION.get(); }
+        catch (IllegalStateException ignored) { return true; }
+    }
+
     /** Pet facilities are water-only; reject lava, milk and other automation fluids. */
     @Override
     protected boolean isFluidValid(FluidStack stack) {

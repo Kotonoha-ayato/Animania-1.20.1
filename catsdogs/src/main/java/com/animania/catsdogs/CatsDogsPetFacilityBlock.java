@@ -8,16 +8,18 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import org.jetbrains.annotations.Nullable;
 
 /**
- * Lightweight modern replacement for the legacy CraftStudio pet props. The
- * block keeps the original IDs while providing the gameplay-relevant sleep
- * and litter interaction on the server.
+ * Native pet facility block retaining the legacy shared pet_prop block entity.
  */
-public final class CatsDogsPetFacilityBlock extends Block {
+public final class CatsDogsPetFacilityBlock extends Block implements EntityBlock {
     private final String id;
 
     public CatsDogsPetFacilityBlock(String id, BlockBehaviour.Properties properties) {
@@ -44,6 +46,16 @@ public final class CatsDogsPetFacilityBlock extends Block {
             player.displayClientMessage(net.minecraft.network.chat.Component.translatable("message.animania.pet_facility", id), true);
         }
         return InteractionResult.sidedSuccess(level.isClientSide);
+    }
+
+    @Override
+    public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new CatsDogsPetFacilityBlockEntity(pos, state);
+    }
+
+    @Override
+    public RenderShape getRenderShape(BlockState state) {
+        return RenderShape.INVISIBLE;
     }
 
     private static boolean isPet(AnimaniaAnimalEntity animal) {

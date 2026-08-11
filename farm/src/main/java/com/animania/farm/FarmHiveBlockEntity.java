@@ -14,7 +14,7 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.registries.ForgeRegistries;
 
 /** Server-side honey production and Forge fluid capability for both hives. */
-public final class FarmHiveBlockEntity extends AnimaniaStorageBlockEntity {
+public final class FarmHiveBlockEntity extends AnimaniaStorageBlockEntity implements com.animania.api.IAnimaniaProbeBlock {
     private final FluidTank honeyTank;
     private final LazyOptional<FluidTank> honeyOptional;
     private int nextHoney;
@@ -55,10 +55,15 @@ public final class FarmHiveBlockEntity extends AnimaniaStorageBlockEntity {
         if (isWild()) {
             level.getEntitiesOfClass(net.minecraft.world.entity.player.Player.class,
                     new net.minecraft.world.phys.AABB(worldPosition).inflate(1.5D)).forEach(player -> {
-                        if (level.random.nextInt(40) == 0) player.hurt(level.damageSources().generic(), 1.0F);
+                        if (level.random.nextInt(40) == 0) sting(player);
                     });
         }
         setChanged();
+    }
+
+    /** Exact 1.12 wild-hive sting amount and death-message source. */
+    public static boolean sting(net.minecraft.world.entity.player.Player player) {
+        return player.hurt(com.animania.common.AnimaniaDamageSources.bee(player.level()), 2.5F);
     }
 
     public boolean isWild() {
@@ -74,8 +79,16 @@ public final class FarmHiveBlockEntity extends AnimaniaStorageBlockEntity {
     }
 
     @Override
+    public java.util.List<net.minecraft.network.chat.Component> getAnimaniaProbeInfo() {
+        if (honeyTank.getFluid().isEmpty()) return java.util.List.of();
+        return java.util.List.of(net.minecraft.network.chat.Component.translatable("jade.animania.fluid_amount",
+                honeyTank.getFluid().getDisplayName(), honeyTank.getFluidAmount()));
+    }
+
+    @Override
     public <T> LazyOptional<T> getCapability(Capability<T> capability, net.minecraft.core.Direction side) {
         if (capability == ForgeCapabilities.FLUID_HANDLER) return honeyOptional.cast();
+        if (capability == ForgeCapabilities.ITEM_HANDLER) return LazyOptional.empty();
         return super.getCapability(capability, side);
     }
 

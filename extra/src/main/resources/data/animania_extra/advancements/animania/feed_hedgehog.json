@@ -25,7 +25,7 @@
       "trigger": "animania:feed_animal",
       "conditions": {
         "optional": {
-          "item": "animania_extra:brown_egg"
+          "item": "animania_farm:brown_egg"
         },
         "entity": "animania_extra:hedgehog"
       }

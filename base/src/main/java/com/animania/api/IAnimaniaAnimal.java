@@ -5,9 +5,23 @@ import com.animania.api.data.AnimalAge;
 import com.animania.api.data.AnimalSnapshot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.entity.AgeableMob;
+import net.minecraft.resources.ResourceLocation;
+import javax.annotation.Nullable;
+import java.util.UUID;
 
 /** Public, implementation-independent contract exposed to addon and probe integrations. */
 public interface IAnimaniaAnimal {
+    /**
+     * Stable registry identity of this animal.  Implementations that expose a
+     * snapshot automatically get this method; addon implementations may
+     * override it when their live registry object is not available yet.
+     */
+    @Nullable
+    default ResourceLocation typeId() {
+        AnimalSnapshot state = snapshot();
+        return state == null ? null : state.type();
+    }
+
     AnimalGender getGender();
 
     void setGender(AnimalGender gender);
@@ -23,6 +37,29 @@ public interface IAnimaniaAnimal {
     boolean isSleeping();
 
     default boolean isPlaying() {
+        return false;
+    }
+
+    /** Optional taming/interaction state used by pet addons and probes. */
+    default boolean isTamed() {
+        return false;
+    }
+
+    default boolean isSitting() {
+        return false;
+    }
+
+    default boolean isSaddled() {
+        return false;
+    }
+
+    /** True while a female milk-producing animal may be milked. */
+    default boolean isMilkReady() {
+        return false;
+    }
+
+    /** True while an addon transport item is holding this entity. */
+    default boolean isInBall() {
         return false;
     }
 
@@ -51,6 +88,24 @@ public interface IAnimaniaAnimal {
     }
 
     default void setSterilized(boolean sterilized) {
+    }
+
+    /** Stable relationship state retained from the 1.12 public API. */
+    @Nullable
+    default UUID mateUuid() {
+        return null;
+    }
+
+    default void setMateUuid(@Nullable UUID mateUuid) {
+    }
+
+    /** Children retain their actual mother's UUID instead of following any nearby adult. */
+    @Nullable
+    default UUID parentUuid() {
+        return null;
+    }
+
+    default void setParentUuid(@Nullable UUID parentUuid) {
     }
 
     /** Stable age view used by addon renderers and compatibility integrations. */

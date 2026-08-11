@@ -6,7 +6,7 @@
     "2": "animania_farm:block/cheese_mold_top",
     "3": "animania_farm:block/cheese_mold_bottom",
     "4": "animania_farm:block/cheese_mold_inner",
-    "5": "animania_farm:fluids/milk_holstein_flow",
+    "5": "animania_farm:block/milk_jersey",
     "particle": "animania_farm:block/cheese_mold_bottom"
   },
   "elements": [

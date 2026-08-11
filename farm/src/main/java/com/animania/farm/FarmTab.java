@@ -13,7 +13,12 @@ public final class FarmTab {
             .title(Component.translatable("itemGroup.animania_farm"))
             .icon(() -> new ItemStack(FarmContent.ITEM_ENTRIES.get("truffle").get()))
             .displayItems((parameters, output) -> {
-                FarmContent.ITEM_ENTRIES.values().forEach(item -> output.accept(item.get()));
+                FarmContent.ITEM_ENTRIES.forEach((id, item) -> {
+                    if (!id.equals("animania_wool")) output.accept(item.get());
+                });
+                for (FarmWoolBlock.Variant variant : FarmWoolBlock.Variant.values()) {
+                    output.accept(FarmWoolBlockItem.stack(variant));
+                }
                 FarmFluids.ALL.values().forEach(fluid -> output.accept(fluid.bucket.get()));
             })
             .build());

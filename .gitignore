@@ -7,8 +7,10 @@
 /**/run*/
 /upstream/
 /legacy-archive/
+.migration-quarantine/
 README-upstream-1.12.md
 *.log
+/**/logs/
 **/src/generated/resources/.cache/
 __pycache__/
 *.pyc

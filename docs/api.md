@@ -12,7 +12,9 @@ the standalone converter emits these lists into the Base TOML section.
 
 - `IAnimaniaAnimal` exposes gender, age, variant, sleeping/playing state,
   hunger/thirst, pregnancy/gestation, sterilization, feeding, drinking,
-  breeding and an immutable `AnimalSnapshot`.
+  breeding and an immutable `AnimalSnapshot`.  `typeId`, taming/sitting,
+  saddle, milk-readiness and transport-ball state are optional default views,
+  so third-party implementations remain source-compatible.
 - `AnimalGender` and `AnimalAge` are the canonical state enums.  Child entity
   types use the same species key as their adult type and grow server-side into
   the appropriate gendered adult registration.
@@ -22,7 +24,8 @@ the standalone converter emits these lists into the Base TOML section.
   `AnimaniaApi.registerFoodMatcher` lets an addon provide server-authoritative
   food matching without OreDictionary or a hard dependency on another mod.
 - `AnimaniaApi.registerTamingRequirement` controls addon-specific breeding
-  rules.  Query methods are safe when an addon is absent.
+  rules.  `speciesForAddon`, `hasSpecies` and `isAddonLoaded` provide safe
+  addon queries when an addon is absent.
 
 ## Server authority and compatibility
 

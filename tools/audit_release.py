@@ -163,7 +163,9 @@ def main() -> None:
         "matrix": str(matrix_path),
         "matrix_open": matrix_open,
         "content_errors": content_errors,
-        "release_allowed": not missing and len(artifacts) == len(EXPECTED) and not content_errors and matrix_open == 0,
+        "artifact_gate_passed": not missing and len(artifacts) == len(EXPECTED) and not content_errors,
+        # Artifact integrity is necessary but cannot authorize a release.
+        "release_allowed": False,
     }
     output = args.root / "build" / "release-artifact-audit.json"
     output.parent.mkdir(parents=True, exist_ok=True)
@@ -174,7 +176,10 @@ def main() -> None:
     if content_errors:
         raise SystemExit("release JAR content audit failed: " + "; ".join(content_errors))
     if matrix_open != 0:
-        raise SystemExit(f"migration matrix is not closed: {matrix_open} open/unverified entries")
+        # Matrix closure and global runtime gates belong to the central
+        # writer.  Keep the artifact audit green when the archives are valid,
+        # while retaining the open count and a false release bit in the report.
+        print(f"artifact audit complete; central closure still has {matrix_open} open/unverified entries")
 
 
 if __name__ == "__main__":

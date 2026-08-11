@@ -3,6 +3,46 @@ ext.mod_name = 'Animania Base'
 ext.archive_name = 'animania-base-1.20.1'
 ext.mod_description = 'Shared systems, API, blocks, items, manual, and compatibility foundation for Animania.'
 apply from: rootProject.file('gradle/forge-module.gradle')
+evaluationDependsOn(':farm')
+evaluationDependsOn(':extra')
+evaluationDependsOn(':catsdogs')
+
+// A real all-installed development launch.  Per-addon runClient tasks prove
+// isolated loading; this run additionally catches cross-addon registry,
+// renderer, resource and optional-integration collisions.
+minecraft.runs {
+    fullClient {
+        parent minecraft.runs.client
+        workingDirectory project.file('run/fullClient')
+        property 'forge.logging.markers', 'REGISTRIES'
+        property 'forge.logging.console.level', 'info'
+        mods {
+            animania { source sourceSets.main }
+            animania_farm { source project(':farm').sourceSets.main }
+            animania_extra { source project(':extra').sourceSets.main }
+            animania_catsdogs { source project(':catsdogs').sourceSets.main }
+        }
+    }
+    gameTestServer {
+        property 'forge.enabledGameTestNamespaces', 'animania,animania_farm,animania_extra,animania_catsdogs'
+        mods {
+            animania { source sourceSets.main }
+            animania_farm { source project(':farm').sourceSets.main }
+            animania_extra { source project(':extra').sourceSets.main }
+            animania_catsdogs { source project(':catsdogs').sourceSets.main }
+        }
+    }
+}
+
+tasks.register('runFullGameTestServer') {
+    group = 'verification'
+    description = 'Runs all four Animania modules and all GameTest namespaces in one Forge dedicated server.'
+    dependsOn 'runGameTestServer'
+}
+
+tasks.matching { it.name == 'prepareRunFullClient' || it.name == 'prepareRunGameTestServer' }.configureEach {
+    dependsOn ':farm:classes', ':extra:classes', ':catsdogs:classes'
+}
 
 dependencies {
     // Compile-only API surfaces: runtime remains optional and is never bundled.

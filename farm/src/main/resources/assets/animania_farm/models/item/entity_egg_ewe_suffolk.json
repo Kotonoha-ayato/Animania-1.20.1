@@ -1,6 +1,8 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "animania_farm:item/egg_sheep_random"
+    "layer0": "animania:item/egg_layer_1",
+    "layer1": "animania:item/egg_layer_2",
+    "layer2": "animania:item/egg_layer_female"
   }
 }

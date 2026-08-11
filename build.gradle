@@ -17,8 +17,13 @@ allprojects {
 
 tasks.register('releaseBuild') {
     group = 'build'
-    description = 'Builds all four independently publishable Animania modules and the config migrator.'
-    dependsOn ':base:build', ':farm:build', ':extra:build', ':catsdogs:build', ':config-migrator:build'
+    description = 'Builds and reobfuscates all four independently publishable Animania modules and the config migrator.'
+    // `jar` contains named development references.  A Forge installation must
+    // receive the post-processed SRG bytecode from reobfJar; compiling alone
+    // can otherwise produce a JAR that fails at mod construction with a
+    // NoSuchMethodError/NoSuchFieldError.
+    dependsOn ':base:build', ':farm:build', ':extra:build', ':catsdogs:build', ':config-migrator:build',
+            ':base:reobfJar', ':farm:reobfJar', ':extra:reobfJar', ':catsdogs:reobfJar'
 }
 
 tasks.register('runDataAll') {
@@ -33,12 +38,111 @@ tasks.register('runGameTestsAll') {
     dependsOn ':base:runGameTestServer', ':farm:runGameTestServer', ':extra:runGameTestServer', ':catsdogs:runGameTestServer'
 }
 
+// Each addon GameTest run loads Base's reobfuscated JAR. On Windows, running
+// these Java processes in parallel races ForgeGradle's reobfJar replacement
+// and produces a spurious "file in use" failure. Keep the release matrix
+// deterministic and give each dedicated server exclusive access in turn.
+project(':farm').tasks.matching { it.name == 'runGameTestServer' }.configureEach {
+    mustRunAfter ':base:runGameTestServer'
+}
+project(':extra').tasks.matching { it.name == 'runGameTestServer' }.configureEach {
+    mustRunAfter ':farm:runGameTestServer'
+}
+project(':catsdogs').tasks.matching { it.name == 'runGameTestServer' }.configureEach {
+    mustRunAfter ':extra:runGameTestServer'
+}
+
 tasks.register('verifyRelease') {
     group = 'verification'
-    description = 'Runs the full automated release verification and artifact/startup gates available in this checkout.'
+    description = 'Runs the fail-closed seven-stage release gates. Schema-v2 closure is owned only by the central writer.'
     dependsOn ':base:check', ':farm:check', ':extra:check', ':catsdogs:check', ':config-migrator:check',
             'runDataAll', 'runGameTestsAll',
-            'resourceAudit', 'migrationMatrixAudit', 'releaseArtifactAudit', 'startupMatrixAudit'
+            'resourceAudit', 'manualAudit', 'textureResolverAudit', 'idMappingAudit', 'modelConversionAudit',
+            'apiContractAudit', 'configConverterRuntimeAudit',
+            'closureAudit', 'applyVerifiedClosure', 'migrationMatrixAudit',
+            'releaseArtifactAudit', 'startupMatrixAudit', 'releaseGateAudit'
+}
+
+tasks.register('javaMigrationAudit', Exec) {
+    group = 'verification'
+    description = 'Revalidates source-derived Java type and simple breed migration evidence.'
+    workingDir projectDir
+    commandLine 'python', 'tools/audit_java_migration.py', '--root', projectDir.absolutePath,
+            '--matrix', project.file('docs/migration-matrix.json').absolutePath
+}
+
+tasks.register('configMigrationAudit', Exec) {
+    group = 'verification'
+    description = 'Revalidates all source-derived addon config keys/defaults and converter mappings.'
+    workingDir projectDir
+    commandLine 'python', 'tools/audit_config_migration.py', '--root', projectDir.absolutePath,
+            '--matrix', project.file('docs/migration-matrix.json').absolutePath,
+            '--ledger', project.file('docs/content-ledger.json').absolutePath
+}
+
+tasks.register('legacyTagAudit', Exec) {
+    group = 'verification'
+    description = 'Revalidates exact OreDictionary-to-modern-tag membership migrations.'
+    workingDir projectDir
+    commandLine 'python', 'tools/audit_legacy_tags.py', '--root', projectDir.absolutePath,
+            '--matrix', project.file('docs/migration-matrix.json').absolutePath
+}
+
+tasks.register('programmaticDataAudit', Exec) {
+    group = 'verification'
+    description = 'Revalidates 1.12 programmatic cooking and loot registrations as modern data.'
+    workingDir projectDir
+    commandLine 'python', 'tools/audit_programmatic_data.py', '--root', projectDir.absolutePath,
+            '--matrix', project.file('docs/migration-matrix.json').absolutePath
+}
+
+tasks.register('nonshippingTemplateAudit', Exec) {
+    group = 'verification'
+    description = 'Proves the legacy addon template is empty, non-shipping developer scaffolding.'
+    workingDir projectDir
+    commandLine 'python', 'tools/audit_nonshipping_template.py', '--root', projectDir.absolutePath,
+            '--matrix', project.file('docs/migration-matrix.json').absolutePath
+}
+
+tasks.register('legacyUtilityAudit', Exec) {
+    group = 'verification'
+    description = 'Revalidates small public 1.12 utility contracts and their executable tests.'
+    workingDir projectDir
+    commandLine 'python', 'tools/audit_legacy_utilities.py', '--root', projectDir.absolutePath,
+            '--matrix', project.file('docs/migration-matrix.json').absolutePath
+}
+
+tasks.register('registryInfrastructureAudit', Exec) {
+    group = 'verification'
+    description = 'Revalidates numeric entity and block-entity registration migration to DeferredRegister.'
+    workingDir projectDir
+    commandLine 'python', 'tools/audit_registry_infrastructure.py', '--root', projectDir.absolutePath,
+            '--matrix', project.file('docs/migration-matrix.json').absolutePath
+}
+
+tasks.register('baseSoundAudit', Exec) {
+    group = 'verification'
+    description = 'Revalidates the exact legacy Base sound set as live DeferredRegister entries.'
+    workingDir projectDir
+    commandLine 'python', 'tools/audit_base_sounds.py', '--root', projectDir.absolutePath,
+            '--matrix', project.file('docs/migration-matrix.json').absolutePath
+}
+
+tasks.register('addonArchitectureAudit', Exec) {
+    group = 'verification'
+    description = 'Revalidates replacement of the internal addon loader by four independent Forge mods.'
+    dependsOn 'releaseBuild'
+    workingDir projectDir
+    commandLine 'python', 'tools/audit_addon_architecture.py', '--root', projectDir.absolutePath,
+            '--matrix', project.file('docs/migration-matrix.json').absolutePath
+}
+
+tasks.register('rawFoodProfileAudit', Exec) {
+    group = 'verification'
+    description = 'Revalidates every legacy raw-food registration and its exact nausea profile.'
+    workingDir projectDir
+    commandLine 'python', 'tools/audit_raw_food_profile.py', '--root', projectDir.absolutePath,
+            '--matrix', project.file('docs/migration-matrix.json').absolutePath
 }
 
 tasks.register('resourceAudit', Exec) {
@@ -48,12 +152,89 @@ tasks.register('resourceAudit', Exec) {
     commandLine 'python', 'tools/audit_resources.py', '--root', projectDir.absolutePath
 }
 
+tasks.register('textureResolverAudit', Exec) {
+    group = 'verification'
+    description = 'Checks every registered entity variant against the native texture resolver and fallback contract.'
+    workingDir projectDir
+    commandLine 'python', 'tools/audit_texture_resolver.py', '--root', projectDir.absolutePath,
+            '--output', project.file('build/texture-resolver-audit.json').absolutePath
+}
+
+tasks.register('manualAudit', Exec) {
+    group = 'verification'
+    description = 'Checks all 140 native handbook pages, ordering arrays, and cross-module links.'
+    workingDir projectDir
+    commandLine 'python', 'tools/audit_manual_semantics.py', '--root', projectDir.absolutePath,
+            '--output', project.file('build/manual-semantic-audit.json').absolutePath
+}
+
+tasks.register('idMappingAudit', Exec) {
+    group = 'verification'
+    description = 'Requires every source-evidenced 1.12 registry ID to have a declared 1.20.1 target.'
+    workingDir projectDir
+    commandLine 'python', 'tools/audit_id_mapping.py', '--root', projectDir.absolutePath,
+            '--mapping', project.file('docs/id-mapping.json').absolutePath,
+            '--report', project.file('docs/id-mapping-audit.json').absolutePath
+}
+
+tasks.register('modelConversionAudit', Exec) {
+    group = 'verification'
+    description = 'Maps and verifies all 104 Java models, 18 CraftStudio models, and 8 legacy clips.'
+    workingDir projectDir
+    commandLine 'python', 'tools/audit_model_conversion.py', '--root', projectDir.absolutePath
+}
+
+tasks.register('apiContractAudit', Exec) {
+    group = 'verification'
+    description = 'Runs the Java 17 public API contract against source fingerprints and actual JUnit XML.'
+    dependsOn ':base:test'
+    workingDir projectDir
+    commandLine 'python', 'tools/audit_api_contract.py', '--root', projectDir.absolutePath,
+            '--output', project.file('build/api-contract-audit.json').absolutePath
+}
+
+tasks.register('configConverterRuntimeAudit', Exec) {
+    group = 'verification'
+    description = 'Executes the packaged read-only configuration converter and overwrite refusal check.'
+    dependsOn ':config-migrator:jar'
+    workingDir projectDir
+    commandLine 'python', 'tools/audit_config_converter_runtime.py', '--root', projectDir.absolutePath,
+            '--jar', project.file('config-migrator/build/libs/animania-config-migrator-3.0.0.jar').absolutePath,
+            '--output', project.file('build/config-converter-audit.json').absolutePath
+}
+
 tasks.register('migrationMatrixAudit', Exec) {
     group = 'verification'
-    description = 'Requires every pinned 1.12 entry to have target evidence and tests.'
+    description = 'Fail-closed verification of schema-v2 evidence and central closure state.'
     workingDir projectDir
-    commandLine 'python', 'tools/close_migration_matrix.py', '--root', projectDir.absolutePath,
-            '--matrix', project.file('docs/migration-matrix.json').absolutePath, '--check-only'
+    commandLine 'python', 'tools/verify_closure.py', '--root', projectDir.absolutePath,
+            '--matrix', project.file('docs/migration-matrix.json').absolutePath,
+            '--evidence-dir', project.file('build/audit-evidence').absolutePath, '--check-only'
+}
+
+tasks.register('closureAudit', Exec) {
+    group = 'verification'
+    description = 'Runs read-only per-entry schema-v2 audits and emits evidence manifests.'
+    workingDir projectDir
+    commandLine 'python', 'tools/run_closure_audits.py', '--root', projectDir.absolutePath,
+            '--matrix', project.file('docs/migration-matrix.json').absolutePath,
+            '--evidence-dir', project.file('build/audit-evidence').absolutePath
+}
+
+tasks.register('applyVerifiedClosure', Exec) {
+    group = 'verification'
+    description = 'Applies only current, complete evidence through the central closure writer.'
+    workingDir projectDir
+    commandLine 'python', 'tools/apply_verified_closure.py', '--root', projectDir.absolutePath,
+            '--matrix', project.file('docs/migration-matrix.json').absolutePath,
+            '--evidence-dir', project.file('build/audit-evidence').absolutePath
+}
+
+tasks.named('applyVerifiedClosure') {
+    mustRunAfter 'closureAudit'
+}
+tasks.named('migrationMatrixAudit') {
+    mustRunAfter 'applyVerifiedClosure'
 }
 
 tasks.register('releaseArtifactAudit', Exec) {
@@ -72,4 +253,20 @@ tasks.register('startupMatrixAudit', Exec) {
     workingDir projectDir
     commandLine 'python', 'tools/audit_startup_matrix.py', '--root', projectDir.absolutePath,
             '--version', project.version.toString()
+}
+
+tasks.register('releaseGateAudit', Exec) {
+    group = 'verification'
+    description = 'Computes all whole-build stage-7 gates; missing external evidence stays false.'
+    workingDir projectDir
+    commandLine 'python', 'tools/verify_release_gates.py', '--root', projectDir.absolutePath, '--write'
+}
+
+tasks.named('releaseGateAudit') {
+    mustRunAfter 'releaseArtifactAudit', 'startupMatrixAudit', 'resourceAudit', 'manualAudit', 'textureResolverAudit',
+            'modelConversionAudit', 'apiContractAudit', 'configConverterRuntimeAudit', 'runDataAll', 'runGameTestsAll', ':base:check', ':farm:check', ':extra:check',
+            ':catsdogs:check', ':config-migrator:check'
+}
+tasks.named('applyVerifiedClosure') {
+    mustRunAfter 'releaseGateAudit'
 }

@@ -1,5 +1,7 @@
 {
   "variants": {
-    "": { "model": "animania:block/slop" }
+    "": {
+      "model": "animania:block/slop"
+    }
   }
 }

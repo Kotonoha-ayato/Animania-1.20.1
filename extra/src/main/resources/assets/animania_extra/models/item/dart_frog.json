@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "animania_extra:item/dart_frog"
+    "layer0": "animania_extra:item/egg_frog_dart"
   }
 }

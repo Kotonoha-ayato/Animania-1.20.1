@@ -4,6 +4,7 @@ import com.animania.api.AnimaniaApi;
 import com.animania.api.data.AnimalGender;
 import com.animania.api.data.SpeciesDefinition;
 import com.animania.common.entity.AnimaniaAnimalEntity;
+import com.animania.common.entity.AnimaniaSleepProfiles;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -17,6 +18,7 @@ import net.minecraftforge.event.RegisterGameTestsEvent;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -24,9 +26,14 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+import net.minecraftforge.event.entity.living.MobSpawnEvent;
+import net.minecraftforge.eventbus.api.Event;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.phys.AABB;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -51,12 +58,15 @@ public final class AnimaniaCatsDogs {
     public AnimaniaCatsDogs() {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         ENTITY_TYPES.register(bus);
+        CatsDogsWorldgen.BIOME_MODIFIER_SERIALIZERS.register(bus);
         CatsDogsContent.ITEMS.register(bus);
         CatsDogsContent.BLOCKS.register(bus);
         CatsDogsContent.BLOCK_ENTITIES.register(bus);
+        CatsDogsPetSeller.PROFESSIONS.register(bus);
         CatsDogsTab.TABS.register(bus);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, CatsDogsConfig.SPEC);
         AnimaniaApi.registerTamingRequirement(MOD_ID, () -> CatsDogsConfig.REQUIRE_TAMING_FOR_BREEDING.get());
+        AnimaniaSleepProfiles.register(MOD_ID, AnimaniaCatsDogs::sleepProfile);
         AnimaniaApi.registerFoodMatcher(MOD_ID, (id, stack) -> {
             String path = id.getPath();
             boolean cat = path.startsWith("queen_") || path.startsWith("tom_") || path.startsWith("kitten_");
@@ -65,9 +75,27 @@ public final class AnimaniaCatsDogs {
         bus.addListener(this::attributes);
         bus.addListener(this::spawnPlacements);
         bus.addListener(this::registerGameTests);
+        bus.addListener(this::commonSetup);
+        bus.addListener(this::gatherData);
         MinecraftForge.EVENT_BUS.addListener(AnimaniaCatsDogs::replaceVanillaCompanion);
+        MinecraftForge.EVENT_BUS.addListener(AnimaniaCatsDogs::limitNaturalCompanionSpawns);
+        MinecraftForge.EVENT_BUS.register(CatsDogsPetSeller.class);
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> bus.addListener(AnimaniaCatsDogsClient::onClientSetup));
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> bus.addListener(AnimaniaCatsDogsClient::registerLayers));
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> bus.addListener(AnimaniaCatsDogsClient::registerRenderers));
+    }
+
+    private void commonSetup(FMLCommonSetupEvent event) {
+        event.enqueueWork(() -> CatsDogsContent.ITEM_ENTRIES.values().forEach(entry -> {
+            if (entry.get() instanceof com.animania.common.item.AnimaniaEntityEggItem egg) {
+                com.animania.common.item.AnimaniaEntityEggItem.registerDispenserBehavior(egg);
+            }
+        }));
+    }
+
+    private void gatherData(GatherDataEvent event) {
+        event.getGenerator().addProvider(event.includeServer(),
+                new CatsDogsDataProvider(event.getGenerator().getPackOutput()));
     }
 
     private void attributes(EntityAttributeCreationEvent event) {
@@ -88,6 +116,30 @@ public final class AnimaniaCatsDogs {
         } catch (IllegalStateException ignored) {
             return true;
         }
+    }
+
+    public static void limitNaturalCompanionSpawns(MobSpawnEvent.PositionCheck event) {
+        if (!(event.getEntity() instanceof AnimaniaAnimalEntity animal)
+                || (event.getSpawnType() != MobSpawnType.NATURAL && event.getSpawnType() != MobSpawnType.CHUNK_GENERATION)) return;
+        ResourceLocation id = ForgeRegistries.ENTITY_TYPES.getKey(animal.getType());
+        if (id == null || !MOD_ID.equals(id.getNamespace())) return;
+        boolean cat = isCat(id.getPath());
+        int limit = configured(cat ? CatsDogsConfig.SPAWN_LIMIT_CATS : CatsDogsConfig.SPAWN_LIMIT_DOGS, 20);
+        AABB range = new AABB(event.getX(), event.getY(), event.getZ(), event.getX(), event.getY(), event.getZ()).inflate(100.0D);
+        int nearby = event.getLevel().getLevel().getEntitiesOfClass(AnimaniaAnimalEntity.class, range, other -> {
+            ResourceLocation otherId = ForgeRegistries.ENTITY_TYPES.getKey(other.getType());
+            return otherId != null && MOD_ID.equals(otherId.getNamespace()) && cat == isCat(otherId.getPath());
+        }).size();
+        if (nearby >= limit) event.setResult(Event.Result.DENY);
+    }
+
+    private static boolean isCat(String id) {
+        return id.startsWith("queen_") || id.startsWith("tom_") || id.startsWith("kitten_");
+    }
+
+    private static int configured(net.minecraftforge.common.ForgeConfigSpec.IntValue value, int fallback) {
+        try { return value.get(); }
+        catch (IllegalStateException ignored) { return fallback; }
     }
 
     private void registerGameTests(RegisterGameTestsEvent event) {
@@ -116,7 +168,7 @@ public final class AnimaniaCatsDogs {
         replacement.setUUID(vanilla.getUUID());
         replacement.setCustomName(vanilla.getCustomName());
         replacement.setCustomNameVisible(vanilla.isCustomNameVisible());
-        if (baby) replacement.setAge(-com.animania.common.config.AnimaniaConfig.BABY_GROWTH_TICKS.get());
+        if (baby) replacement.setAge(-AnimaniaAnimalEntity.childGrowthDuration());
         else replacement.setAge(0);
         if (dog && ((Wolf) vanilla).isTame()) {
             replacement.setTamed(true);
@@ -147,6 +199,19 @@ public final class AnimaniaCatsDogs {
     private static String family(String id) {
         int underscore = id.indexOf('_');
         return underscore > 0 ? id.substring(underscore + 1) : id;
+    }
+
+    private static AnimaniaSleepProfiles.Profile sleepProfile(String id) {
+        boolean cat = id.startsWith("queen_") || id.startsWith("tom_") || id.startsWith("kitten_");
+        boolean dog = id.startsWith("female_") || id.startsWith("male_") || id.startsWith("puppy_");
+        if (!cat && !dog) return null;
+        return new AnimaniaSleepProfiles.Profile(
+                () -> configured(cat ? CatsDogsConfig.CAT_BED : CatsDogsConfig.DOG_BED),
+                () -> configured(cat ? CatsDogsConfig.CAT_BED2 : CatsDogsConfig.DOG_BED2), AnimaniaSleepProfiles.NIGHT);
+    }
+
+    private static String configured(net.minecraftforge.common.ForgeConfigSpec.ConfigValue<String> value) {
+        try { return value.get(); } catch (IllegalStateException ignored) { return value.getDefault(); }
     }
 
     private static float sizeFor(String id, boolean width) {

@@ -1,3 +1,6 @@
 {
-  "parent": "animania_catsdogs:block/litter_box"
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "animania_catsdogs:item/litter_box"
+  }
 }

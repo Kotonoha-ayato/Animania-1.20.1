@@ -1,6 +1,15 @@
 {
   "variants": {
-    "": {
+    "controller=north": {
+      "model": "animania:block/invisiblock"
+    },
+    "controller=east": {
+      "model": "animania:block/invisiblock"
+    },
+    "controller=south": {
+      "model": "animania:block/invisiblock"
+    },
+    "controller=west": {
       "model": "animania:block/invisiblock"
     }
   }

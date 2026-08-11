@@ -81,9 +81,11 @@ public class AnimaniaAnimalModel extends HierarchicalModel<AnimaniaAnimalEntity>
         head.yRot = netHeadYaw * ((float) Math.PI / 180F);
         head.xRot = headPitch * ((float) Math.PI / 180F);
         configureSilhouette(animal, ageInTicks, limbSwingAmount);
-        if (animal.isSleeping()) {
+        if (animal.getEatingTicks() > 0) {
+            applyStatic(AnimaniaAnimations.EAT);
+        } else if (animal.isSleeping()) {
             applyStatic(AnimaniaAnimations.SLEEP);
-        } else if (animal.isPlaying()) {
+        } else if (animal.getPlayGoal() != null && animal.isPlaying()) {
             applyStatic(AnimaniaAnimations.PLAY);
         } else if (animal.isInLove()) {
             applyStatic(AnimaniaAnimations.BREED);

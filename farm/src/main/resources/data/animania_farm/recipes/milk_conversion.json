@@ -1,12 +1,4 @@
 {
-  "type": "minecraft:crafting_shapeless",
-  "ingredients": [
-    {
-      "item": "minecraft:milk_bucket"
-    }
-  ],
-  "result": {
-    "item": "minecraft:milk_bucket",
-    "count": 1
-  }
+  "type": "animania_farm:milk_conversion",
+  "category": "misc"
 }

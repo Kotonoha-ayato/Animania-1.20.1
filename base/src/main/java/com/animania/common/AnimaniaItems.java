@@ -8,6 +8,7 @@ import net.minecraft.world.entity.EntityType;
 import com.animania.common.entity.AnimaniaAnimalEntity;
 import com.animania.common.item.AnimaniaEntityEggItem;
 import com.animania.common.item.ManualItem;
+import com.animania.common.item.AnimaniaFoodItem;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -27,7 +28,7 @@ public final class AnimaniaItems {
     public static final RegistryObject<Item> SALT = ITEMS.register("salt",
             () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> CHEESE = ITEMS.register("cheese",
-            () -> new Item(new Item.Properties().food(new net.minecraft.world.food.FoodProperties.Builder().nutrition(4).saturationMod(0.5f).build())));
+            () -> new AnimaniaFoodItem(new Item.Properties().food(new net.minecraft.world.food.FoodProperties.Builder().nutrition(4).saturationMod(0.5f).build())));
     public static final RegistryObject<Item> WATER_BOTTLE = ITEMS.register("water_bottle",
             () -> new Item(new Item.Properties().stacksTo(16)));
     public static final RegistryObject<Item> SLOP_BUCKET = ITEMS.register("slop_bucket",

@@ -1,0 +1,95 @@
+"""Bind the legacy Extra spawn/replacement event handler to live Forge tests."""
+from __future__ import annotations
+
+import argparse
+import json
+from pathlib import Path
+
+from closure_common import SCHEMA_VERSION, read_json, sha256, write_json
+
+
+TEST_CODE = "extra/src/main/java/com/animania/extra/gametest/AnimaniaExtraGameTests.java"
+LOG = "extra/run/gameTestServer/logs/latest.log"
+SOURCE = "src/main/java/com/animania/addons/extra/common/events/ExtraAddonSpawnHandler.java"
+TARGETS = ["extra/src/main/java/com/animania/extra/AnimaniaExtra.java"]
+SELECTORS = [
+    "animania_extra:extraFamilySpawnLimitOnlyRejectsNaturalPopulationGrowth",
+    "animania_extra:vanillaRabbitReplacementHonorsConfigAndPreservesUuid",
+]
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--root", type=Path, required=True)
+    parser.add_argument("--matrix", type=Path, required=True)
+    parser.add_argument("--evidence-dir", type=Path, default=Path("build/audit-evidence"))
+    args = parser.parse_args()
+    root = args.root.resolve()
+    matrix_path = args.matrix if args.matrix.is_absolute() else root / args.matrix
+    evidence_dir = args.evidence_dir if args.evidence_dir.is_absolute() else root / args.evidence_dir
+    matrix = read_json(matrix_path)
+    entry = next((item for item in matrix.get("entries", []) if item.get("source") == SOURCE), None)
+    auditor_path = "tools/audit_extra_spawn_behavior.py"
+    test_file, log_file = root / TEST_CODE, root / LOG
+    test_text = test_file.read_text(encoding="utf-8", errors="replace") if test_file.is_file() else ""
+    log_text = log_file.read_text(encoding="utf-8", errors="replace") if log_file.is_file() else ""
+    errors, skipped, results, rows = [], [], [], []
+    if entry is None:
+        errors.append(f"matrix entry missing: {SOURCE}")
+    elif not (root / "upstream/Animania-1.12" / SOURCE).is_file():
+        errors.append(f"pinned source missing: {SOURCE}")
+    else:
+        green = "All 26 required tests passed" in log_text and "required tests failed" not in log_text and "Exception" not in log_text
+        missing_targets = [path for path in TARGETS if not (root / path).is_file()]
+        missing_markers = [selector for selector in SELECTORS
+                           if f'AnimaniaGameTestEvidence.mark("{selector}")' not in test_text]
+        missing_runtime = [selector for selector in SELECTORS
+                           if f"[ANIMANIA_TEST_SELECTOR] {selector}" not in log_text]
+        if missing_targets or missing_markers or missing_runtime or not green:
+            skipped.append({"source": SOURCE, "missing_targets": missing_targets,
+                            "missing_markers": missing_markers, "missing_runtime": missing_runtime,
+                            "green_log": green})
+        else:
+            unique_path = evidence_dir / "extra-spawn-behavior" / entry["entry_id"] / "evidence.json"
+            write_json(unique_path, {
+                "entry_id": entry["entry_id"], "source": SOURCE,
+                "source_sha256": entry["sha256"], "targets": TARGETS,
+                "selectors": SELECTORS, "test_code": TEST_CODE,
+                "test_code_sha256": sha256(test_file), "log": LOG,
+                "log_sha256": sha256(log_file),
+                "scope": "natural family cap, spawn-egg bypass, real Forge join-event replacement, UUID/family preservation",
+            })
+            targets = [{"path": path, "sha256": sha256(root / path)} for path in TARGETS]
+            targets.append({"path": unique_path.relative_to(root).as_posix(), "sha256": sha256(unique_path)})
+            tests = [{"selector": selector, "result": "pass", "artifact": LOG,
+                      "artifact_sha256": sha256(log_file)} for selector in SELECTORS]
+            notes = [
+                "[extra-spawn-behavior-v1] Live Forge tests cover natural family population caps, spawn-egg bypass, the real Forge join-event replacement branch, its config gate, and UUID/rabbit-family preservation.",
+            ]
+            for requirement in entry.get("requirements", []):
+                results.append({"entry_id": entry["entry_id"], "requirement_id": requirement,
+                                "result": "pass", "source_sha256": entry["sha256"],
+                                "target_paths": targets, "tests": tests,
+                                "evidence_kind": "executed_test", "test_code_path": TEST_CODE,
+                                "test_code_sha256": sha256(test_file), "notes": notes})
+            rows.append({"source": SOURCE, "selectors": SELECTORS,
+                         "requirements": entry.get("requirements", []), "result": "pass"})
+    write_json(evidence_dir / "extra-spawn-behavior-v1-report.json", {
+        "schema_version": 1, "audit": "extra-spawn-behavior", "audit_version": "v1",
+        "rows": rows, "skipped": skipped, "errors": errors, "error_count": len(errors),
+        "all_passed": not errors and not skipped,
+    })
+    write_json(evidence_dir / "extra-spawn-behavior-v1.json", {
+        "schema_version": SCHEMA_VERSION, "audit_id": "extra-spawn-behavior",
+        "audit_version": "v1", "source_revision": matrix.get("source_revision"),
+        "command": "tools/audit_extra_spawn_behavior.py --root . --matrix docs/migration-matrix.json",
+        "auditor_path": auditor_path, "auditor_sha256": sha256(root / auditor_path),
+        "results": results, "errors": errors,
+    })
+    print(json.dumps({"results": len(results), "rows": len(rows), "skipped": len(skipped), "errors": errors}, ensure_ascii=True, indent=2))
+    if errors:
+        raise SystemExit(1)
+
+
+if __name__ == "__main__":
+    main()

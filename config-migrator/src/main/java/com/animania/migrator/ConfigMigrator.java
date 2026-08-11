@@ -27,7 +27,6 @@ public final class ConfigMigrator {
             Map.entry("pregnancyTime", "gestationTicks"),
             Map.entry("gestationTime", "gestationTicks"),
             Map.entry("gestationTimer", "gestationTicks"),
-            Map.entry("babyGrowthTime", "babyGrowthTicks"),
             Map.entry("spawnAnimaniaAnimals", "enableNaturalSpawns"),
             Map.entry("hivePlayermadeHoneyRate", "hivePlayerHoneyRate"),
             Map.entry("hivePlayerMadeHoneyRate", "hivePlayerHoneyRate"),
@@ -36,11 +35,23 @@ public final class ConfigMigrator {
             Map.entry("hiveSpawningFrequency", "hiveSpawningFrequency"),
             Map.entry("hamsterWheelRFGeneration", "hamsterWheelGeneration"),
             Map.entry("hamsterWheelEnergyGeneration", "hamsterWheelGeneration"));
+    private static final Map<String, String> VALUE_ALIASES = Map.ofEntries(
+            Map.entry("animania:block_straw", "animania:straw"),
+            Map.entry("minecraft:grass", "minecraft:grass_block"),
+            Map.entry("animania:brown_egg", "animania_farm:brown_egg"),
+            Map.entry("animania:peacock_egg_blue", "animania_extra:peacock_egg_blue"),
+            Map.entry("animania:peacock_egg_white", "animania_extra:peacock_egg_white"),
+            Map.entry("animania:prime_mutton", "animania_farm:raw_prime_mutton"),
+            Map.entry("animania:prime_rabbit", "animania_extra:raw_prime_rabbit"),
+            Map.entry("animania_prime_chicken", "animania_farm:raw_prime_chicken"),
+            Map.entry("animania:hamster_food", "animania_extra:hamster_food"),
+            Map.entry("animania:cat_bed_1", "animania_catsdogs:cat_bed_1"),
+            Map.entry("animania:cat_bed_2", "animania_catsdogs:cat_bed_2"),
+            Map.entry("animania:dog_pillow", "animania_catsdogs:dog_pillow"));
     private static final Map<String, String> DEFAULTS = new LinkedHashMap<>(Map.ofEntries(
             Map.entry("hungerInterval", "2400"),
             Map.entry("thirstInterval", "1800"),
             Map.entry("gestationTicks", "20000"),
-            Map.entry("babyGrowthTicks", "24000"),
             Map.entry("childGrowthTick", "200"),
             Map.entry("feedTimer", "12000"),
             Map.entry("waterTimer", "12000"),
@@ -82,7 +93,7 @@ public final class ConfigMigrator {
             Map.entry("spawnFreshWaterSquids", "true"),
             Map.entry("feedToBreed", "true"),
             Map.entry("malesMateMultipleFemales", "false"),
-            Map.entry("troughFood", "[\"minecraft:wheat\", \"minecraft:apple\", \"minecraft:carrot\", \"minecraft:beetroot\", \"minecraft:potato\", \"minecraft:poisonous_potato\", \"minecraft:wheat_seeds\", \"minecraft:melon_seeds\", \"minecraft:beetroot_seeds\", \"minecraft:pumpkin_seeds\", \"minecraft:egg\", \"animania_farm:brown_egg\", \"listAllbeefraw\", \"minecraft:fish\"]"),
+            Map.entry("troughFood", "[\"minecraft:wheat\", \"simplecorn:corncob\", \"harvestcraft:barleyitem\", \"harvestcraft:oatsitem\", \"harvestcraft:ryeitem\", \"harvestcraft:cornitem\", \"minecraft:apple\", \"minecraft:carrot\", \"minecraft:beetroot\", \"minecraft:potato\", \"minecraft:poisonous_potato\", \"minecraft:wheat_seeds\", \"minecraft:melon_seeds\", \"minecraft:beetroot_seeds\", \"minecraft:pumpkin_seeds\", \"biomesoplenty:turnip_seeds\", \"minecraft:egg\", \"animania_farm:brown_egg\", \"listAllbeefraw\", \"minecraft:fish\"]"),
             Map.entry("slopIngredients", "[\"minecraft:carrot\", \"minecraft:beetroot\", \"minecraft:potato\", \"minecraft:poisonous_potato\", \"minecraft:bread\"]"),
             Map.entry("foodValueOverrides", "[]"),
             Map.entry("enableNaturalSpawns", "true"),
@@ -97,11 +108,11 @@ public final class ConfigMigrator {
             Map.entry("spawnProbabilityChickens", "9"),
             Map.entry("spawnProbabilityGoats", "8"),
             Map.entry("spawnProbabilitySheep", "8"),
-            Map.entry("chickenFood", "[\"minecraft:wheat_seeds\", \"minecraft:melon_seeds\", \"minecraft:beetroot_seeds\", \"minecraft:pumpkin_seeds\"]"),
-            Map.entry("cowFood", "[\"minecraft:wheat\"]"),
-            Map.entry("goatFood", "[\"minecraft:wheat\", \"minecraft:string\", \"minecraft:stick\", \"minecraft:apple\"]"),
-            Map.entry("horseFood", "[\"minecraft:wheat\", \"minecraft:apple\", \"minecraft:carrot\"]"),
-            Map.entry("sheepFood", "[\"minecraft:wheat\"]"),
+            Map.entry("chickenFood", "[\"minecraft:wheat_seeds\", \"minecraft:melon_seeds\", \"minecraft:beetroot_seeds\", \"minecraft:pumpkin_seeds\", \"simplecorn:corncob\", \"biomesoplenty:turnip_seeds\", \"harvestcraft:cornitem\"]"),
+            Map.entry("cowFood", "[\"minecraft:wheat\", \"simplecorn:corncob\", \"harvestcraft:barleyitem\", \"harvestcraft:oatsitem\", \"harvestcraft:ryeitem\", \"harvestcraft:cornitem\"]"),
+            Map.entry("goatFood", "[\"minecraft:wheat\", \"minecraft:string\", \"minecraft:stick\", \"minecraft:apple\", \"simplecorn:corncob\", \"harvestcraft:barleyitem\", \"harvestcraft:oatsitem\", \"harvestcraft:ryeitem\", \"harvestcraft:cornitem\"]"),
+            Map.entry("horseFood", "[\"minecraft:wheat\", \"harvestcraft:barleyitem\", \"harvestcraft:oatsitem\", \"harvestcraft:ryeitem\", \"minecraft:apple\", \"minecraft:carrot\"]"),
+            Map.entry("sheepFood", "[\"minecraft:wheat\", \"harvestcraft:barleyitem\", \"harvestcraft:oatsitem\", \"harvestcraft:ryeitem\"]"),
             Map.entry("pigFood", "[\"minecraft:carrot\", \"minecraft:beetroot\", \"minecraft:potato\", \"minecraft:poisonous_potato\", \"minecraft:bread\"]"),
             Map.entry("requireTamingForBreeding", "true"),
             Map.entry("hamsterWheelCapacity", "200000"),
@@ -113,10 +124,10 @@ public final class ConfigMigrator {
             Map.entry("spawnProbabilityPeacocks", "8"),
             Map.entry("spawnProbabilityAmphibians", "8"),
             Map.entry("spawnProbabilityRabbits", "8"),
-            Map.entry("ferretFood", "[\"minecraft:mutton\", \"minecraft:egg\", \"minecraft:rabbit\", \"minecraft:chicken\"]"),
-            Map.entry("hamsterFood", "[\"animania_extra:hamster_food\", \"minecraft:wheat_seeds\", \"minecraft:melon_seeds\", \"minecraft:beetroot_seeds\", \"minecraft:pumpkin_seeds\", \"minecraft:apple\"]"),
-            Map.entry("hedgehogFood", "[\"minecraft:carrot\", \"minecraft:beetroot\", \"minecraft:egg\", \"minecraft:rabbit\", \"minecraft:chicken\", \"minecraft:apple\"]"),
-            Map.entry("peacockFood", "[\"minecraft:wheat_seeds\", \"minecraft:melon_seeds\", \"minecraft:beetroot_seeds\", \"minecraft:pumpkin_seeds\"]"),
+            Map.entry("ferretFood", "[\"minecraft:mutton\", \"minecraft:egg\", \"animania_farm:brown_egg\", \"animania_extra:peacock_egg_blue\", \"animania_extra:peacock_egg_white\", \"animania_farm:raw_prime_mutton\", \"animania_extra:raw_prime_rabbit\", \"minecraft:rabbit\", \"minecraft:chicken\", \"animania_farm:raw_prime_chicken\"]"),
+            Map.entry("hamsterFood", "[\"animania_extra:hamster_food\", \"minecraft:wheat_seeds\", \"minecraft:melon_seeds\", \"minecraft:beetroot_seeds\", \"minecraft:pumpkin_seeds\", \"simplecorn:corncob\", \"biomesoplenty:turnip_seeds\", \"harvestcraft:cornitem\", \"minecraft:apple\"]"),
+            Map.entry("hedgehogFood", "[\"minecraft:carrot\", \"minecraft:beetroot\", \"minecraft:egg\", \"animania_farm:brown_egg\", \"animania_extra:peacock_egg_blue\", \"animania_extra:peacock_egg_white\", \"animania_farm:raw_prime_mutton\", \"animania_extra:raw_prime_rabbit\", \"minecraft:rabbit\", \"minecraft:chicken\", \"animania_farm:raw_prime_chicken\", \"minecraft:apple\"]"),
+            Map.entry("peacockFood", "[\"minecraft:wheat_seeds\", \"minecraft:melon_seeds\", \"minecraft:beetroot_seeds\", \"minecraft:pumpkin_seeds\", \"simplecorn:corncob\", \"biomesoplenty:turnip_seeds\", \"harvestcraft:cornitem\"]"),
             Map.entry("rabbitFood", "[\"minecraft:wheat\", \"minecraft:carrot\", \"minecraft:beetroot\", \"minecraft:apple\"]"),
             Map.entry("spawnLimitCats", "20"),
             Map.entry("spawnLimitDogs", "20"),
@@ -124,8 +135,8 @@ public final class ConfigMigrator {
             Map.entry("spawnProbabilityDogs", "5"),
             Map.entry("replaceVanillaWolves", "true"),
             Map.entry("replaceVanillaOcelots", "true"),
-            Map.entry("catFood", "[\"minecraft:cod\", \"minecraft:salmon\"]"),
-            Map.entry("dogFood", "[\"minecraft:beef\", \"minecraft:cooked_beef\"]"),
+            Map.entry("catFood", "[\"minecraft:fish\"]"),
+            Map.entry("dogFood", "[\"listAllbeefraw\"]"),
             Map.entry("petBowlFood", "[\"minecraft:fish\", \"listAllbeefraw\", \"animania_extra:hamster_food\"]")));
 
     static {
@@ -145,12 +156,12 @@ public final class ConfigMigrator {
                 "numberPigFamilies", "2", "numberChickenFamilies", "2", "numberHorseFamilies", "2",
                 "numberGoatFamilies", "1", "numberSheepFamilies", "3", "spawnLimitCows", "40",
                 "spawnLimitPigs", "40", "spawnLimitChickens", "40", "spawnLimitHorses", "40",
-                "spawnLimitGoats", "40", "spawnLimitSheep", "40", "chickenBed", "animania_farm:animania_wool",
-                "chickenBed2", "minecraft:grass_block", "cowBed", "animania_farm:animania_wool",
-                "cowBed2", "minecraft:grass_block", "goatBed", "animania_farm:animania_wool",
-                "goatBed2", "minecraft:grass_block", "horseBed", "animania_farm:animania_wool",
-                "horseBed2", "minecraft:grass_block", "pigBed", "animania_farm:animania_wool",
-                "pigBed2", "minecraft:grass_block", "sheepBed", "animania_farm:animania_wool",
+                "spawnLimitGoats", "40", "spawnLimitSheep", "40", "chickenBed", "animania:straw",
+                "chickenBed2", "minecraft:grass_block", "cowBed", "animania:straw",
+                "cowBed2", "minecraft:grass_block", "goatBed", "animania:straw",
+                "goatBed2", "minecraft:grass_block", "horseBed", "animania:straw",
+                "horseBed2", "minecraft:grass_block", "pigBed", "animania:straw",
+                "pigBed2", "minecraft:grass_block", "sheepBed", "animania:straw",
                 "sheepBed2", "minecraft:grass_block", "hiveValidBiomeTypes", "[\"JUNGLE\",\"CONIFEROUS\",\"SWAMP\",\"FOREST\",\"PLAINS\"]",
                 "chickenPlymouthRockBiomeTypes", "[\"MOUNTAIN\"]", "chickenLeghornBiomeTypes", "[\"PLAINS\"]",
                 "chickenOrpingtonBiomeTypes", "[\"JUNGLE\",\"SWAMP\"]", "chickenWyandotteBiomeTypes", "[\"FOREST\"]",
@@ -173,10 +184,10 @@ public final class ConfigMigrator {
                 "spawnAnimaniaAmphibians", "true", "spawnAnimaniaRabbits", "true", "numberRabbitFamilies", "2",
                 "spawnLimitHedgehogs", "40", "spawnLimitFerrets", "40", "spawnLimitHamsters", "40",
                 "spawnLimitPeacocks", "40", "spawnLimitAmphibians", "40", "spawnLimitRabbits", "40",
-                "ferretBed", "animania_farm:animania_wool", "ferretBed2", "minecraft:grass_block",
-                "hamsterBed", "animania_farm:animania_wool", "hamsterBed2", "", "hedgehogBed", "animania_farm:animania_wool",
-                "hedgehogBed2", "minecraft:grass_block", "peacockBed", "animania_farm:animania_wool",
-                "peacockBed2", "minecraft:grass_block", "rabbitBed", "animania_farm:animania_wool",
+                "ferretBed", "animania:straw", "ferretBed2", "minecraft:grass_block",
+                "hamsterBed", "animania:straw", "hamsterBed2", "", "hedgehogBed", "animania:straw",
+                "hedgehogBed2", "minecraft:grass_block", "peacockBed", "animania:straw",
+                "peacockBed2", "minecraft:grass_block", "rabbitBed", "animania:straw",
                 "rabbitBed2", "minecraft:grass_block", "toadBiomeTypes", "[\"SWAMP\",\"FOREST\"]",
                 "frogBiomeTypes", "[\"SWAMP\",\"RIVER\"]", "dartFrogBiomeTypes", "[\"JUNGLE\",\"FOREST\"]",
                 "hamsterBiomeTypes", "[\"BEACH\",\"SANDY\"]", "ferretGrayBiomeTypes", "[\"SAVANNA\"]",
@@ -191,7 +202,7 @@ public final class ConfigMigrator {
                 "peafowlBlueBiomeTypes", "[\"SWAMP\",\"JUNGLE\"]", "peafowlWhiteBiomeTypes", "[\"SWAMP\",\"JUNGLE\"]");
         putDefaults("numberDogFamilies", "2", "numberCatFamilies", "2", "catBed", "animania_catsdogs:cat_bed_1",
                 "catBed2", "animania_catsdogs:cat_bed_2", "dogBed", "animania_catsdogs:dog_pillow",
-                "dogBed2", "animania_catsdogs:dog_house", "wolfBiomeTypes", "[\"MOUNTAIN\",\"FOREST\",\"SNOWY\",\"COLD\"]",
+                "dogBed2", "animania:straw", "wolfBiomeTypes", "[\"MOUNTAIN\",\"FOREST\",\"SNOWY\",\"COLD\"]",
                 "foxBiomeTypes", "[\"FOREST\",\"SNOWY\",\"COLD\"]", "ocelotBiomeTypes", "[\"HOT\",\"JUNGLE\",\"SAVANNA\"]");
     }
 
@@ -309,7 +320,7 @@ public final class ConfigMigrator {
             if (!matcher.matches()) continue;
             String original = matcher.group(1);
             String key = ALIASES.getOrDefault(original, original);
-            String value = stripQuotes(matcher.group(2));
+            String value = normalizeLegacyValue(stripQuotes(matcher.group(2)));
             if (!DEFAULTS.containsKey(key)) {
                 report.add(new ReportEntry(relative(root, input) + ":" + original, "unmigratable", value, "no 1.20.1 mapping"));
                 continue;
@@ -349,6 +360,14 @@ public final class ConfigMigrator {
         if ((trimmed.startsWith("[") && trimmed.endsWith("]")) || (trimmed.startsWith("{") && trimmed.endsWith("}"))) return trimmed;
         if (trimmed.equalsIgnoreCase("true") || trimmed.equalsIgnoreCase("false") || trimmed.matches("-?[0-9]+(?:\\.[0-9]+)?")) return trimmed;
         return "\"" + trimmed.replace("\\", "\\\\").replace("\"", "\\\"") + "\"";
+    }
+
+    private static String normalizeLegacyValue(String value) {
+        String normalized = value;
+        for (Map.Entry<String, String> alias : VALUE_ALIASES.entrySet()) {
+            normalized = normalized.replace(alias.getKey(), alias.getValue());
+        }
+        return normalized;
     }
 
     private static String stripQuotes(String value) {

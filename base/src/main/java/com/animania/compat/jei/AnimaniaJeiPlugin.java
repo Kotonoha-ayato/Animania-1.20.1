@@ -35,8 +35,25 @@ public final class AnimaniaJeiPlugin implements IModPlugin {
         ForgeRegistries.ITEMS.forEach(item -> {
             ResourceLocation id = ForgeRegistries.ITEMS.getKey(item);
             if (id == null || !(id.getNamespace().equals("animania") || id.getNamespace().startsWith("animania_"))) return;
+            String legacyDescription = legacyDescription(id);
             registration.addItemStackInfo(new ItemStack(item),
-                    Component.translatable("jei.animania.registry_info", Component.literal(id.toString())));
+                    legacyDescription == null
+                            ? Component.translatable("jei.animania.registry_info", Component.literal(id.toString()))
+                            : Component.translatable(legacyDescription));
         });
+    }
+
+    private static String legacyDescription(ResourceLocation id) {
+        if (!"animania_farm".equals(id.getNamespace())) return null;
+        return switch (id.getPath()) {
+            case "truffle" -> "text.jei.truffle";
+            case "salt" -> "text.jei.salt";
+            case "milk_holstein_bucket" -> "text.jei.milkholstein";
+            case "milk_friesian_bucket" -> "text.jei.milkfriesian";
+            case "milk_jersey_bucket" -> "text.jei.milkjersey";
+            case "milk_goat_bucket" -> "text.jei.milkgoat";
+            case "milk_sheep_bucket" -> "text.jei.milksheep";
+            default -> null;
+        };
     }
 }

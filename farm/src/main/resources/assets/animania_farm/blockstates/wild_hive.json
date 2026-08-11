@@ -1,7 +1,8 @@
 {
   "variants": {
-    "": {
-      "model": "animania_farm:block/wild_hive"
-    }
+    "facing=north": { "model": "animania_farm:block/wild_hive" },
+    "facing=east": { "model": "animania_farm:block/wild_hive", "y": 90 },
+    "facing=south": { "model": "animania_farm:block/wild_hive", "y": 180 },
+    "facing=west": { "model": "animania_farm:block/wild_hive", "y": 270 }
   }
 }

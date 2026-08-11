@@ -16,15 +16,27 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
  * Forge fluid buckets are accepted, and the output retains the legacy milk
  * family so automation does not collapse all cheese variants to one item.
  */
-public final class FarmCheeseMoldBlockEntity extends AnimaniaStorageBlockEntity {
+public final class FarmCheeseMoldBlockEntity extends AnimaniaStorageBlockEntity implements com.animania.api.IAnimaniaProbeBlock {
     private int processTicks;
 
     public FarmCheeseMoldBlockEntity(BlockPos pos, BlockState state) {
-        super(FarmContent.CHEESE_MOLD_BE.get(), pos, state);
+        super(FarmContent.CHEESE_MOLD_BE.get(), pos, state, 1, 1000);
+    }
+
+    @Override
+    public int getMaxStackSize() {
+        return 1;
+    }
+
+    /** Legacy automation could extract the finished product but not insert arbitrary items. */
+    @Override
+    protected boolean isItemValid(int slot, ItemStack stack) {
+        return false;
     }
 
     @Override
     public void serverTick() {
+        syncVisualVariant();
         ItemStack input = getItem(0);
         if (input.isEmpty() && fluidCapability.getFluidAmount() >= 1000) {
             String fluidOutput = outputForFluid(fluidCapability.getFluid());
@@ -61,12 +73,77 @@ public final class FarmCheeseMoldBlockEntity extends AnimaniaStorageBlockEntity 
         }
     }
 
+    private void syncVisualVariant() {
+        if (level == null || level.isClientSide || !getBlockState().hasProperty(FarmCheeseMoldBlock.VARIANT)) return;
+        FarmCheeseMoldBlock.Variant expected = visualVariant();
+        if (getBlockState().getValue(FarmCheeseMoldBlock.VARIANT) != expected) {
+            level.setBlock(worldPosition, getBlockState().setValue(FarmCheeseMoldBlock.VARIANT, expected), 3);
+        }
+    }
+
+    private FarmCheeseMoldBlock.Variant visualVariant() {
+        ItemStack stack = getItem(0);
+        if (!stack.isEmpty()) {
+            ResourceLocation id = ForgeRegistries.ITEMS.getKey(stack.getItem());
+            if (id != null) {
+                String path = id.getPath();
+                if (path.equals("salt")) return FarmCheeseMoldBlock.Variant.SALT;
+                if (path.equals("milk_bottle")) return FarmCheeseMoldBlock.Variant.FRIESIAN_MILK;
+                FarmCheeseMoldBlock.Variant cheese = familyVariant(path, true);
+                if (cheese != null) return cheese;
+            }
+        }
+        FluidStack fluid = fluidCapability.getFluid();
+        if (!fluid.isEmpty()) {
+            ResourceLocation id = ForgeRegistries.FLUIDS.getKey(fluid.getFluid());
+            if (id != null) {
+                if (id.getNamespace().equals("minecraft") && id.getPath().equals("water")) {
+                    return FarmCheeseMoldBlock.Variant.WATER;
+                }
+                FarmCheeseMoldBlock.Variant milk = familyVariant(id.getPath(), false);
+                if (milk != null) return milk;
+            }
+        }
+        return FarmCheeseMoldBlock.Variant.EMPTY;
+    }
+
+    private static FarmCheeseMoldBlock.Variant familyVariant(String path, boolean cheese) {
+        if (path.contains("holstein")) return cheese ? FarmCheeseMoldBlock.Variant.HOLSTEIN_CHEESE : FarmCheeseMoldBlock.Variant.HOLSTEIN_MILK;
+        if (path.contains("friesian")) return cheese ? FarmCheeseMoldBlock.Variant.FRIESIAN_CHEESE : FarmCheeseMoldBlock.Variant.FRIESIAN_MILK;
+        if (path.contains("jersey")) return cheese ? FarmCheeseMoldBlock.Variant.JERSEY_CHEESE : FarmCheeseMoldBlock.Variant.JERSEY_MILK;
+        if (path.contains("goat")) return cheese ? FarmCheeseMoldBlock.Variant.GOAT_CHEESE : FarmCheeseMoldBlock.Variant.GOAT_MILK;
+        if (path.contains("sheep")) return cheese ? FarmCheeseMoldBlock.Variant.SHEEP_CHEESE : FarmCheeseMoldBlock.Variant.SHEEP_MILK;
+        return null;
+    }
+
     private static int maturityTicks() {
         try {
             return Math.max(20, FarmConfig.CHEESE_MATURITY_TIME.get());
         } catch (RuntimeException ignored) {
             return 24000;
         }
+    }
+
+    public int processTicks() {
+        return Math.max(0, processTicks);
+    }
+
+    @Override
+    public java.util.List<net.minecraft.network.chat.Component> getAnimaniaProbeInfo() {
+        java.util.List<net.minecraft.network.chat.Component> lines = new java.util.ArrayList<>();
+        if (processTicks > 0 || !getItem(0).isEmpty() || fluidCapability.getFluidAmount() > 0) {
+            int percent = Math.min(100, Math.round(processTicks * 100.0F / maturityTicks()));
+            lines.add(net.minecraft.network.chat.Component.translatable("jade.animania.aging", percent));
+        }
+        if (!getItem(0).isEmpty()) {
+            lines.add(net.minecraft.network.chat.Component.translatable("jade.animania.item_count",
+                    getItem(0).getCount(), getItem(0).getHoverName()));
+        }
+        if (!fluidCapability.getFluid().isEmpty()) {
+            lines.add(net.minecraft.network.chat.Component.translatable("jade.animania.fluid_amount",
+                    fluidCapability.getFluid().getDisplayName(), fluidCapability.getFluidAmount()));
+        }
+        return java.util.List.copyOf(lines);
     }
 
     private static String outputFor(Item item) {

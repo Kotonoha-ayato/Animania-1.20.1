@@ -1,6 +1,15 @@
 {
   "variants": {
-    "": {
+    "variant=wheat": {
+      "model": "animania:block/straw"
+    },
+    "variant=pumpkin": {
+      "model": "animania:block/straw"
+    },
+    "variant=melon": {
+      "model": "animania:block/straw"
+    },
+    "variant=beetroot": {
       "model": "animania:block/straw"
     }
   }

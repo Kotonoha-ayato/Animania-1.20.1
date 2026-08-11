@@ -2,6 +2,7 @@ package com.animania.extra;
 
 import com.animania.common.entity.AnimaniaAnimalEntity;
 import com.animania.common.item.AnimaniaEntityEggItem;
+import com.animania.common.item.AnimaniaFoodItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -39,10 +40,13 @@ public final class ExtraContent {
     static { 
         ITEM_IDS.forEach(id -> {
             if (id.startsWith("entity_egg_")) registerGenericItem(id);
-            else ITEM_ENTRIES.put(id, ITEMS.register(id, () -> new Item(foodOrPlain(id))));
+            else if (id.equals("hamster_ball_clear")) ITEM_ENTRIES.put(id,
+                    ITEMS.register(id, () -> new AnimaniaHamsterBallItem(false)));
+            else if (id.equals("hamster_ball_colored")) ITEM_ENTRIES.put(id,
+                    ITEMS.register(id, () -> new AnimaniaHamsterBallItem(true)));
+            else ITEM_ENTRIES.put(id, ITEMS.register(id, () -> new AnimaniaFoodItem(foodOrPlain(id))));
         });
         ExtraLegacyIds.ALL.forEach(id -> registerGenericItem("entity_egg_" + id));
-        List.of("peacock_random", "rabbit_random", "dart_frog").forEach(id -> registerEggItem(id, id));
         BLOCK_ENTRIES.put("hamster_wheel", HAMSTER_WHEEL);
         ITEM_ENTRIES.put("hamster_wheel", ITEMS.register("hamster_wheel", () -> new net.minecraft.world.item.BlockItem(HAMSTER_WHEEL.get(), new Item.Properties())));
     }
@@ -61,7 +65,7 @@ public final class ExtraContent {
     private static void registerEggItem(String id, String target) {
         if (!ITEM_ENTRIES.containsKey(id)) {
             ITEM_ENTRIES.put(id, ITEMS.register(id, () -> new AnimaniaEntityEggItem(
-                    () -> eggCandidates(target), new Item.Properties(), true)));
+                    () -> eggCandidates(target), new Item.Properties(), true, target)));
         }
     }
 
@@ -91,8 +95,9 @@ public final class ExtraContent {
 
     private static Item.Properties foodOrPlain(String id) {
         net.minecraft.world.food.FoodProperties.Builder food = new net.minecraft.world.food.FoodProperties.Builder();
-        if (id.startsWith("raw_")) {
-            food.nutrition(1).saturationMod(1.0F).effect(() -> new MobEffectInstance(MobEffects.CONFUSION, 200, 3), 1.0F);
+        com.animania.common.item.LegacyRawFoodProfile raw = com.animania.common.item.LegacyRawFoodProfile.forItemId(id);
+        if (raw != null) {
+            raw.apply(food);
         } else if (id.equals("cooked_prime_rabbit")) {
             food.nutrition(8).saturationMod(0.5F).effect(() -> new MobEffectInstance(MobEffects.JUMP, 600, 3), 1.0F);
         } else if (id.equals("cooked_frog_legs")) {

@@ -72,9 +72,44 @@ tasks.matching { it.name == 'prepareRunGameTestServer' }.configureEach {
         // never make a previous ignored GameTest world look like a failing
         // migration test.  This remains entirely inside the ignored run dir.
         def testWorldName = 'world_animania_' + project.mod_id + '_v4'
+        def runRoot = project.file('run/gameTestServer').canonicalFile
+        def testWorld = new File(runRoot, testWorldName).canonicalFile
+        if (!testWorld.toPath().startsWith(runRoot.toPath())) {
+            throw new GradleException("Refusing to clean GameTest world outside ${runRoot}")
+        }
+        // GameTest worlds are generated fixtures, never user saves. Recreate
+        // the exact module-local target so registry changes cannot be hidden
+        // behind missing-mapping recovery or a stale session lock.
+        project.delete(testWorld)
         if (!serverProperties.exists() || !serverProperties.text.contains('level-name=' + testWorldName)) {
             serverProperties.parentFile.mkdirs()
             serverProperties.text = 'enable-command-block=true\nlevel-name=' + testWorldName + '\n'
+        }
+    }
+}
+
+// Forge's GameTest launcher can exit with code 0 after an early server-start
+// failure, and "0 required tests passed" is not a test run.  Make both cases
+// hard Gradle failures so CI cannot report a false green release gate.
+tasks.matching { it.name == 'runGameTestServer' }.configureEach {
+    doLast {
+        def logFile = project.file('run/gameTestServer/logs/latest.log')
+        if (!logFile.exists()) {
+            throw new GradleException("GameTest produced no latest.log for ${project.path}")
+        }
+        def log = logFile.getText('UTF-8')
+        if (log.contains('Failed to start the minecraft server')) {
+            throw new GradleException("GameTest server failed to start for ${project.path}")
+        }
+        if (log.contains('Unidentified mapping from registry') || log.contains('detected missing registry entries')) {
+            throw new GradleException("GameTest used a stale registry world for ${project.path}")
+        }
+        def passed = (log =~ /All\s+(\d+)\s+required tests passed/)
+        if (!passed.find() || Integer.parseInt(passed.group(1)) == 0) {
+            throw new GradleException("GameTest did not execute any required tests for ${project.path}")
+        }
+        if (log =~ /(?i)required tests failed|tests failed/) {
+            throw new GradleException("GameTest reported failed tests for ${project.path}")
         }
     }
 }
@@ -89,6 +124,18 @@ dependencies {
 
 tasks.named('processResources', ProcessResources).configure {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    // The pinned 1.12 tree is kept read-only for migration evidence.  Its
+    // nested assets/<addon>/animania namespace is not a runtime namespace in
+    // 1.20.1; canonical assets and data are copied to the modern namespace
+    // during normalization.  Excluding the legacy tree from the archive
+    // prevents duplicate manual/sound/data resources from shadowing them.
+    if (project.path != ':base') {
+        exclude "assets/${project.name}/animania/**"
+    }
+    exclude "assets/${project.mod_id}/advancements/**"
+    exclude "assets/${project.mod_id}/recipes/**"
+    exclude "assets/${project.mod_id}/loot_tables/**"
+    exclude "assets/${project.mod_id}/tags/**"
     def values = [
         minecraft_version_range: rootProject.minecraft_version_range,
         forge_version_range: rootProject.forge_version_range,
@@ -117,8 +164,12 @@ tasks.named('jar', Jar).configure {
         'Implementation-Version': project.version,
         'Implementation-Vendor': 'Animania Team'
     ])
-    finalizedBy 'reobfJar'
 }
+
+// Reobfuscation is a release/build product, not a prerequisite for mapped
+// userdev runs. Finalizing every jar with reobfJar lets one GameTest server
+// hold the Base JAR while another task tries to replace it on Windows.
+tasks.named('build').configure { dependsOn 'reobfJar' }
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
@@ -128,7 +179,20 @@ tasks.withType(JavaCompile).configureEach {
 tasks.withType(Test).configureEach {
     useJUnitPlatform()
     testClassesDirs = sourceSets.test.output.classesDirs
-    classpath = sourceSets.test.runtimeClasspath
+    // Addons compile against Base's mapped development output.  The release
+    // Base jar is finalized by reobfJar and must never win the unit-test
+    // classpath, otherwise mapped Minecraft calls resolve to SRG names and
+    // fail with NoSuchMethodError.  Keep the mapped output first explicitly.
+    if (project.path != ':base') {
+        dependsOn project(':base').tasks.named('classes')
+        mustRunAfter project(':base').tasks.named('reobfJar')
+        classpath = files(sourceSets.test.output.classesDirs, sourceSets.test.output.resourcesDir,
+                project(':base').sourceSets.main.output,
+                sourceSets.test.runtimeClasspath.filter { !it.name.startsWith('animania-base-') })
+    } else {
+        classpath = files(sourceSets.test.output.classesDirs, sourceSets.test.output.resourcesDir,
+                sourceSets.test.runtimeClasspath)
+    }
 }
 
 publishing {

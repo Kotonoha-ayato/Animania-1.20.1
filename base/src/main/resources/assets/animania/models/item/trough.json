@@ -1,3 +1,6 @@
 {
-  "parent": "animania:block/trough"
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "animania:item/trough_new"
+  }
 }

@@ -1,6 +1,3 @@
 {
-  "parent": "minecraft:block/cube_all",
-  "textures": {
-    "all": "animania:block/nest"
-  }
+  "parent": "minecraft:block/block"
 }

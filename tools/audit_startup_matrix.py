@@ -49,6 +49,21 @@ def main() -> None:
     args = parser.parse_args()
     metadata = {}
     errors: list[str] = []
+    runtime_build = args.root / "base" / "build.gradle"
+    runtime_text = runtime_build.read_text(encoding="utf-8") if runtime_build.is_file() else ""
+    runtime_tokens = [
+        "fullClient {",
+        "gameTestServer {",
+        "runFullGameTestServer",
+        "animania_farm { source project(':farm').sourceSets.main }",
+        "animania_extra { source project(':extra').sourceSets.main }",
+        "animania_catsdogs { source project(':catsdogs').sourceSets.main }",
+        "animania,animania_farm,animania_extra,animania_catsdogs",
+        "dependsOn ':farm:classes', ':extra:classes', ':catsdogs:classes'",
+    ]
+    missing_runtime_tokens = [token for token in runtime_tokens if token not in runtime_text]
+    if missing_runtime_tokens:
+        errors.append(f"all-installed runtime configuration missing tokens: {missing_runtime_tokens}")
     for module in MODULES:
         try:
             jar = jar_for(args.root, module, args.version)
@@ -72,7 +87,12 @@ def main() -> None:
         if "animania" not in mandatory:
             errors.append(f"{module}: mandatory Base dependency not encoded")
         missing_base_cases.append({"modules": [module], "expected": "Forge dependency error for missing animania Base"})
-    report = {"version": args.version, "modules": metadata, "combinations": combinations, "missing_base_cases": missing_base_cases, "errors": errors}
+    report = {"version": args.version, "modules": metadata, "combinations": combinations,
+              "missing_base_cases": missing_base_cases,
+              "all_installed_runtime": {"gradle": str(runtime_build), "missing_tokens": missing_runtime_tokens,
+                                          "full_client_task": ":base:runFullClient",
+                                          "full_gametest_task": ":base:runFullGameTestServer"},
+              "errors": errors}
     output = args.root / "build" / "startup-matrix-audit.json"
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")

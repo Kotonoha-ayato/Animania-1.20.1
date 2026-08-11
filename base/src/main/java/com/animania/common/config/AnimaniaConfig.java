@@ -2,18 +2,24 @@ package com.animania.common.config;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /** Common settings retain the old gameplay knobs while using Forge TOML. */
 public final class AnimaniaConfig {
+    private static final Pattern FOOD_OVERRIDE_PATTERN = Pattern.compile(
+            "^\\s*([a-z0-9_.-]+:[a-z0-9_./-]+)\\s*\\(\\s*([+-]?\\d+)\\s*,\\s*([+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+))\\s*\\)\\s*$",
+            Pattern.CASE_INSENSITIVE);
     public static final ForgeConfigSpec COMMON_SPEC;
     public static final ForgeConfigSpec.IntValue HUNGER_INTERVAL;
     public static final ForgeConfigSpec.IntValue THIRST_INTERVAL;
     public static final ForgeConfigSpec.IntValue GESTATION_TICKS;
-    public static final ForgeConfigSpec.IntValue BABY_GROWTH_TICKS;
     public static final ForgeConfigSpec.IntValue CHILD_GROWTH_TICK;
     public static final ForgeConfigSpec.IntValue FEED_TIMER;
     public static final ForgeConfigSpec.IntValue WATER_TIMER;
@@ -70,8 +76,8 @@ public final class AnimaniaConfig {
         HUNGER_INTERVAL = builder.comment("Ticks between hunger updates").defineInRange("hungerInterval", 2400, 20, 120000);
         THIRST_INTERVAL = builder.comment("Ticks between thirst updates").defineInRange("thirstInterval", 1800, 20, 120000);
         GESTATION_TICKS = builder.comment("Default pregnancy duration; matches the 1.12 careAndFeeding.gestationTimer").defineInRange("gestationTicks", 20000, 200, 24000);
-        BABY_GROWTH_TICKS = builder.comment("Ticks for a baby to reach adulthood").defineInRange("babyGrowthTicks", 24000, 1000, 240000);
-        CHILD_GROWTH_TICK = builder.defineInRange("childGrowthTick", 200, 20, 120000);
+        CHILD_GROWTH_TICK = builder.comment("Ticks per one-percent child growth step; the 1.12 lifecycle has 85 steps")
+                .defineInRange("childGrowthTick", 200, 20, 120000);
         FEED_TIMER = builder.defineInRange("feedTimer", 12000, 20, 240000);
         WATER_TIMER = builder.defineInRange("waterTimer", 12000, 20, 240000);
         PLAY_TIMER = builder.defineInRange("playTimer", 12000, 20, 240000);
@@ -115,10 +121,11 @@ public final class AnimaniaConfig {
         ENABLE_NATURAL_SPAWNS = builder.define("enableNaturalSpawns", true);
         ENABLE_VEHICLES = builder.define("enableVehicles", true);
         TROUGH_FOOD = builder.defineList("troughFood", List.of(
-                "minecraft:wheat", "minecraft:apple", "minecraft:carrot", "minecraft:beetroot",
+                "minecraft:wheat", "simplecorn:corncob", "harvestcraft:barleyitem", "harvestcraft:oatsitem",
+                "harvestcraft:ryeitem", "harvestcraft:cornitem", "minecraft:apple", "minecraft:carrot", "minecraft:beetroot",
                 "minecraft:potato", "minecraft:poisonous_potato", "minecraft:wheat_seeds",
                 "minecraft:melon_seeds", "minecraft:beetroot_seeds", "minecraft:pumpkin_seeds",
-                "minecraft:egg", "animania_farm:brown_egg", "listAllbeefraw", "minecraft:fish"),
+                "biomesoplenty:turnip_seeds", "minecraft:egg", "animania_farm:brown_egg", "listAllbeefraw", "minecraft:fish"),
                 value -> value instanceof String);
         SLOP_INGREDIENTS = builder.defineList("slopIngredients", List.of(
                 "minecraft:carrot", "minecraft:beetroot", "minecraft:potato",
@@ -152,5 +159,64 @@ public final class AnimaniaConfig {
                     || stack.is(net.minecraft.world.item.Items.COOKED_BEEF))) return true;
         }
         return false;
+    }
+
+    /** Match the live slop allow-list instead of freezing its defaults into recipe JSON. */
+    public static boolean matchesSlopIngredient(ItemStack stack) {
+        if (stack == null || stack.isEmpty()) return false;
+        List<? extends String> configured;
+        try {
+            configured = SLOP_INGREDIENTS.get();
+        } catch (IllegalStateException ignored) {
+            configured = List.of("minecraft:carrot", "minecraft:beetroot", "minecraft:potato",
+                    "minecraft:poisonous_potato", "minecraft:bread");
+        }
+        var id = ForgeRegistries.ITEMS.getKey(stack.getItem());
+        if (id == null) return false;
+        String registryId = id.toString();
+        return configured.stream().filter(java.util.Objects::nonNull)
+                .map(value -> value.trim().toLowerCase(java.util.Locale.ROOT))
+                .anyMatch(registryId::equals);
+    }
+
+    /** Parsed form of the legacy {@code namespace:item(nutrition,saturation)} syntax. */
+    public record FoodValueOverride(ResourceLocation itemId, int nutrition, float saturationModifier) { }
+
+    public static Optional<FoodValueOverride> parseFoodValueOverride(String raw) {
+        if (raw == null) return Optional.empty();
+        Matcher match = FOOD_OVERRIDE_PATTERN.matcher(raw);
+        if (!match.matches()) return Optional.empty();
+        ResourceLocation id = ResourceLocation.tryParse(match.group(1).toLowerCase(java.util.Locale.ROOT));
+        if (id == null) return Optional.empty();
+        try {
+            int nutrition = Integer.parseInt(match.group(2));
+            float saturation = Float.parseFloat(match.group(3));
+            if (nutrition < 0 || saturation < 0.0F || !Float.isFinite(saturation)) return Optional.empty();
+            return Optional.of(new FoodValueOverride(id, nutrition, saturation));
+        } catch (NumberFormatException ignored) {
+            return Optional.empty();
+        }
+    }
+
+    /** Resolve on every consumption so a reloaded common config takes effect without rebuilding registries. */
+    public static Optional<FoodValueOverride> foodValueOverride(ItemStack stack) {
+        if (stack == null || stack.isEmpty() || !stack.getItem().isEdible()) return Optional.empty();
+        ResourceLocation itemId = ForgeRegistries.ITEMS.getKey(stack.getItem());
+        if (itemId == null) return Optional.empty();
+        List<? extends String> configured;
+        try { configured = FOOD_VALUE_OVERRIDES.get(); }
+        catch (RuntimeException ignored) { return Optional.empty(); }
+        return configured.stream().map(AnimaniaConfig::parseFoodValueOverride)
+                .flatMap(Optional::stream).filter(value -> value.itemId().equals(itemId)).findFirst();
+    }
+
+    public static boolean foodsGiveBonusEffects() {
+        try { return FOODS_GIVE_BONUS_EFFECTS.get(); }
+        catch (RuntimeException ignored) { return true; }
+    }
+
+    public static boolean eatFoodAnytime() {
+        try { return EAT_FOOD_ANYTIME.get(); }
+        catch (RuntimeException ignored) { return true; }
     }
 }

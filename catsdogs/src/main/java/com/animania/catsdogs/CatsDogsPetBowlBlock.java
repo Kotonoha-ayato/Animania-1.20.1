@@ -3,12 +3,10 @@ package com.animania.catsdogs;
 import com.animania.api.AnimaniaTags;
 import com.animania.common.AnimaniaItems;
 import com.animania.common.block.AnimaniaContainerBlock;
-import com.animania.common.block.AnimaniaStorageBlockEntity;
 import com.animania.common.entity.AnimaniaAnimalEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -18,6 +16,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
@@ -49,6 +48,11 @@ public final class CatsDogsPetBowlBlock extends AnimaniaContainerBlock {
     @Override
     public VoxelShape getCollisionShape(BlockState state, net.minecraft.world.level.BlockGetter level, BlockPos pos, CollisionContext context) {
         return SHAPE;
+    }
+
+    @Override
+    public RenderShape getRenderShape(BlockState state) {
+        return RenderShape.INVISIBLE;
     }
 
     @Override
@@ -95,14 +99,6 @@ public final class CatsDogsPetBowlBlock extends AnimaniaContainerBlock {
             ItemStack food = bowl.getItem(0);
             if (animal.feed(food)) bowl.setItem(0, new ItemStack(food.getItem(), food.getCount() - 1));
         }
-    }
-
-    @Override
-    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState replacement, boolean moving) {
-        if (!state.is(replacement.getBlock()) && level.getBlockEntity(pos) instanceof AnimaniaStorageBlockEntity storage) {
-            Containers.dropContents(level, pos, storage);
-        }
-        super.onRemove(state, level, pos, replacement, moving);
     }
 
     public static boolean isFoodItem(ItemStack stack) {

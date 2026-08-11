@@ -21,7 +21,19 @@ public final class AnimaniaNetwork {
         if (REGISTERED.compareAndSet(false, true)) {
             CHANNEL.registerMessage(0, RequestAnimalSnapshotPacket.class, RequestAnimalSnapshotPacket::encode,
                     RequestAnimalSnapshotPacket::decode, RequestAnimalSnapshotPacket::handle);
+            CHANNEL.registerMessage(1, CarriedAnimalSyncPacket.class, CarriedAnimalSyncPacket::encode,
+                    CarriedAnimalSyncPacket::decode, CarriedAnimalSyncPacket::handle);
         }
     }
-}
 
+    /** Broadcast the authoritative carry state so every client can render it. */
+    public static void syncCarried(net.minecraft.server.level.ServerPlayer player) {
+        if (player == null) return;
+        boolean carrying = com.animania.common.entity.AnimaniaAnimalEntity.hasCarriedAnimal(player);
+        CHANNEL.send(net.minecraftforge.network.PacketDistributor.ALL.noArg(),
+                new CarriedAnimalSyncPacket(player.getUUID(), carrying,
+                        carrying ? com.animania.common.entity.AnimaniaAnimalEntity.carriedAnimalType(player) : "",
+                        carrying ? com.animania.common.entity.AnimaniaAnimalEntity.carriedAnimalData(player)
+                                : new net.minecraft.nbt.CompoundTag()));
+    }
+}

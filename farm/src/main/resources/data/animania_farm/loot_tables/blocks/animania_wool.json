@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "animania_farm:animania_wool",
+          "functions": [
+            {
+              "function": "minecraft:copy_state",
+              "block": "animania_farm:animania_wool",
+              "properties": [
+                "variant"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

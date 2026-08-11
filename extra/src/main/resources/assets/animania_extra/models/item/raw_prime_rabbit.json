@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "animania_extra:item/raw_prime_rabbit"
+    "layer0": "animania_extra:item/rabbit_raw"
   }
 }

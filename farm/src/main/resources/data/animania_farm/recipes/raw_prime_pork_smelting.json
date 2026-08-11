@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:smelting",
+  "category": "food",
+  "ingredient": {
+    "item": "animania_farm:raw_prime_pork"
+  },
+  "result": "animania_farm:cooked_prime_pork",
+  "experience": 0.3,
+  "cookingtime": 200
+}
