@@ -45,6 +45,30 @@ class LegacyJavaModelConverterTest(unittest.TestCase):
         self.assertAlmostEqual(-0.06981317007977318, body.rot[0])
         self.assertAlmostEqual(0.0, lower_body.rot[0])
 
+    def test_labrador_uses_runtime_standing_pivot_not_editor_pose(self) -> None:
+        model = CONVERTER.parse_model(
+            ROOT / "upstream/Animania-1.12/src/main/java/com/animania/addons/catsdogs/client/models/dogs/ModelLabrador.java"
+        )
+        self.assertEqual((0.0, 10.0, -5.0), model.parts["body"].pos)
+
+    def test_every_dog_standing_pivot_matches_legacy_not_sitting_branch(self) -> None:
+        dog_root = ROOT / "upstream/Animania-1.12/src/main/java/com/animania/addons/catsdogs/client/models/dogs"
+        pattern = CONVERTER.re.compile(r"\bif\s*\(\s*!\s*sitting\b[^{;]*\)\s*\{")
+        for path in sorted(dog_root.glob("Model*.java")):
+            model = CONVERTER.parse_model(path)
+            text = path.read_text(encoding="utf-8", errors="replace")
+            text = CONVERTER.re.sub(r"/\*.*?\*/", "", text, flags=CONVERTER.re.S)
+            text = CONVERTER.re.sub(r"//[^\n]*", "", text)
+            standing = CONVERTER.method_body(text, pattern)
+            if standing is None:
+                continue
+            for name, raw in CONVERTER.re.findall(
+                r"(?:this\.)?(\w+)\.setRotationPoint\s*\(([^)]*)\)", standing
+            ):
+                if name in model.parts:
+                    self.assertEqual(tuple(CONVERTER.args(raw)[:3]), model.parts[name].pos,
+                                     f"{path.name}:{name}")
+
     def test_offset_stays_after_rotation_and_is_inherited_by_children(self) -> None:
         parent = CONVERTER.Part("parent", boxes=[(1.0, 2.0, 3.0, 4.0, 5.0, 6.0)],
                                 pos=(10.0, 20.0, 30.0), offset=(0.5, -1.0, 2.0), children=["child"])

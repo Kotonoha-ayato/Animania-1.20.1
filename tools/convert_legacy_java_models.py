@@ -188,6 +188,22 @@ def parse_model(path: Path) -> Model:
             try:
                 parts[match.group(1)].offset = tuple(model_args(match.group(2))[:3])
             except ValueError: pass
+    # Several dog constructors contain an editor/rest pose that is never
+    # rendered in game. setLivingAnimations restores the real standing pivot
+    # in `if (!sitting)`. Labrador is the most visible case: its constructor
+    # uses body Y=21, while every standing frame uses Y=10.
+    standing = method_body(text, re.compile(r"\bif\s*\(\s*!\s*sitting\b[^{;]*\)\s*\{"))
+    if standing is not None:
+        for match in re.finditer(r"(?:this\.)?(\w+)\.setRotationPoint\s*\(([^)]*)\)", standing):
+            name = match.group(1)
+            if name not in parts:
+                continue
+            try:
+                values = tuple(model_args(match.group(2))[:3])
+            except ValueError:
+                continue
+            if len(values) == 3:
+                parts[name].pos = values
     rotations: dict[str, list[float]] = {name: [0, 0, 0] for name in parts}
     axes = {"X": 0, "Y": 1, "Z": 2}
     for match in re.finditer(r"(?:this\.)?(\w+)\.rotateAngle([XYZ])\s*=\s*([^;]+);", defaults):
