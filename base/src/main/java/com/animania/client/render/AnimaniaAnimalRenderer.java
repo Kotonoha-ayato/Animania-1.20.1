@@ -8,6 +8,7 @@ import com.animania.client.model.LegacyPetAnimationDefinition;
 import com.animania.client.AnimaniaClientDiagnostics;
 import com.animania.common.entity.AnimaniaAnimalEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.Minecraft;
@@ -86,8 +87,33 @@ public class AnimaniaAnimalRenderer extends MobRenderer<AnimaniaAnimalEntity, Le
 
     @Override
     protected void scale(AnimaniaAnimalEntity entity, PoseStack poseStack, float partialTickTime) {
-        // Matches RenderDogGeneric/RenderFox: translate first, then scale.
-        poseStack.translate(renderTransform.x(), renderTransform.y(), renderTransform.z());
-        poseStack.scale(modelScale, modelScale, modelScale);
+        ResourceLocation id = ForgeRegistries.ENTITY_TYPES.getKey(entity.getType());
+        boolean pets = id != null && "animania_catsdogs".equals(id.getNamespace());
+        String path = pets ? id.getPath() : "";
+        boolean cat = path.startsWith("queen_") || path.startsWith("tom_") || path.startsWith("kitten_");
+        boolean fox = path.endsWith("_fox");
+        boolean child = path.startsWith("puppy_") || path.startsWith("kitten_");
+
+        // RenderDogGeneric applies its factory translation before scaling;
+        // RenderFox applies the 0.1 Y translation at the very end instead.
+        if (!fox) poseStack.translate(renderTransform.x(), renderTransform.y(), renderTransform.z());
+        float scale = child ? modelScale * (1.0F + 0.8F * entity.growthProgress()) : modelScale;
+        poseStack.scale(scale, scale, scale);
+
+        if (pets && entity.isSleeping()) {
+            if (cat) {
+                poseStack.translate(-0.25F, entity.getBbHeight() - 1.45F, -0.25F);
+                poseStack.mulPose(Axis.ZP.rotationDegrees(6.0F));
+                poseStack.translate(0.0F, 0.6F, 0.0F);
+                if (child) poseStack.translate(0.0F, 0.4F, 0.0F);
+            } else if (fox) {
+                poseStack.translate(-0.25F, entity.getBbHeight() - 0.9F, -0.25F);
+                poseStack.mulPose(Axis.ZP.rotationDegrees(6.0F));
+                poseStack.translate(0.0F, -0.3F, 0.0F);
+            } else {
+                poseStack.translate(0.0F, -0.1F, 0.0F);
+            }
+        }
+        if (fox) poseStack.translate(renderTransform.x(), renderTransform.y(), renderTransform.z());
     }
 }

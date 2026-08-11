@@ -124,6 +124,7 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
     private static final EntityDataAccessor<Boolean> FIGHTING = SynchedEntityData.defineId(AnimaniaAnimalEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Optional<java.util.UUID>> RIVAL = SynchedEntityData.defineId(AnimaniaAnimalEntity.class, EntityDataSerializers.OPTIONAL_UUID);
     private static final EntityDataAccessor<Integer> FIGHT_TIMER = SynchedEntityData.defineId(AnimaniaAnimalEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Float> GROWTH_PROGRESS = SynchedEntityData.defineId(AnimaniaAnimalEntity.class, EntityDataSerializers.FLOAT);
     public static final String CARRIED_ENTITY_TAG = "AnimaniaCarriedEntity";
     public static final String CARRIED_ANIMAL_TAG = "AnimaniaCarriedAnimal";
     private int pregnancyTicks;
@@ -168,6 +169,7 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
         // matching adult registry ID when the age reaches zero.
         if (inferred == AnimalGender.CHILD) {
             this.setAge(-childGrowthDuration());
+            this.entityData.set(GROWTH_PROGRESS, 0.0F);
         }
         if (AnimaniaFindMudGoal.supports(this)) {
             setPlaying(true);
@@ -430,6 +432,7 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
         entityData.define(FIGHTING, false);
         entityData.define(RIVAL, Optional.empty());
         entityData.define(FIGHT_TIMER, 0);
+        entityData.define(GROWTH_PROGRESS, 1.0F);
     }
 
     @Override
@@ -442,6 +445,7 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
         tickBlinkTimer();
         if (level().isClientSide) return;
         if (legacyChildAge < 0 && isChildRegistryId()) setAge(legacyChildAge);
+        entityData.set(GROWTH_PROGRESS, calculateGrowthProgress());
         if (isInBall()) {
             getNavigation().stop();
             setDeltaMovement(Vec3.ZERO);
@@ -509,6 +513,16 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
         }
         if (isPregnant() && ++pregnancyTicks >= pregnancyDuration()) giveBirth();
         tickRoosterCrow();
+    }
+
+    /** Client-synchronized 0..1 fraction of the legacy 0.00..0.85 child growth cycle. */
+    public float growthProgress() {
+        return entityData.get(GROWTH_PROGRESS);
+    }
+
+    private float calculateGrowthProgress() {
+        if (!isChildRegistryId() || getAge() >= 0) return 1.0F;
+        return net.minecraft.util.Mth.clamp(1.0F + (float) getAge() / childGrowthDuration(), 0.0F, 1.0F);
     }
 
     private void tickBlinkTimer() {

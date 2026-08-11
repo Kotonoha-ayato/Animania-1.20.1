@@ -94,7 +94,17 @@ public final class LegacyAnimalModel extends HierarchicalModel<AnimaniaAnimalEnt
             float stride = Mth.cos(limbSwing * 0.6662F) * petAnimation.strideScale() * limbSwingAmount;
             leftLegs.forEach(part -> part.xRot += stride);
             rightLegs.forEach(part -> part.xRot -= stride);
-            tails.forEach(part -> part.yRot += Mth.sin(ageInTicks * 0.12F) * 0.18F);
+            if (petAnimation.active()) {
+                // Exact 1.12 Cats & Dogs tail cycle.  The two low-frequency
+                // sine terms create the characteristic uneven wag; the old
+                // generic approximation visibly changed both phase and arc.
+                float tailYaw = Mth.sin(ageInTicks * 3.141593F * 0.05F)
+                        * Mth.sin(ageInTicks * 3.141593F * 0.03F * 0.05F)
+                        * 0.15F * 3.141593F;
+                tails.forEach(part -> part.yRot += tailYaw);
+            } else {
+                tails.forEach(part -> part.yRot += Mth.sin(ageInTicks * 0.12F) * 0.18F);
+            }
         }
         float flap = Mth.sin(ageInTicks * 0.55F) * (0.08F + limbSwingAmount * 0.45F);
         for (int i = 0; i < wings.size(); i++) wings.get(i).zRot += (i & 1) == 0 ? flap : -flap;
