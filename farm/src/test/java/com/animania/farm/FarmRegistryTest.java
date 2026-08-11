@@ -45,10 +45,31 @@ class FarmRegistryTest {
         });
         assertArrayEquals(new String[]{"back_leg__l", "front_leg__r"},
                 FarmLegacyModelLayers.profile("buck_alpine").leftLegs());
-        assertArrayEquals(new String[]{"leg0", "leg3"},
+        assertArrayEquals(new String[]{"leg0", "leg2"},
                 FarmLegacyModelLayers.profile("bull_angus").leftLegs());
         assertArrayEquals(new String[]{"sac", "penis"},
                 FarmLegacyModelLayers.profile("bull_angus").privateParts());
+    }
+
+    @Test
+    void adultCattleUseDiagonalGaitsRatherThanTheLegacySameSidePace() {
+        FarmLegacyIds.ALL.stream().filter(id -> id.startsWith("bull_")).forEach(id -> {
+            var profile = FarmLegacyModelLayers.profile(id);
+            assertArrayEquals(new String[]{"leg0", "leg2"}, profile.leftLegs(), id);
+            assertArrayEquals(new String[]{"leg1", "leg3"}, profile.rightLegs(), id);
+        });
+        FarmLegacyIds.ALL.stream().filter(id -> id.startsWith("cow_")).forEach(id -> {
+            var profile = FarmLegacyModelLayers.profile(id);
+            assertArrayEquals(new String[]{"leg1", "leg3"}, profile.leftLegs(), id);
+            assertArrayEquals(new String[]{"leg2", "leg4"}, profile.rightLegs(), id);
+        });
+        // Calf leg numbers are laid out differently and the original phase
+        // pairs are already diagonal: front-left/rear-right vs. front-right/rear-left.
+        FarmLegacyIds.ALL.stream().filter(id -> id.startsWith("calf_")).forEach(id -> {
+            var profile = FarmLegacyModelLayers.profile(id);
+            assertArrayEquals(new String[]{"leg0", "leg3"}, profile.leftLegs(), id);
+            assertArrayEquals(new String[]{"leg1", "leg2"}, profile.rightLegs(), id);
+        });
     }
 
     @Test

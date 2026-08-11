@@ -115,6 +115,25 @@ class LegacyJavaModelConverterTest(unittest.TestCase):
                 self.assertIn(f'head.addOrReplaceChild("{CONVERTER.snake(child)}"', generated,
                               f"{method} lost head child {child}")
 
+    def test_adult_cattle_converter_corrects_legacy_same_side_pacing(self) -> None:
+        source_root = ROOT / "upstream/Animania-1.12/src/main/java/com/animania/addons/farm/client/model/cow"
+        expected = {
+            "ModelBull.java": (["leg0", "leg2"], ["leg1", "leg3"]),
+            "ModelBullAngus.java": (["leg0", "leg2"], ["leg1", "leg3"]),
+            "ModelBullHereford.java": (["leg0", "leg2"], ["leg1", "leg3"]),
+            "ModelBullLonghorn.java": (["leg0", "leg2"], ["leg1", "leg3"]),
+            "ModelCow.java": (["leg1", "leg3"], ["leg2", "leg4"]),
+            "ModelCowAngus.java": (["leg1", "leg3"], ["leg2", "leg4"]),
+            "ModelCowHereford.java": (["leg1", "leg3"], ["leg2", "leg4"]),
+            "ModelCowLonghorn.java": (["leg1", "leg3"], ["leg2", "leg4"]),
+        }
+        for file_name, (phase_a, phase_b) in expected.items():
+            source = source_root / file_name
+            model = CONVERTER.parse_model(source)
+            _, actual_a, actual_b, *_ = CONVERTER.animation_profile(model, source)
+            self.assertEqual(phase_a, actual_a, file_name)
+            self.assertEqual(phase_b, actual_b, file_name)
+
     def test_generated_layers_contain_no_renderable_zero_volume_pivots(self) -> None:
         pattern = PIVOT_REPAIR.ZERO_VOLUME_BOX
         layers = [

@@ -449,6 +449,23 @@ def uses_offset_node(part: Part) -> bool:
     return part.animania_rotation or any(abs(value) > 0.0000001 for value in part.offset)
 
 
+# The eight adult cattle source models assign cosine phases to same-side pairs
+# even though their pivots are front-left, front-right, rear-right, rear-left.
+# Preserve their geometry and values but correct that legacy visual pacing bug
+# to the expected diagonal walk.  Calf numbering/layout is different and is
+# already diagonal, so it deliberately has no override here.
+VISUAL_DIAGONAL_GAIT_OVERRIDES: dict[str, tuple[tuple[str, ...], tuple[str, ...]]] = {
+    "ModelBull": (("Leg0", "Leg2"), ("Leg1", "Leg3")),
+    "ModelBullAngus": (("Leg0", "Leg2"), ("Leg1", "Leg3")),
+    "ModelBullHereford": (("Leg0", "Leg2"), ("Leg1", "Leg3")),
+    "ModelBullLonghorn": (("Leg0", "Leg2"), ("Leg1", "Leg3")),
+    "ModelCow": (("leg1", "leg3"), ("leg2", "leg4")),
+    "ModelCowAngus": (("leg1", "leg3"), ("leg2", "leg4")),
+    "ModelCowHereford": (("leg1", "leg3"), ("leg2", "leg4")),
+    "ModelCowLonghorn": (("leg1", "leg3"), ("leg2", "leg4")),
+}
+
+
 def animation_profile(model: Model, source_path: Path | None = None) -> tuple[list[str], list[str], list[str], list[str], list[str], list[str], list[str], list[str]]:
     children = {child for part in model.parts.values() for child in part.children}
     entries: list[tuple[str, str, tuple[str, ...]]] = []
@@ -523,6 +540,10 @@ def animation_profile(model: Model, source_path: Path | None = None) -> tuple[li
             paths = model_part_paths(model)
             phase_a = [paths[name] for name, phase in source_phases.items() if phase == 0]
             phase_b = [paths[name] for name, phase in source_phases.items() if phase == 1]
+            override = VISUAL_DIAGONAL_GAIT_OVERRIDES.get(source_path.stem)
+            if override is not None:
+                phase_a = [paths[name] for name in override[0]]
+                phase_b = [paths[name] for name in override[1]]
         elif index % 2 == 0:
             phase_a.append(path)
         else:
