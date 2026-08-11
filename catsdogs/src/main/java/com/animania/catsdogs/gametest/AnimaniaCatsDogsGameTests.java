@@ -45,6 +45,7 @@ import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.phys.AABB;
 
 @GameTestHolder("animania_catsdogs")
 @PrefixGameTestTemplate(false)
@@ -411,6 +412,20 @@ public final class AnimaniaCatsDogsGameTests {
                     id + " base model would overlap its native block-entity renderer");
             helper.assertTrue(helper.getLevel().getBlockEntity(facilityPos) instanceof CatsDogsPetFacilityBlockEntity,
                     id + " did not create the native-rendered pet facility block entity");
+            AABB expected = switch (id) {
+                case "cat_bed_1" -> new AABB(2 / 16.0, 0, 2 / 16.0, 14 / 16.0, 1 / 16.0, 14 / 16.0);
+                case "cat_bed_2" -> new AABB(2 / 16.0, 0, 2 / 16.0, 14 / 16.0, 2 / 16.0, 14 / 16.0);
+                case "cat_tower" -> new AABB(0, 0, 0, 1, 1.5, 1);
+                case "dog_pillow" -> new AABB(1 / 16.0, 0, 1 / 16.0, 15 / 16.0, 1 / 16.0, 15 / 16.0);
+                case "litter_box" -> new AABB(1 / 16.0, 0, 1 / 16.0, 15 / 16.0, 3 / 16.0, 15 / 16.0);
+                default -> new AABB(0, 0, 0, 1, 1, 1);
+            };
+            AABB selection = helper.getLevel().getBlockState(facilityPos)
+                    .getShape(helper.getLevel(), facilityPos).bounds();
+            AABB collision = helper.getLevel().getBlockState(facilityPos)
+                    .getCollisionShape(helper.getLevel(), facilityPos).bounds();
+            helper.assertTrue(expected.equals(selection), id + " selection shape differs from 1.12: " + selection);
+            helper.assertTrue(expected.equals(collision), id + " collision shape differs from 1.12: " + collision);
         }
         boolean oldAutomation = com.animania.common.config.AnimaniaConfig.ALLOW_TROUGH_AUTOMATION.get();
         com.animania.common.config.AnimaniaConfig.ALLOW_TROUGH_AUTOMATION.set(false);
