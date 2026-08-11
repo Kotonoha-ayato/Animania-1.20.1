@@ -474,10 +474,6 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
         if (level().isClientSide) return;
         if (legacyChildAge < 0 && isChildRegistryId()) setAge(legacyChildAge);
         entityData.set(GROWTH_PROGRESS, calculateGrowthProgress());
-        if (isInBall()) {
-            getNavigation().stop();
-            setDeltaMovement(Vec3.ZERO);
-        }
         if (isSitting() || isSleeping()) {
             getNavigation().stop();
             setDeltaMovement(0.0D, getDeltaMovement().y, 0.0D);

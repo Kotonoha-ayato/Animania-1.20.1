@@ -699,6 +699,42 @@ public final class AnimaniaExtraGameTests {
     }
 
     @GameTest(template = "empty")
+    public static void hamsterBallRollsInsteadOfTeleporting(GameTestHelper helper) {
+        AnimaniaGameTestEvidence.mark("animania_extra:hamster_ball_continuous_movement");
+        var owner = helper.makeMockPlayer();
+        BlockPos ownerPos = helper.absolutePos(new BlockPos(18, 1, 1));
+        owner.moveTo(ownerPos.getX() + 0.5D, ownerPos.getY(), ownerPos.getZ() + 0.5D, 0.0F, 0.0F);
+        helper.getLevel().addFreshEntity(owner);
+
+        AnimaniaAnimalEntity hamster = createAnimal(helper, "hamster");
+        BlockPos start = helper.absolutePos(new BlockPos(1, 1, 1));
+        hamster.moveTo(start.getX() + 0.5D, start.getY(), start.getZ() + 0.5D, 0.0F, 0.0F);
+        hamster.setTamed(true);
+        hamster.setOwnerUUID(owner.getUUID());
+        hamster.setInBall(true);
+        helper.getLevel().addFreshEntity(hamster);
+
+        double initialX = hamster.getX();
+        double initialZ = hamster.getZ();
+        AnimaniaFollowOwnerGoal follow = new AnimaniaFollowOwnerGoal(hamster);
+        helper.assertTrue(follow.canUse(), "ball hamster did not acquire its distant owner");
+        follow.start();
+        helper.assertTrue(hamster.distanceToSqr(initialX, hamster.getY(), initialZ) < 0.0001D,
+                "hamster ball teleported when the follow goal started");
+
+        helper.runAfterDelay(40, () -> {
+            double travelled = hamster.distanceToSqr(initialX, hamster.getY(), initialZ);
+            helper.assertTrue(travelled > 0.04D,
+                    "hamster ball remained frozen instead of rolling along its navigation path");
+            helper.assertTrue(travelled < 100.0D,
+                    "hamster ball crossed a teleport-sized distance instead of rolling continuously");
+            hamster.discard();
+            owner.discard();
+            helper.succeed();
+        });
+    }
+
+    @GameTest(template = "empty")
     public static void hamsterInteractionMenuAndLegacyStateRoundTrip(GameTestHelper helper) {
         AnimaniaGameTestEvidence.mark("animania_extra:hamster_interaction_menu_and_state");
         var player = helper.makeMockPlayer();

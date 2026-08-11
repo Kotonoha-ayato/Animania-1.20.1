@@ -94,7 +94,10 @@ public final class AnimaniaFollowOwnerGoal extends Goal {
     private void followOrTeleport() {
         if (owner == null) return;
         double distance = animal.distanceToSqr(owner);
-        if (distance >= 144.0D && configured(AnimaniaConfig.TAMED_ANIMALS_TELEPORT, true)
+        // A hamster ball is a physical rolling cage. The 1.12 hamster kept
+        // normal ground navigation while inside it; teleporting the cage to
+        // its owner makes it appear to blink across the world instead.
+        if (!animal.isInBall() && distance >= 144.0D && configured(AnimaniaConfig.TAMED_ANIMALS_TELEPORT, true)
                 && tryTeleportNearOwner()) return;
         if (distance > maxDistance * maxDistance) {
             animal.getNavigation().moveTo(owner, speed);
