@@ -89,13 +89,13 @@ def audit(root: Path) -> dict[str, object]:
     # A non-empty bake must not be allowed to close that missing behavior.
     bowl_source = source_root / "blocks/ModelPetBowl.java"
     bowl_text = bowl_source.read_text(encoding="utf-8", errors="replace")
-    native_path = root / "catsdogs/src/main/java/com/animania/catsdogs/client/model/CatsDogsNativeModelLayers.java"
-    native_body = method_body(native_path.read_text(encoding="utf-8"), "model_pet_bowl")
+    bowl_layer_path = root / "catsdogs/src/main/java/com/animania/catsdogs/client/model/CatsDogsPetBowlModel.java"
+    bowl_layer = bowl_layer_path.read_text(encoding="utf-8")
     bowl_parts = len(re.findall(r"\bModelRenderer(?:Colored)?\s+\w+\s*;", bowl_text))
     bowl_colored = len(re.findall(r"\bModelRendererColored\s+\w+\s*;", bowl_text))
     bowl_checks = {
-        "shell_present": native_body.count("addOrReplaceChild(") >= 13,
-        "all_parts_converted": native_body.count("addOrReplaceChild(") >= bowl_parts,
+        "shell_present": bowl_layer.count("renderShell") >= 1,
+        "all_parts_converted": bowl_layer.count("addOrReplaceChild(") == bowl_parts * 2,
         "colored_food_rendered": "renderFood" in (root / "catsdogs/src/main/java/com/animania/catsdogs/client/render/CatsDogsPetBowlRenderer.java").read_text(encoding="utf-8"),
     }
     bowl_passed = all(bowl_checks.values())

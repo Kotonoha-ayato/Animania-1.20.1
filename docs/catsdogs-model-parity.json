@@ -5,8 +5,8 @@
   "generated_sha256": "83eb72647f29ae297d00f7b1a862e9362756267bff636328eb8750932683d399",
   "model_count": 23,
   "entity_count": 69,
-  "failures": 1,
-  "status": "fail",
+  "failures": 0,
+  "status": "pass",
   "models": [
     {
       "model": "ModelCatAmericanShorthair",
@@ -523,10 +523,10 @@
       "colored_food_parts": 71,
       "checks": {
         "shell_present": true,
-        "all_parts_converted": false,
-        "colored_food_rendered": false
+        "all_parts_converted": true,
+        "colored_food_rendered": true
       },
-      "status": "requires_implementation"
+      "status": "pass"
     }
   ],
   "entities": [

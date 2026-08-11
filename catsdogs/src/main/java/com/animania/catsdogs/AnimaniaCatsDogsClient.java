@@ -4,6 +4,7 @@ import com.animania.client.render.AnimaniaAnimalRenderer;
 import com.animania.client.AnimaniaClientDiagnostics;
 import com.animania.catsdogs.client.model.CatsDogsLegacyModelLayers;
 import com.animania.catsdogs.client.model.CatsDogsNativeModelLayers;
+import com.animania.catsdogs.client.model.CatsDogsPetBowlModel;
 import com.animania.catsdogs.client.render.CatsDogsPetBowlRenderer;
 import com.animania.catsdogs.client.render.CatsDogsPetFacilityRenderer;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -17,6 +18,7 @@ final class AnimaniaCatsDogsClient {
     static void registerLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
         CatsDogsLegacyModelLayers.LAYERS.forEach((id, layer) -> event.registerLayerDefinition(layer, () -> CatsDogsLegacyModelLayers.create(id)));
         CatsDogsNativeModelLayers.LAYERS.forEach((id, layer) -> event.registerLayerDefinition(layer, () -> CatsDogsNativeModelLayers.create(id)));
+        event.registerLayerDefinition(CatsDogsPetBowlModel.LAYER, CatsDogsPetBowlModel::create);
         AnimaniaClientDiagnostics.layerDefinitions(AnimaniaCatsDogs.MOD_ID, CatsDogsLegacyModelLayers.LAYERS.size(), CatsDogsNativeModelLayers.LAYERS.size());
     }
     static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {

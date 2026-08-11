@@ -132,6 +132,18 @@ def parse_model(path: Path) -> Model:
         text,
         re.compile(rf"\b(?:public|private|protected)\s+{re.escape(path.stem)}\s*\(\s*\)\s*\{{"),
     )
+    # Some generated facility models keep their geometry in an overloaded
+    # constructor and make the no-arg constructor delegate with this(0).
+    # ModelPetBowl is the active 1.12 example.  Select the constructor that
+    # actually owns the renderer allocations instead of treating it as an
+    # empty/dead model.
+    if constructor is not None and "new ModelRenderer" not in constructor:
+        for candidate in re.finditer(
+                rf"\b(?:public|private|protected)\s+{re.escape(path.stem)}\s*\([^)]*\)\s*\{{", text):
+            candidate_body = method_body(text, re.compile(re.escape(candidate.group(0))))
+            if candidate_body is not None and "new ModelRenderer" in candidate_body:
+                constructor = candidate_body
+                break
     # Geometry and default pivots belong to the no-argument constructor.
     # Scanning the full file accidentally promoted literal values in
     # setLivingAnimations/setRotationAngles (notably dog sitting poses) into

@@ -19,6 +19,13 @@ SPEC.loader.exec_module(CONVERTER)
 
 
 class LegacyJavaModelConverterTest(unittest.TestCase):
+    def test_pet_bowl_delegating_constructor_keeps_all_shell_and_food_parts(self) -> None:
+        model = CONVERTER.parse_model(
+            ROOT / "upstream/Animania-1.12/src/main/java/com/animania/addons/catsdogs/client/models/blocks/ModelPetBowl.java"
+        )
+        self.assertEqual(84, len(model.parts))
+        self.assertEqual(71, sum(part.colored for part in model.parts.values()))
+
     def test_commented_angus_horns_are_not_geometry(self) -> None:
         model = CONVERTER.parse_model(
             ROOT / "upstream/Animania-1.12/src/main/java/com/animania/addons/farm/client/model/cow/ModelCowAngus.java"
