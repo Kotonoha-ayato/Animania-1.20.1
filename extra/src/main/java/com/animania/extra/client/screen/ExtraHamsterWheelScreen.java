@@ -11,7 +11,7 @@ import net.minecraft.world.entity.player.Inventory;
 /** Compact native screen for the wheel's single food slot. */
 public final class ExtraHamsterWheelScreen extends AbstractContainerScreen<ExtraHamsterWheelMenu> {
     private static final ResourceLocation TEXTURE =
-            ResourceLocation.fromNamespaceAndPath("minecraft", "textures/gui/container/dispenser.png");
+            ResourceLocation.fromNamespaceAndPath("minecraft", "textures/gui/container/hopper.png");
 
     public ExtraHamsterWheelScreen(ExtraHamsterWheelMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
@@ -30,9 +30,10 @@ public final class ExtraHamsterWheelScreen extends AbstractContainerScreen<Extra
     protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         graphics.blit(TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
-        // The dispenser texture contains a 3x3 grid; cover it and expose only
-        // the real one-slot inventory so eight phantom slots cannot appear.
-        graphics.fill(leftPos + 60, topPos + 16, leftPos + 116, topPos + 48, 0xFFC6C6C6);
+        // The hopper texture has exactly the same 176x133 player-inventory
+        // layout used by this menu. Cover its four unused storage slots and
+        // expose only the real central wheel slot.
+        graphics.fill(leftPos + 43, topPos + 19, leftPos + 133, topPos + 38, 0xFFC6C6C6);
         graphics.fill(leftPos + 79, topPos + 19, leftPos + 97, topPos + 37, 0xFF373737);
         graphics.fill(leftPos + 80, topPos + 20, leftPos + 96, topPos + 36, 0xFF8B8B8B);
     }
