@@ -68,6 +68,24 @@ def f(value: float) -> str:
     return literal + "F"
 
 
+def legacy_euler_to_modelpart(rx: float, ry: float, rz: float) -> tuple[float, float, float]:
+    """Convert CraftStudioAPI's Y-X-Z quaternion order to ModelPart Z-Y-X Euler angles."""
+    cx, cy, cz = math.cos(rx / 2), math.cos(ry / 2), math.cos(rz / 2)
+    sx, sy, sz = math.sin(rx / 2), math.sin(ry / 2), math.sin(rz / 2)
+    # CraftStudioAPI 1.0.1.95 quatFromEuler, decompiled from the pinned jar.
+    qw = cx * cy * cz + sx * sy * sz
+    qx = sx * cy * cz + cx * sy * sz
+    qy = cx * sy * cz - sx * cy * sz
+    qz = cx * cy * sz - sx * sy * cz
+    # ModelPart applies Z, then Y, then X. Decompose the same quaternion in
+    # that convention so multi-axis ears/cheeks do not collapse or mirror.
+    x = math.atan2(2 * (qw * qx + qy * qz), 1 - 2 * (qx * qx + qy * qy))
+    sin_y = max(-1.0, min(1.0, 2 * (qw * qy - qz * qx)))
+    y = math.asin(sin_y)
+    z = math.atan2(2 * (qw * qz + qx * qy), 1 - 2 * (qy * qy + qz * qz))
+    return x, y, z
+
+
 @dataclass
 class Part:
     name: str
@@ -238,7 +256,8 @@ def parse_model(path: Path) -> Model:
         if match.group(1) in rotations:
             try: rotations[match.group(1)] = model_args(match.group(2))[:3]
             except ValueError: pass
-    for name, rotation in rotations.items(): parts[name].rot = tuple(rotation)
+    for name, rotation in rotations.items():
+        parts[name].rot = legacy_euler_to_modelpart(*rotation)
     sitting_pose: dict[str, PoseOverride] = {}
     sitting = method_body(text, re.compile(r"\bif\s*\(\s*sitting\b[^{;]*\)\s*\{"))
     if sitting is not None:
@@ -266,8 +285,12 @@ def parse_model(path: Path) -> Model:
         changed = sitting_rotations.keys() | sitting_positions.keys()
         for name in parts:
             if name in changed:
+                effective = list(rotations[name])
+                for axis, value in enumerate(sitting_rotations.get(name, [None, None, None])):
+                    if value is not None:
+                        effective[axis] = value
                 sitting_pose[name] = PoseOverride(
-                    sitting_positions.get(name), tuple(sitting_rotations.get(name, [None, None, None])))
+                    sitting_positions.get(name), legacy_euler_to_modelpart(*effective))
     # Extract the original walk cycle phase instead of guessing from the side
     # of the body. Quadrupeds animate diagonal pairs together; grouping all
     # left legs together produces an visibly incorrect pacing gait.

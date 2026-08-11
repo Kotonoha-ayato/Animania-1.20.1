@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import importlib.util
+import math
 import sys
 import unittest
 from pathlib import Path
@@ -25,6 +26,35 @@ class LegacyJavaModelConverterTest(unittest.TestCase):
         )
         self.assertEqual(84, len(model.parts))
         self.assertEqual(71, sum(part.colored for part in model.parts.values()))
+
+    def test_fox_multi_axis_ears_are_converted_from_craftstudio_rotation_order(self) -> None:
+        model = CONVERTER.parse_model(
+            ROOT / "upstream/Animania-1.12/src/main/java/com/animania/addons/catsdogs/client/models/dogs/ModelFox.java"
+        )
+        legacy_rotation = (-1.1021789132929232, -1.6230567205873627, 1.520239374352377)
+        converted = CONVERTER.legacy_euler_to_modelpart(*legacy_rotation)
+        self.assertEqual(converted, model.parts["ear_l"].rot)
+        self.assertGreater(max(abs(a - b) for a, b in zip(converted, legacy_rotation)), 0.5)
+        rx, ry, rz = legacy_rotation
+        cx, cy, cz = (math.cos(value / 2) for value in (rx, ry, rz))
+        sx, sy, sz = (math.sin(value / 2) for value in (rx, ry, rz))
+        legacy_quaternion = (
+            cx * cy * cz + sx * sy * sz,
+            sx * cy * cz + cx * sy * sz,
+            cx * sy * cz - sx * cy * sz,
+            cx * cy * sz - sx * sy * cz,
+        )
+        mx, my, mz = converted
+        cx, cy, cz = (math.cos(value / 2) for value in (mx, my, mz))
+        sx, sy, sz = (math.sin(value / 2) for value in (mx, my, mz))
+        modelpart_quaternion = (
+            cx * cy * cz + sx * sy * sz,
+            sx * cy * cz - cx * sy * sz,
+            cx * sy * cz + sx * cy * sz,
+            cx * cy * sz - sx * sy * cz,
+        )
+        for expected, actual in zip(legacy_quaternion, modelpart_quaternion):
+            self.assertAlmostEqual(expected, actual, places=6)
 
     def test_commented_angus_horns_are_not_geometry(self) -> None:
         model = CONVERTER.parse_model(

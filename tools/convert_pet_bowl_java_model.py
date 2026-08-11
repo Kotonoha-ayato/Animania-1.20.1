@@ -37,7 +37,7 @@ def generate(root: Path) -> None:
         raise SystemExit(f"unexpected pet-bowl split: shell={len(shell)}, food={len(food)}")
     rotations = assigned_rotations(shell_body) | assigned_rotations(food_body)
     for name, rotation in rotations.items():
-        model.parts[name].rot = rotation
+        model.parts[name].rot = legacy.legacy_euler_to_modelpart(*rotation)
 
     lines = [
         "package com.animania.catsdogs.client.model;", "",
