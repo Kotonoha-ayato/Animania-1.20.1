@@ -51,7 +51,7 @@ class LegacyJavaModelConverterTest(unittest.TestCase):
         )
         self.assertEqual((0.0, 10.0, -5.0), model.parts["body"].pos)
 
-    def test_every_dog_standing_pivot_matches_legacy_not_sitting_branch(self) -> None:
+    def test_every_dog_standing_pivot_respects_last_write_before_render(self) -> None:
         dog_root = ROOT / "upstream/Animania-1.12/src/main/java/com/animania/addons/catsdogs/client/models/dogs"
         pattern = CONVERTER.re.compile(r"\bif\s*\(\s*!\s*sitting\b[^{;]*\)\s*\{")
         for path in sorted(dog_root.glob("Model*.java")):
@@ -62,12 +62,28 @@ class LegacyJavaModelConverterTest(unittest.TestCase):
             standing = CONVERTER.method_body(text, pattern)
             if standing is None:
                 continue
+            setup = CONVERTER.method_body(
+                text,
+                CONVERTER.re.compile(
+                    r"\b(?:public|private|protected)?\s*(?:final\s+)?void\s+setupAngles\s*\(\s*\)\s*\{"
+                ),
+            ) or ""
+            setup_points = dict(CONVERTER.re.findall(
+                r"(?:this\.)?(\w+)\.setRotationPoint\s*\(([^)]*)\)", setup
+            ))
             for name, raw in CONVERTER.re.findall(
                 r"(?:this\.)?(\w+)\.setRotationPoint\s*\(([^)]*)\)", standing
             ):
                 if name in model.parts:
-                    self.assertEqual(tuple(CONVERTER.args(raw)[:3]), model.parts[name].pos,
+                    effective = setup_points.get(name, raw)
+                    self.assertEqual(tuple(CONVERTER.args(effective)[:3]), model.parts[name].pos,
                                      f"{path.name}:{name}")
+
+    def test_greyhound_tail_uses_setup_angles_pivot_not_overwritten_living_animation(self) -> None:
+        model = CONVERTER.parse_model(
+            ROOT / "upstream/Animania-1.12/src/main/java/com/animania/addons/catsdogs/client/models/dogs/ModelGreyhound.java"
+        )
+        self.assertEqual((0.0, -2.4369, 6.0599), model.parts["tail"].pos)
 
     def test_offset_stays_as_a_native_node_between_rotation_and_children(self) -> None:
         parent = CONVERTER.Part("parent", boxes=[(1.0, 2.0, 3.0, 4.0, 5.0, 6.0)],

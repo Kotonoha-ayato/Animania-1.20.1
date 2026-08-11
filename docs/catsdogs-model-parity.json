@@ -2,7 +2,7 @@
   "audit": "catsdogs-model-parity",
   "version": 1,
   "baseline": "Animania 1.12 pinned source",
-  "generated_sha256": "6206e98c7b8067e2fe3660533c120b4659710ba4b818ebae7e00258ad8253a57",
+  "generated_sha256": "83eb72647f29ae297d00f7b1a862e9362756267bff636328eb8750932683d399",
   "model_count": 23,
   "entity_count": 69,
   "failures": 1,

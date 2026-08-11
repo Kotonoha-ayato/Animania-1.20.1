@@ -193,10 +193,21 @@ def parse_model(path: Path) -> Model:
     # in `if (!sitting)`. Labrador is the most visible case: its constructor
     # uses body Y=21, while every standing frame uses Y=10.
     standing = method_body(text, re.compile(r"\bif\s*\(\s*!\s*sitting\b[^{;]*\)\s*\{"))
+    setup_positions: set[str] = set()
+    setup = method_body(text, re.compile(
+        r"\b(?:public|private|protected)?\s*(?:final\s+)?void\s+setupAngles\s*\(\s*\)\s*\{"))
+    if setup is not None:
+        setup_positions = set(re.findall(
+            r"(?:this\.)?(\w+)\.setRotationPoint\s*\(", setup))
     if standing is not None:
         for match in re.finditer(r"(?:this\.)?(\w+)\.setRotationPoint\s*\(([^)]*)\)", standing):
             name = match.group(1)
-            if name not in parts:
+            # Minecraft calls setLivingAnimations before render(), and these
+            # legacy render methods call setRotationAngles -> setupAngles.
+            # A setupAngles position assignment therefore wins later in the
+            # same frame.  Greyhound's tail is the concrete regression:
+            # -4.6/17.5 is overwritten by -2.4369/6.0599 before rendering.
+            if name not in parts or name in setup_positions:
                 continue
             try:
                 values = tuple(model_args(match.group(2))[:3])
@@ -556,7 +567,9 @@ def emit(root: Path, module: str) -> None:
     model_source = root / "upstream/Animania-1.12/src/main/java/com/animania/addons" / module / "client"
     models: dict[str, Model] = {}
     model_sources: dict[str, Path] = {}
-    for name in {mapping[entity][0] for entity in ids}:
+    # Stable source order keeps a one-line model fix from rewriting most of
+    # the generated class merely because Python chose a different set order.
+    for name in sorted({mapping[entity][0] for entity in ids}):
         if name not in models:
             path = find_model(model_source, name)
             if path is None: raise SystemExit(f"{module}: missing source model {name}")
