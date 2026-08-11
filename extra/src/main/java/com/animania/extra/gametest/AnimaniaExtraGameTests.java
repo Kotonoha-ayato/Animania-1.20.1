@@ -36,6 +36,7 @@ import net.minecraft.world.entity.animal.Wolf;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.core.Direction;
@@ -803,6 +804,12 @@ public final class AnimaniaExtraGameTests {
         BlockPos wheelPos = helper.absolutePos(new BlockPos(4, 1, 3));
         helper.getLevel().setBlock(wheelPos, ExtraContent.HAMSTER_WHEEL.get().defaultBlockState(), 3);
         BlockHitResult hit = new BlockHitResult(Vec3.atCenterOf(wheelPos), Direction.UP, wheelPos, false);
+        net.minecraft.world.phys.AABB wheelArea = new net.minecraft.world.phys.AABB(wheelPos).inflate(1.5D);
+        java.util.Set<java.util.UUID> preexistingWheelHamsters = helper.getLevel()
+                .getEntitiesOfClass(AnimaniaAnimalEntity.class, wheelArea).stream()
+                .filter(animal -> "wheel_round_trip".equals(animal.getVariantName()))
+                .map(net.minecraft.world.entity.Entity::getUUID)
+                .collect(java.util.stream.Collectors.toSet());
         ExtraContent.HAMSTER_WHEEL.get().use(helper.getLevel().getBlockState(wheelPos), helper.getLevel(),
                 wheelPos, player, InteractionHand.MAIN_HAND, hit);
         helper.assertFalse(AnimaniaAnimalEntity.hasCarriedAnimal(player),
@@ -811,11 +818,20 @@ public final class AnimaniaExtraGameTests {
         helper.assertTrue(wheel != null && wheel.hasHamster() && wheel.isRunning(),
                 "carried hamster was not stored inside the wheel");
         helper.assertTrue(helper.getLevel().getEntitiesOfClass(AnimaniaAnimalEntity.class,
-                        new net.minecraft.world.phys.AABB(wheelPos).inflate(1.5D)).isEmpty(),
+                        wheelArea).stream()
+                        .filter(animal -> "wheel_round_trip".equals(animal.getVariantName()))
+                        .map(net.minecraft.world.entity.Entity::getUUID)
+                        .allMatch(preexistingWheelHamsters::contains),
                 "wheel insertion left a duplicate live hamster outside");
-        helper.assertTrue(wheel.ejectHamster(), "wheel could not release its stored hamster");
-        var released = helper.getLevel().getEntitiesOfClass(AnimaniaAnimalEntity.class,
-                new net.minecraft.world.phys.AABB(wheelPos).inflate(1.5D));
+        InteractionResult releaseResult = ExtraContent.HAMSTER_WHEEL.get().use(
+                helper.getLevel().getBlockState(wheelPos), helper.getLevel(), wheelPos,
+                player, InteractionHand.MAIN_HAND, hit);
+        helper.assertTrue(releaseResult.consumesAction() && !wheel.hasHamster(),
+                "empty-hand sneak-use could not release the stored hamster from the wheel");
+        var released = helper.getLevel().getEntitiesOfClass(AnimaniaAnimalEntity.class, wheelArea).stream()
+                .filter(animal -> "wheel_round_trip".equals(animal.getVariantName()))
+                .filter(animal -> !preexistingWheelHamsters.contains(animal.getUUID()))
+                .toList();
         helper.assertTrue(released.size() == 1 && "wheel_round_trip".equals(released.get(0).getVariantName())
                         && player.getUUID().equals(released.get(0).getOwnerUUID()),
                 "wheel release did not restore exactly the same hamster state");

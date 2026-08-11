@@ -91,6 +91,15 @@ public final class ExtraHamsterWheelBlock extends AnimaniaContainerBlock {
                 return InteractionResult.CONSUME;
             }
         }
+        if (wheel != null && hand == InteractionHand.MAIN_HAND && wheel.hasHamster()
+                && player.isShiftKeyDown() && player.getItemInHand(hand).isEmpty()) {
+            if (level.isClientSide) return InteractionResult.SUCCESS;
+            if (wheel.ejectHamster()) {
+                level.playSound(null, pos, SoundEvents.ITEM_PICKUP, player.getSoundSource(), 1.0F, 1.0F);
+                player.swing(hand);
+            }
+            return InteractionResult.CONSUME;
+        }
         if (hand != InteractionHand.MAIN_HAND) return InteractionResult.PASS;
         if (level.isClientSide) return InteractionResult.SUCCESS;
         if (wheel != null && player instanceof ServerPlayer serverPlayer) {

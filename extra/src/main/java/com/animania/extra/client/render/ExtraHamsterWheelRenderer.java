@@ -14,16 +14,23 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 
+import java.util.Collections;
+import java.util.IdentityHashMap;
+import java.util.Set;
+
 /** Native animated renderer for the legacy hamster wheel and runner model. */
 public final class ExtraHamsterWheelRenderer implements BlockEntityRenderer<ExtraHamsterWheelBlockEntity> {
     private static final ResourceLocation WHEEL_TEXTURE = new ResourceLocation("animania_extra", "textures/entity/tileentities/hamster_wheel.png");
     private final ModelPart wheel;
     private final ModelPart wheelRotor;
+    private final Set<ModelPart> rotorParts;
     private final ModelPart hamster;
 
     public ExtraHamsterWheelRenderer(BlockEntityRendererProvider.Context context) {
         wheel = ExtraLegacyPropModels.create("model_hamster_wheel");
         wheelRotor = wheel.getChild("base1").getChild("wheel1");
+        rotorParts = Collections.newSetFromMap(new IdentityHashMap<>());
+        wheelRotor.getAllParts().forEach(rotorParts::add);
         hamster = context.bakeLayer(ExtraNativeModelLayers.LAYERS.get("hamster"));
     }
 
@@ -39,15 +46,22 @@ public final class ExtraHamsterWheelRenderer implements BlockEntityRenderer<Extr
         wheelRotor.visible = false;
         wheel.render(pose, wheelBuffer, packedLight, OverlayTexture.NO_OVERLAY);
         wheelRotor.visible = true;
+
+        // CraftStudio animated Wheel1 as a node whose pivot was moved to the
+        // centre of the complete ring (0, 13, 0 model pixels). Rendering the
+        // child by itself drops Base1's parent transform, which made the ring
+        // orbit an offset point. Keep the exact legacy hierarchy and rotate
+        // all rotor descendants together around the real axle instead.
+        wheel.getAllParts().forEach(part -> part.skipDraw = !rotorParts.contains(part));
         pose.pushPose();
-        pose.translate(0.0F, 6.5F / 16.0F, 0.0F);
-        wheelRotor.setPos(0.0F, 0.0F, 0.0F);
-        wheelRotor.xRot = 0.0F;
-        wheelRotor.yRot = 0.0F;
-        wheelRotor.zRot = entity.isRunning() && entity.getLevel() != null
+        pose.translate(0.0F, 13.0F / 16.0F, 0.0F);
+        float rotorAngle = entity.isRunning() && entity.getLevel() != null
                 ? -(entity.getLevel().getGameTime() + partialTick) * ((float) Math.PI / 40.0F) : 0.0F;
-        wheelRotor.render(pose, wheelBuffer, packedLight, OverlayTexture.NO_OVERLAY);
+        pose.mulPose(Axis.ZP.rotation(rotorAngle));
+        pose.translate(0.0F, -13.0F / 16.0F, 0.0F);
+        wheel.render(pose, wheelBuffer, packedLight, OverlayTexture.NO_OVERLAY);
         pose.popPose();
+        wheel.getAllParts().forEach(part -> part.skipDraw = false);
         if (entity.hasHamster()) {
             pose.pushPose();
             pose.scale(0.5F, 0.5F, 0.5F);
