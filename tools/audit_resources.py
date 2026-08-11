@@ -205,6 +205,15 @@ def _validate_advancement_graph(root: Path, namespace: str, module: str, errors:
                         if isinstance(criterion, dict)}
             if triggers != {"minecraft:impossible"}:
                 errors.append(f"{module}: advancement root {advancement_id} must use only minecraft:impossible")
+            display = data.get("display", {})
+            background = display.get("background") if isinstance(display, dict) else None
+            if isinstance(background, str) and ":" in background:
+                texture_namespace, texture_path = background.split(":", 1)
+                texture = root / "assets" / texture_namespace / texture_path
+                if not texture.is_file():
+                    errors.append(
+                        f"{module}: advancement root {advancement_id} has missing background texture {background}"
+                    )
         elif isinstance(parent, str) and parent.split(":", 1)[0] in MODULES.values() and parent not in records:
             errors.append(f"{module}: advancement {advancement_id} has missing Animania parent {parent}")
     if len(roots) != 1:

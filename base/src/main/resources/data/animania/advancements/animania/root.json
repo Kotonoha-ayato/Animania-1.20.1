@@ -9,7 +9,7 @@
     "description": {
       "translate": "advancements.animania.root.desc"
     },
-    "background": "animania:textures/blocks/mud.png",
+    "background": "animania:textures/block/mud.png",
     "show_toast": true,
     "announce_to_chat": true
   },
