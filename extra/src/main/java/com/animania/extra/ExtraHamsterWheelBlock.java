@@ -94,7 +94,7 @@ public final class ExtraHamsterWheelBlock extends AnimaniaContainerBlock {
         if (wheel != null && hand == InteractionHand.MAIN_HAND && wheel.hasHamster()
                 && player.isShiftKeyDown() && player.getItemInHand(hand).isEmpty()) {
             if (level.isClientSide) return InteractionResult.SUCCESS;
-            if (wheel.ejectHamster()) {
+            if (wheel.releaseHamster()) {
                 level.playSound(null, pos, SoundEvents.ITEM_PICKUP, player.getSoundSource(), 1.0F, 1.0F);
                 player.swing(hand);
             }

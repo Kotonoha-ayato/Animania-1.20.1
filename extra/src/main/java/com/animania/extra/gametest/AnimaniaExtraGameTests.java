@@ -833,8 +833,45 @@ public final class AnimaniaExtraGameTests {
                 .filter(animal -> !preexistingWheelHamsters.contains(animal.getUUID()))
                 .toList();
         helper.assertTrue(released.size() == 1 && "wheel_round_trip".equals(released.get(0).getVariantName())
-                        && player.getUUID().equals(released.get(0).getOwnerUUID()),
+                        && player.getUUID().equals(released.get(0).getOwnerUUID())
+                        && released.get(0).getHunger() > 0,
                 "wheel release did not restore exactly the same hamster state");
+        helper.assertTrue(released.get(0).mobInteract(player, InteractionHand.MAIN_HAND).consumesAction(),
+                "manually released hamster could not be carried again");
+        helper.assertTrue(AnimaniaAnimalEntity.hasCarriedAnimal(player),
+                "released hamster did not return to the player's shoulder");
+        InteractionResult reinsertResult = ExtraContent.HAMSTER_WHEEL.get().use(
+                helper.getLevel().getBlockState(wheelPos), helper.getLevel(), wheelPos,
+                player, InteractionHand.MAIN_HAND, hit);
+        helper.assertTrue(reinsertResult.consumesAction() && wheel.hasHamster()
+                        && !AnimaniaAnimalEntity.hasCarriedAnimal(player),
+                "manually released hamster could not be inserted into the wheel again");
+
+        java.util.Set<java.util.UUID> beforeSecondRelease = helper.getLevel()
+                .getEntitiesOfClass(AnimaniaAnimalEntity.class, wheelArea).stream()
+                .map(net.minecraft.world.entity.Entity::getUUID)
+                .collect(java.util.stream.Collectors.toSet());
+        helper.assertTrue(ExtraContent.HAMSTER_WHEEL.get().use(
+                        helper.getLevel().getBlockState(wheelPos), helper.getLevel(), wheelPos,
+                        player, InteractionHand.MAIN_HAND, hit).consumesAction() && !wheel.hasHamster(),
+                "reinserted hamster could not be removed for shoulder-release verification");
+        AnimaniaAnimalEntity secondRelease = helper.getLevel()
+                .getEntitiesOfClass(AnimaniaAnimalEntity.class, wheelArea).stream()
+                .filter(animal -> "wheel_round_trip".equals(animal.getVariantName()))
+                .filter(animal -> !beforeSecondRelease.contains(animal.getUUID()))
+                .filter(animal -> !animal.isRemoved())
+                .findFirst().orElseThrow();
+        helper.assertTrue(secondRelease.mobInteract(player, InteractionHand.MAIN_HAND).consumesAction()
+                        && AnimaniaAnimalEntity.hasCarriedAnimal(player),
+                "hamster could not return to the shoulder before normal placement");
+        BlockPos releaseTarget = helper.absolutePos(new BlockPos(6, 1, 1));
+        helper.assertTrue(com.animania.AnimaniaServerEvents.releaseCarriedAnimal(player, releaseTarget)
+                        && !AnimaniaAnimalEntity.hasCarriedAnimal(player),
+                "sneak-use placement could not release the hamster from the player's shoulder");
+        helper.assertTrue(helper.getLevel().getEntitiesOfClass(AnimaniaAnimalEntity.class,
+                        new net.minecraft.world.phys.AABB(releaseTarget).inflate(0.75D)).stream()
+                        .anyMatch(animal -> "wheel_round_trip".equals(animal.getVariantName())),
+                "shoulder release did not spawn the same hamster at the selected position");
         player.setShiftKeyDown(false);
         helper.succeed();
     }

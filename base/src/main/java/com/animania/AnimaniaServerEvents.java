@@ -1,6 +1,10 @@
 package com.animania;
 
 import com.animania.common.entity.AnimaniaAnimalEntity;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.EntityType;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import com.animania.common.AnimaniaSeedPlacement;
@@ -11,7 +15,6 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.living.MobSpawnEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraft.tags.BiomeTags;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
@@ -37,6 +40,57 @@ public final class AnimaniaServerEvents {
         if (!event.getLevel().isClientSide() && event.getEntity() instanceof AnimaniaAnimalEntity animal) {
             animal.ensureValidState();
         }
+    }
+
+    @SubscribeEvent
+    public void onCarriedAnimalRightClick(PlayerInteractEvent.RightClickBlock event) {
+        if (event.getLevel().isClientSide || !event.getEntity().isShiftKeyDown()
+                || !AnimaniaAnimalEntity.hasCarriedAnimal(event.getEntity())) return;
+        ResourceLocation clickedId = ForgeRegistries.BLOCKS.getKey(
+                event.getLevel().getBlockState(event.getPos()).getBlock());
+        // The wheel owns this interaction: releasing here would spawn the
+        // hamster on top instead of storing it inside the wheel.
+        if (ResourceLocation.fromNamespaceAndPath("animania_extra", "hamster_wheel").equals(clickedId)) return;
+        BlockPos target = event.getPos().above();
+        if (!releaseCarriedAnimal(event.getEntity(), target)) return;
+        event.setCanceled(true);
+        event.setCancellationResult(InteractionResult.CONSUME);
+    }
+
+    public static boolean releaseCarriedAnimal(net.minecraft.world.entity.player.Player player, BlockPos target) {
+        if (player == null || player.level().isClientSide || !AnimaniaAnimalEntity.hasCarriedAnimal(player)) return false;
+        String storedType = AnimaniaAnimalEntity.carriedAnimalType(player);
+        EntityType<?> type = resolveCarriedType(storedType);
+        if (type == null || !(type.create(player.level()) instanceof AnimaniaAnimalEntity animal)) return false;
+        animal.readAdditionalSaveData(AnimaniaAnimalEntity.carriedAnimalData(player));
+        animal.moveTo(target.getX() + 0.5D, target.getY(), target.getZ() + 0.5D, player.getYRot(), 0.0F);
+        if (!player.level().getWorldBorder().isWithinBounds(target) || !player.level().noCollision(animal)) {
+            animal.discard();
+            return false;
+        }
+        animal.setPersistenceRequired();
+        if (!player.level().addFreshEntity(animal)) return false;
+        AnimaniaAnimalEntity.clearCarriedAnimal(player);
+        player.swing(net.minecraft.world.InteractionHand.MAIN_HAND);
+        player.level().playSound(null, target, SoundEvents.ITEM_PICKUP,
+                net.minecraft.sounds.SoundSource.PLAYERS, 1.0F, 1.0F);
+        return true;
+    }
+
+    private static EntityType<?> resolveCarriedType(String storedType) {
+        if (storedType == null || storedType.isBlank()) return null;
+        if (storedType.indexOf(':') >= 0) {
+            ResourceLocation id = ResourceLocation.tryParse(storedType);
+            return id == null ? null : ForgeRegistries.ENTITY_TYPES.getValue(id);
+        }
+        // Compatibility with 1.12 player capability data, which stored only
+        // paths such as "hamster" rather than a namespaced registry id.
+        for (String namespace : java.util.List.of("animania_extra", "animania_farm", "animania_catsdogs", "animania")) {
+            EntityType<?> type = ForgeRegistries.ENTITY_TYPES.getValue(
+                    ResourceLocation.fromNamespaceAndPath(namespace, storedType));
+            if (type != null) return type;
+        }
+        return null;
     }
 
     @SubscribeEvent

@@ -96,14 +96,24 @@ public final class ExtraHamsterWheelBlockEntity extends AnimaniaStorageBlockEnti
     }
 
     public boolean ejectHamster() {
+        return releaseHamster(true);
+    }
+
+    /** Player-requested removal is not the legacy food-exhaustion path. */
+    public boolean releaseHamster() {
+        return releaseHamster(false);
+    }
+
+    private boolean releaseHamster(boolean markHungry) {
         if (!hasHamster() || level == null || level.isClientSide) return false;
         var type = ForgeRegistries.ENTITY_TYPES.getValue(
                 ResourceLocation.fromNamespaceAndPath(AnimaniaExtra.MOD_ID, "hamster"));
         if (type == null || !(type.create(level) instanceof AnimaniaAnimalEntity hamster)) return false;
         hamster.readAdditionalSaveData(hamsterData.copy());
-        // 1.12 marks the released runner as unfed; it must be fed again before
-        // it can immediately re-enter a wheel.
-        hamster.setHunger(0);
+        // The legacy wheel marks a runner unfed when its work cycle exhausts
+        // the food supply (and when the wheel is broken). A manual removal did
+        // not exist in 1.12, so it must not masquerade as food exhaustion.
+        if (markHungry) hamster.setHunger(0);
         for (net.minecraft.core.Direction direction : net.minecraft.core.Direction.values()) {
             if (direction == net.minecraft.core.Direction.DOWN) continue;
             BlockPos target = worldPosition.relative(direction);
