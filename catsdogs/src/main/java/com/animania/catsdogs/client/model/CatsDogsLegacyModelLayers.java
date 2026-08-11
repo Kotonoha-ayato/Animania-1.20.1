@@ -901,7 +901,7 @@ public final class CatsDogsLegacyModelLayers {
         PartDefinition toe211 = leg4_offset.addOrReplaceChild("toe211", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, -2.0F, 0.0F, -0.000002F, 0.0F, 0.0F));
         PartDefinition toe211_offset = toe211.addOrReplaceChild("_offset", CubeListBuilder.create().texOffs(0, 22).addBox(-1.0F, -0.5F, -0.5F, 2.0F, 1.0F, 1.0F), PartPose.offset(0.0F, 3.5F, -1.0F));
         PartDefinition head = body_offset.addOrReplaceChild("head", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, -1.0F, -6.0F, 0.0F, 0.0F, 0.0F));
-        PartDefinition head_offset = head.addOrReplaceChild("_offset", CubeListBuilder.create().texOffs(16, 16).addBox(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F), PartPose.offset(0.0F, 0.0F, 0.0F));
+        PartDefinition head_offset = head.addOrReplaceChild("_offset", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
         PartDefinition wolf_head = head_offset.addOrReplaceChild("wolf_head", CubeListBuilder.create(), PartPose.offsetAndRotation(1.0F, 0.0F, 1.0F, 0.0F, 0.0F, 0.0F));
         PartDefinition wolf_head_offset = wolf_head.addOrReplaceChild("_offset", CubeListBuilder.create().texOffs(0, 0).addBox(-2.0F, -2.0F, -2.0F, 4.0F, 4.0F, 4.0F), PartPose.offset(-1.0F, -1.0F, -2.0F));
         PartDefinition ear1 = wolf_head_offset.addOrReplaceChild("ear1", CubeListBuilder.create(), PartPose.offsetAndRotation(-2.0F, -2.0F, 0.0F, 0.0F, 0.0F, 0.174533F));
@@ -1135,7 +1135,7 @@ public final class CatsDogsLegacyModelLayers {
         PartDefinition tail2 = tail_offset.addOrReplaceChild("tail2", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 1.9883F, -1.5034F, 0.350788F, 0.0F, 0.0F));
         PartDefinition tail2_offset = tail2.addOrReplaceChild("_offset", CubeListBuilder.create().texOffs(41, 52).addBox(-1.0F, -1.0F, -4.5F, 2.0F, 2.0F, 9.0F), PartPose.offset(0.0F, 0.8F, 12.0F));
         PartDefinition neck = body_offset.addOrReplaceChild("neck", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, -5.1F, -5.38F, 0.0F, 0.0F, 0.0F));
-        PartDefinition neck_offset = neck.addOrReplaceChild("_offset", CubeListBuilder.create().texOffs(16, 16).addBox(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F), PartPose.offset(0.0F, 0.0F, 0.0F));
+        PartDefinition neck_offset = neck.addOrReplaceChild("_offset", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
         PartDefinition neck1 = neck_offset.addOrReplaceChild("neck1", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0001F, -1.003913F, 0.0F, 0.0F));
         PartDefinition neck1_offset = neck1.addOrReplaceChild("_offset", CubeListBuilder.create().texOffs(0, 1).addBox(-2.5F, -2.5F, -7.0F, 5.0F, 5.0F, 14.0F), PartPose.offset(0.0F, 2.0F, -1.0F));
         PartDefinition neck2 = neck1_offset.addOrReplaceChild("neck2", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, -4.5F, -0.04F, 0.385863F, 0.0F, 0.0F));
@@ -1300,7 +1300,7 @@ public final class CatsDogsLegacyModelLayers {
         PartDefinition front_left = upperbody_offset.addOrReplaceChild("front_left", CubeListBuilder.create(), PartPose.offsetAndRotation(2.5F, 5.0F, 0.0F, 0.0F, 0.0F, 0.0F));
         PartDefinition front_left_offset = front_left.addOrReplaceChild("_offset", CubeListBuilder.create().texOffs(3, 9).addBox(-1.5F, -3.0F, -1.5F, 3.0F, 6.0F, 3.0F), PartPose.offset(0.0F, 2.5F, 0.0F));
         PartDefinition neck_base = upperbody_offset.addOrReplaceChild("neck_base", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 1.0F, 0.0F, -0.030037F, 0.0F, 0.0F));
-        PartDefinition neck_base_offset = neck_base.addOrReplaceChild("_offset", CubeListBuilder.create().texOffs(16, 16).addBox(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F), PartPose.offset(0.0F, -6.0F, -3.0F));
+        PartDefinition neck_base_offset = neck_base.addOrReplaceChild("_offset", CubeListBuilder.create(), PartPose.offset(0.0F, -6.0F, -3.0F));
         PartDefinition neck = neck_base_offset.addOrReplaceChild("neck", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 6.0F, 3.0F, -0.554694F, 0.0F, 0.0F));
         PartDefinition neck_offset = neck.addOrReplaceChild("_offset", CubeListBuilder.create().texOffs(29, 27).addBox(-3.5F, -3.5F, -4.0F, 7.0F, 7.0F, 8.0F), PartPose.offset(0.0F, 0.0F, -4.0F));
         PartDefinition pug_head = neck_offset.addOrReplaceChild("pug_head", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 0.8914F, -4.3271F, 0.610865F, 0.0F, 0.0F));
@@ -1402,7 +1402,7 @@ public final class CatsDogsLegacyModelLayers {
         PartDefinition tail = body_offset.addOrReplaceChild("tail", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, -5.0F, 4.0F, 0.0F, 0.0F, 0.0F));
         PartDefinition tail_offset = tail.addOrReplaceChild("_offset", CubeListBuilder.create().texOffs(6, 39).addBox(-1.0F, -3.0F, -3.0F, 2.0F, 6.0F, 6.0F), PartPose.offset(0.0F, 0.0F, 2.0F));
         PartDefinition neck_base = body_offset.addOrReplaceChild("neck_base", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, -1.0F, -4.0F, 0.0F, 0.0F, -0.157078F));
-        PartDefinition neck_base_offset = neck_base.addOrReplaceChild("_offset", CubeListBuilder.create().texOffs(16, 16).addBox(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F), PartPose.offset(0.0F, 0.0F, 0.0F));
+        PartDefinition neck_base_offset = neck_base.addOrReplaceChild("_offset", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
         PartDefinition neck = neck_base_offset.addOrReplaceChild("neck", CubeListBuilder.create(), PartPose.offsetAndRotation(0.7821F, -4.9384F, -3.5F, -0.610866F, 0.000001F, 0.15708F));
         PartDefinition neck_offset = neck.addOrReplaceChild("_offset", CubeListBuilder.create().texOffs(27, 27).addBox(-3.5F, -3.5F, -4.0F, 7.0F, 7.0F, 8.0F), PartPose.offset(0.0F, 3.0F, 4.0F));
         PartDefinition pug_head = neck_offset.addOrReplaceChild("pug_head", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 0.8914F, -4.3271F, 0.610865F, 0.0F, 0.0F));

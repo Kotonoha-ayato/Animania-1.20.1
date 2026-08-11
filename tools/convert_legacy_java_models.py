@@ -9,6 +9,10 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 MOD_IDS = {"farm": "animania_farm", "extra": "animania_extra", "catsdogs": "animania_catsdogs"}
+FIELD_INITIALIZER = re.compile(
+    r"\b(?:public|protected|private)\s+(?:final\s+)?ModelRenderer(?:Animania|Colored)?\s+"
+    r"(?P<name>\w+)\s*=\s*new\s+ModelRenderer(?:Animania|Colored)?\s*\([^;]*?\)\s*;"
+)
 
 
 def snake(value: str) -> str:
@@ -164,10 +168,16 @@ def parse_model(path: Path) -> Model:
                 constructor = candidate_body
                 break
     # Geometry and default pivots belong to the no-argument constructor.
-    # Scanning the full file accidentally promoted literal values in
-    # setLivingAnimations/setRotationAngles (notably dog sitting poses) into
-    # the initial mesh pose.
-    geometry = constructor if constructor is not None else text
+    # A number of 1.12 models (the cow, pig, and several goat families) make
+    # their primary bone a field initializer, e.g.
+    # ``public ModelRenderer head = new ModelRenderer(this, 0, 0);``.  The
+    # previous converter scanned only the constructor, so it silently dropped
+    # that parent bone and emitted its muzzle/ears/horns at the root.  Include
+    # only those allocation statements, not the whole class: scanning the full
+    # file would incorrectly promote runtime animation assignments to rest
+    # poses.
+    field_initializers = "\n".join(match.group(0) for match in FIELD_INITIALIZER.finditer(text))
+    geometry = field_initializers + "\n" + (constructor if constructor is not None else text)
     defaults = geometry
     if constructor is not None and re.search(r"(?:this\.)?setupAngles\s*\(\s*\)", constructor):
         setup = method_body(text, re.compile(r"\b(?:public|private|protected)?\s*(?:final\s+)?void\s+setupAngles\s*\(\s*\)\s*\{"))
@@ -403,6 +413,14 @@ def emit_part(lines: list[str], model: Model, part: Part, variable: str, indent:
     builder = "CubeListBuilder.create()"
     if part.mirror: builder += ".mirror()"
     for box in part.boxes:
+        # Legacy models use 0×0×0 boxes as named transform-only bones
+        # (notably every goat's HeadNode).  ModelPart renders such a cube as
+        # a stray black pixel, unlike the old ModelRenderer.  Preserve the
+        # bone and its children but omit only fully degenerate geometry;
+        # single-zero-dimension boxes are intentional textured planes such as
+        # feathers and tail hair and must remain renderable.
+        if all(abs(value) <= 0.0000001 for value in box[3:6]):
+            continue
         builder += f".texOffs({part.uv[0]}, {part.uv[1]}).addBox({', '.join(f(v) for v in box[:6])}"
         if len(box) == 7: builder += f", new CubeDeformation({f(box[6])})"
         builder += ")"

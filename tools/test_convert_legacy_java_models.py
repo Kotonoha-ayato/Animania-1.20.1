@@ -5,6 +5,7 @@ from __future__ import annotations
 import importlib.util
 import math
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -17,6 +18,14 @@ assert SPEC is not None and SPEC.loader is not None
 CONVERTER = importlib.util.module_from_spec(SPEC)
 sys.modules[SPEC.name] = CONVERTER
 SPEC.loader.exec_module(CONVERTER)
+
+PIVOT_SPEC = importlib.util.spec_from_file_location(
+    "repair_zero_volume_pivots", ROOT / "tools" / "repair_zero_volume_pivots.py"
+)
+assert PIVOT_SPEC is not None and PIVOT_SPEC.loader is not None
+PIVOT_REPAIR = importlib.util.module_from_spec(PIVOT_SPEC)
+sys.modules[PIVOT_SPEC.name] = PIVOT_REPAIR
+PIVOT_SPEC.loader.exec_module(PIVOT_REPAIR)
 
 
 class LegacyJavaModelConverterTest(unittest.TestCase):
@@ -72,6 +81,122 @@ class LegacyJavaModelConverterTest(unittest.TestCase):
         )
         self.assertNotIn("Horn1", model.parts)
         self.assertNotIn("Horn2", model.parts)
+
+    def test_field_initialized_parent_bone_keeps_its_geometry_and_children(self) -> None:
+        # ModelCow declares its head at field scope instead of in the
+        # constructor.  Losing that declaration drops the entire head and
+        # flattens its facial children at the root in the generated layer.
+        model = CONVERTER.parse_model(
+            ROOT / "upstream/Animania-1.12/src/main/java/com/animania/addons/farm/client/model/cow/ModelCow.java"
+        )
+        self.assertIn("head", model.parts)
+        self.assertEqual((0.0, 5.0, -12.0), model.parts["head"].pos)
+        self.assertEqual([(-4.0, -4.0, -3.0, 8.0, 8.0, 6.0)], model.parts["head"].boxes)
+        self.assertEqual(["Horn1", "Horn2", "Snout", "EarL", "EarLa", "EarR", "EarRa"],
+                         model.parts["head"].children)
+
+    def test_all_adult_cow_layers_keep_the_field_initialized_head_hierarchy(self) -> None:
+        target = (ROOT / "farm/src/main/java/com/animania/farm/client/model/FarmLegacyModelLayers.java")
+        text = target.read_text(encoding="utf-8")
+        sources = (
+            ("model_cow", "ModelCow.java"),
+            ("model_cow_angus", "ModelCowAngus.java"),
+            ("model_cow_hereford", "ModelCowHereford.java"),
+            ("model_cow_longhorn", "ModelCowLonghorn.java"),
+        )
+        source_root = ROOT / "upstream/Animania-1.12/src/main/java/com/animania/addons/farm/client/model/cow"
+        for method, source_name in sources:
+            start = text.index(f"    private static LayerDefinition {method}()")
+            end = text.find("    private static LayerDefinition ", start + 1)
+            generated = text[start:end if end >= 0 else len(text)]
+            legacy = CONVERTER.parse_model(source_root / source_name)
+            self.assertIn('PartDefinition head = root.addOrReplaceChild("head"', generated, method)
+            for child in legacy.parts["head"].children:
+                self.assertIn(f'head.addOrReplaceChild("{CONVERTER.snake(child)}"', generated,
+                              f"{method} lost head child {child}")
+
+    def test_generated_layers_contain_no_renderable_zero_volume_pivots(self) -> None:
+        pattern = PIVOT_REPAIR.ZERO_VOLUME_BOX
+        layers = [
+            *ROOT.glob("*/src/main/java/**/**LegacyModelLayers.java"),
+        ]
+        self.assertTrue(layers)
+        for layer in layers:
+            self.assertIsNone(pattern.search(layer.read_text(encoding="utf-8")), layer)
+
+    def test_zero_volume_pivot_repair_preserves_flat_detail_planes(self) -> None:
+        text = (
+            "CubeListBuilder.create().texOffs(1, 2).addBox(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F)\n"
+            "CubeListBuilder.create().texOffs(1, 2).addBox(-1.0F, 0.0F, -2.0F, 2.0F, 0.0F, 4.0F)\n"
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "Layer.java"
+            path.write_text(text, encoding="utf-8")
+            self.assertEqual(1, PIVOT_REPAIR.repair(path))
+            repaired = path.read_text(encoding="utf-8")
+        self.assertEqual("CubeListBuilder.create()", repaired.splitlines()[0])
+        self.assertIn("addBox(-1.0F, 0.0F, -2.0F, 2.0F, 0.0F, 4.0F)", repaired)
+
+    def test_every_field_initialized_renderer_is_retained_across_all_animal_modules(self) -> None:
+        addon_root = ROOT / "upstream/Animania-1.12/src/main/java/com/animania/addons"
+        sources = [
+            *sorted((addon_root / "farm/client").rglob("Model*.java")),
+            *sorted((addon_root / "extra/client").rglob("Model*.java")),
+            *sorted((addon_root / "catsdogs/client").rglob("Model*.java")),
+        ]
+        for source in sources:
+            text = source.read_text(encoding="utf-8", errors="replace")
+            text = CONVERTER.re.sub(r"/\*.*?\*/", "", text, flags=CONVERTER.re.S)
+            text = CONVERTER.re.sub(r"//[^\n]*", "", text)
+            expected = {match.group("name") for match in CONVERTER.FIELD_INITIALIZER.finditer(text)}
+            if expected:
+                model = CONVERTER.parse_model(source)
+                self.assertTrue(expected <= set(model.parts),
+                                f"{source.relative_to(ROOT)} dropped {expected - set(model.parts)}")
+
+    def test_every_generated_animal_layer_keeps_source_nodes_and_parentage(self) -> None:
+        """Prevent another flattened/lost-bone regression across animal layers.
+
+        Property models intentionally live in the dedicated prop-model classes
+        and are not included here.  Every generated animal layer must retain
+        every parsed source node and attach it to the same parent (or to that
+        parent's native offset node when the legacy model used one).
+        """
+        audited: dict[str, int] = {"farm": 0, "extra": 0, "catsdogs": 0}
+        layer_names = {
+            "farm": "FarmLegacyModelLayers.java",
+            "extra": "ExtraLegacyModelLayers.java",
+            "catsdogs": "CatsDogsLegacyModelLayers.java",
+        }
+        for module, layer_name in layer_names.items():
+            source_root = ROOT / "upstream/Animania-1.12/src/main/java/com/animania/addons" / module / "client"
+            package = "catsdogs" if module == "catsdogs" else module
+            layer = ROOT / module / "src/main/java/com/animania" / package / "client/model" / layer_name
+            generated_layer = layer.read_text(encoding="utf-8")
+            for source in sorted(source_root.rglob("Model*.java")):
+                try:
+                    model = CONVERTER.parse_model(source)
+                except ValueError:
+                    continue  # CraftStudio and delegated prop models
+                signature = f"    private static LayerDefinition {CONVERTER.snake(model.name)}()"
+                if signature not in generated_layer:
+                    continue  # Dedicated prop-model class, not an animal layer
+                start = generated_layer.index(signature)
+                end = generated_layer.find("    private static LayerDefinition ", start + len(signature))
+                generated = generated_layer[start:end if end >= 0 else len(generated_layer)]
+                audited[module] += 1
+                for part in model.parts.values():
+                    self.assertIn(f"PartDefinition {CONVERTER.snake(part.name)} =", generated,
+                                  f"{source.relative_to(ROOT)} lost {part.name}")
+                    receiver = CONVERTER.snake(part.name)
+                    if CONVERTER.uses_offset_node(part):
+                        receiver += "_offset"
+                    for child in part.children:
+                        self.assertIn(
+                            f'{receiver}.addOrReplaceChild("{CONVERTER.snake(child)}"', generated,
+                            f"{source.relative_to(ROOT)} detached {part.name}/{child}",
+                        )
+        self.assertEqual({"farm": 55, "extra": 16, "catsdogs": 22}, audited)
 
     def test_detail_is_not_a_tail_token(self) -> None:
         model = CONVERTER.parse_model(
@@ -146,6 +271,18 @@ class LegacyJavaModelConverterTest(unittest.TestCase):
         self.assertIn('addOrReplaceChild("_offset"', emitted)
         self.assertIn("PartPose.offset(0.5F, -1.0F, 2.0F)", emitted)
         self.assertIn("PartPose.offsetAndRotation(4.0F, 5.0F, 6.0F", emitted)
+
+    def test_zero_volume_pivot_is_not_rendered_but_textured_planes_are_retained(self) -> None:
+        pivot = CONVERTER.Part("pivot", boxes=[
+            (0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+            (-1.0, 0.0, -2.0, 2.0, 0.0, 4.0),
+        ])
+        model = CONVERTER.Model("Synthetic", 64, 32, {"pivot": pivot}, set())
+        lines: list[str] = []
+        CONVERTER.emit_part(lines, model, pivot, "root", "")
+        emitted = "\n".join(lines)
+        self.assertNotIn("addBox(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F)", emitted)
+        self.assertIn("addBox(-1.0F, 0.0F, -2.0F, 2.0F, 0.0F, 4.0F)", emitted)
 
     def test_source_named_pet_limbs_all_receive_gait_paths(self) -> None:
         dog_root = ROOT / "upstream/Animania-1.12/src/main/java/com/animania/addons/catsdogs/client/models/dogs"

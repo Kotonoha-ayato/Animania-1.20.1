@@ -208,7 +208,7 @@ public final class ExtraLegacyModelLayers {
     private static LayerDefinition model_hedgehog() {
         MeshDefinition mesh = new MeshDefinition();
         PartDefinition root = mesh.getRoot();
-        PartDefinition body_node = root.addOrReplaceChild("body_node", CubeListBuilder.create().texOffs(16, 16).addBox(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F), PartPose.offsetAndRotation(0.0F, 19.5F, 0.0F, 1.570796F, -3.141593F, 0.0F));
+        PartDefinition body_node = root.addOrReplaceChild("body_node", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 19.5F, 0.0F, 1.570796F, -3.141593F, 0.0F));
         PartDefinition leg_front_left = root.addOrReplaceChild("leg_front_left", CubeListBuilder.create().texOffs(46, 1).addBox(-0.5F, -0.5F, -1.0F, 1.0F, 2.0F, 2.0F), PartPose.offsetAndRotation(3.0F, 21.5F, -2.0F, 0.0F, -3.141593F, 0.0F));
         PartDefinition leg_front_left_foot = root.addOrReplaceChild("leg_front_left_foot", CubeListBuilder.create().texOffs(5, 4).addBox(-0.5F, 0.0F, -1.0F, 1.0F, 1.0F, 2.0F), PartPose.offsetAndRotation(3.0F, 23.0F, -2.5F, 0.0F, 2.932153F, 0.0F));
         PartDefinition block3 = root.addOrReplaceChild("block3", CubeListBuilder.create().texOffs(0, 25).addBox(-3.5F, -0.5F, -5.5F, 7.0F, 1.0F, 11.0F), PartPose.offsetAndRotation(-0.0F, 20.5F, -1.5F, 0.0F, -3.141593F, 0.0F));
@@ -350,7 +350,7 @@ public final class ExtraLegacyModelLayers {
     private static LayerDefinition model_peachick() {
         MeshDefinition mesh = new MeshDefinition();
         PartDefinition root = mesh.getRoot();
-        PartDefinition root_node = root.addOrReplaceChild("root_node", CubeListBuilder.create().texOffs(16, 16).addBox(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F), PartPose.offsetAndRotation(0.0F, 11.5F, 0.0F, 0.0F, 0.0F, 0.0F));
+        PartDefinition root_node = root.addOrReplaceChild("root_node", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 11.5F, 0.0F, 0.0F, 0.0F, 0.0F));
         PartDefinition neck = root.addOrReplaceChild("neck", CubeListBuilder.create().texOffs(3, 19).addBox(-2.5F, -2.5F, -2.0F, 5.0F, 5.0F, 4.0F), PartPose.offsetAndRotation(0.0F, 13.3998F, -1.0F, -0.539251F, 0.0F, 0.0F));
         PartDefinition neck2 = neck.addOrReplaceChild("neck2", CubeListBuilder.create().texOffs(21, 21).addBox(-2.0F, -2.0F, -1.5F, 4.0F, 4.0F, 3.0F), PartPose.offsetAndRotation(0.0F, -1.49826F, -2.01686F, -0.94909F, 0.0F, 0.0F));
         PartDefinition neck3 = neck.addOrReplaceChild("neck3", CubeListBuilder.create().texOffs(5, 30).addBox(-1.5F, -1.5F, -5.0F, 3.0F, 3.0F, 4.0F), PartPose.offsetAndRotation(0.0F, -1.20705F, -2.423303F, -1.376694F, 0.0F, 0.0F));
@@ -404,7 +404,7 @@ public final class ExtraLegacyModelLayers {
     private static LayerDefinition model_peacock() {
         MeshDefinition mesh = new MeshDefinition();
         PartDefinition root = mesh.getRoot();
-        PartDefinition root_node = root.addOrReplaceChild("root_node", CubeListBuilder.create().texOffs(16, 16).addBox(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F), PartPose.offsetAndRotation(0.0F, 10.5F, 0.0F, 0.0F, 0.0F, 0.0F));
+        PartDefinition root_node = root.addOrReplaceChild("root_node", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 10.5F, 0.0F, 0.0F, 0.0F, 0.0F));
         PartDefinition neck = root.addOrReplaceChild("neck", CubeListBuilder.create().texOffs(3, 19).addBox(-2.5F, -2.5F, -2.0F, 5.0F, 5.0F, 4.0F), PartPose.offsetAndRotation(0.0F, 12.3998F, -1.0F, -0.539251F, 0.0F, 0.0F));
         PartDefinition neck2 = neck.addOrReplaceChild("neck2", CubeListBuilder.create().texOffs(21, 21).addBox(-2.0F, -2.0F, -1.5F, 4.0F, 4.0F, 3.0F), PartPose.offsetAndRotation(0.0F, -1.49826F, -2.01686F, -0.94909F, 0.0F, 0.0F));
         PartDefinition neck3 = neck.addOrReplaceChild("neck3", CubeListBuilder.create().texOffs(3, 28).addBox(-1.51F, -1.5F, -6.0F, 3.0F, 3.0F, 6.0F), PartPose.offsetAndRotation(0.0F, -1.8998F, -2.75F, -1.376694F, 0.0F, 0.0F));
@@ -425,7 +425,7 @@ public final class ExtraLegacyModelLayers {
         PartDefinition foot2b = leg2_top.addOrReplaceChild("foot2b", CubeListBuilder.create().texOffs(25, 0).addBox(-0.5F, -0.5F, -1.5F, 1.0F, 1.0F, 3.0F), PartPose.offsetAndRotation(0.75F, 7.15175F, -0.549126F, 0.0F, 0.0F, 0.0F));
         PartDefinition tail1 = root.addOrReplaceChild("tail1", CubeListBuilder.create().texOffs(36, 20).addBox(-2.5F, -2.0F, -2.0F, 5.0F, 4.0F, 4.0F), PartPose.offsetAndRotation(0.0F, 14.10777F, 5.446827F, -0.436332F, 0.0F, 0.0F));
         PartDefinition tail2 = tail1.addOrReplaceChild("tail2", CubeListBuilder.create().texOffs(25, 14).addBox(-2.0F, -1.0F, -1.5F, 4.0F, 2.0F, 3.0F), PartPose.offsetAndRotation(0.0F, 0.15024F, 2.688388F, -0.121238F, 0.0F, 0.0F));
-        PartDefinition fan_node_a = root.addOrReplaceChild("fan_node_a", CubeListBuilder.create().texOffs(6, 13).addBox(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F), PartPose.offsetAndRotation(0.0F, 19.89287F, 14.49056F, -0.261799F, 0.0F, 0.0F));
+        PartDefinition fan_node_a = root.addOrReplaceChild("fan_node_a", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 19.89287F, 14.49056F, -0.261799F, 0.0F, 0.0F));
         PartDefinition feather_a = fan_node_a.addOrReplaceChild("feather_a", CubeListBuilder.create().texOffs(63, 0).addBox(-6.5F, -42.5F, 0.0F, 13.0F, 64.0F, 0.0F), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, -0.261799F, 0.0F, 0.0F));
         PartDefinition feather_a1 = fan_node_a.addOrReplaceChild("feather_a1", CubeListBuilder.create().texOffs(63, 0).addBox(-6.5F, -42.5F, 0.0F, 13.0F, 64.0F, 0.0F), PartPose.offsetAndRotation(4.0F, 0.0F, 0.0F, -0.279253F, 0.0F, 0.226893F));
         PartDefinition feather_a1b = fan_node_a.addOrReplaceChild("feather_a1b", CubeListBuilder.create().texOffs(63, 0).addBox(-6.5F, -42.5F, 0.0F, 13.0F, 64.0F, 0.0F), PartPose.offsetAndRotation(-4.0F, 0.0F, 0.0F, -0.279253F, 0.0F, -0.226893F));
@@ -443,7 +443,7 @@ public final class ExtraLegacyModelLayers {
         PartDefinition feather_a7b = fan_node_a.addOrReplaceChild("feather_a7b", CubeListBuilder.create().texOffs(63, 0).addBox(-6.5F, -42.5F, 0.0F, 13.0F, 64.0F, 0.0F), PartPose.offsetAndRotation(-22.0F, 14.78575F, 0.0F, -0.363588F, -0.033811F, -1.579455F));
         PartDefinition feather_a8 = fan_node_a.addOrReplaceChild("feather_a8", CubeListBuilder.create().texOffs(63, 0).addBox(-6.5F, -42.5F, 0.0F, 13.0F, 64.0F, 0.0F), PartPose.offsetAndRotation(22.0F, 17.78575F, 0.0F, -0.370742F, -0.051005F, 1.828417F));
         PartDefinition feather_a8b = fan_node_a.addOrReplaceChild("feather_a8b", CubeListBuilder.create().texOffs(63, 0).addBox(-6.5F, -42.5F, 0.0F, 13.0F, 64.0F, 0.0F), PartPose.offsetAndRotation(-22.0F, 17.78575F, 0.0F, -0.370742F, -0.051005F, -1.801868F));
-        PartDefinition fan_node_b = root.addOrReplaceChild("fan_node_b", CubeListBuilder.create().texOffs(6, 13).addBox(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F), PartPose.offsetAndRotation(0.0F, 23.74961F, 10.853049F, -0.261799F, 0.0F, 0.0F));
+        PartDefinition fan_node_b = root.addOrReplaceChild("fan_node_b", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 23.74961F, 10.853049F, -0.261799F, 0.0F, 0.0F));
         PartDefinition feather_b = fan_node_b.addOrReplaceChild("feather_b", CubeListBuilder.create().texOffs(63, 0).addBox(-6.5F, -35.0F, 0.0F, 13.0F, 52.0F, 0.0F), PartPose.offsetAndRotation(0.0F, 2.42125F, -0.559251F, -0.261799F, 0.0F, 0.0F));
         PartDefinition feather_b1 = fan_node_b.addOrReplaceChild("feather_b1", CubeListBuilder.create().texOffs(63, 0).addBox(-6.5F, -35.0F, 0.0F, 13.0F, 52.0F, 0.0F), PartPose.offsetAndRotation(4.0F, 2.41482F, -0.647048F, -0.279253F, 0.0F, 0.226893F));
         PartDefinition feather_b1b = fan_node_b.addOrReplaceChild("feather_b1b", CubeListBuilder.create().texOffs(63, 0).addBox(-6.5F, -35.0F, 0.0F, 13.0F, 52.0F, 0.0F), PartPose.offsetAndRotation(-4.0F, 2.41482F, -0.647048F, -0.279253F, 0.0F, -0.226893F));
@@ -461,7 +461,7 @@ public final class ExtraLegacyModelLayers {
         PartDefinition feather_b7b = fan_node_b.addOrReplaceChild("feather_b7b", CubeListBuilder.create().texOffs(63, 0).addBox(-6.5F, -35.0F, 0.0F, 13.0F, 52.0F, 0.0F), PartPose.offsetAndRotation(-22.0F, 18.41404F, -0.647049F, -0.363588F, -0.033811F, -1.579455F));
         PartDefinition feather_b8 = fan_node_b.addOrReplaceChild("feather_b8", CubeListBuilder.create().texOffs(63, 0).addBox(-6.5F, -35.0F, 0.0F, 13.0F, 52.0F, 0.0F), PartPose.offsetAndRotation(22.0F, 21.41404F, -0.647049F, -0.370742F, -0.051005F, 1.828418F));
         PartDefinition feather_b8b = fan_node_b.addOrReplaceChild("feather_b8b", CubeListBuilder.create().texOffs(63, 0).addBox(-6.5F, -35.0F, 0.0F, 13.0F, 52.0F, 0.0F), PartPose.offsetAndRotation(-22.0F, 21.41404F, -0.647049F, -0.370741F, -0.051005F, -1.801867F));
-        PartDefinition fan_node_c = root.addOrReplaceChild("fan_node_c", CubeListBuilder.create().texOffs(6, 13).addBox(0.0F, 3.0F, 0.0F, 0.0F, 0.0F, 0.0F), PartPose.offsetAndRotation(0.13F, 26.575961F, 3.868241F, -0.261799F, 0.0F, 0.0F));
+        PartDefinition fan_node_c = root.addOrReplaceChild("fan_node_c", CubeListBuilder.create(), PartPose.offsetAndRotation(0.13F, 26.575961F, 3.868241F, -0.261799F, 0.0F, 0.0F));
         PartDefinition feather_b11 = fan_node_c.addOrReplaceChild("feather_b11", CubeListBuilder.create().texOffs(63, 0).addBox(-6.5F, -27.0F, 0.0F, 13.0F, 40.0F, 0.0F), PartPose.offsetAndRotation(0.003028F, 2.943489F, -0.798643F, -0.279253F, 0.0F, -0.226893F));
         PartDefinition feather_b1b1 = fan_node_c.addOrReplaceChild("feather_b1b1", CubeListBuilder.create().texOffs(63, 0).addBox(-6.5F, -27.0F, 0.0F, 13.0F, 40.0F, 0.0F), PartPose.offsetAndRotation(0.003028F, 2.943489F, -0.798643F, -0.279253F, 0.0F, 0.226893F));
         PartDefinition feather_b21 = fan_node_c.addOrReplaceChild("feather_b21", CubeListBuilder.create().texOffs(63, 0).addBox(-6.5F, -27.0F, 0.0F, 13.0F, 40.0F, 0.0F), PartPose.offsetAndRotation(4.003028F, 4.943489F, -0.798643F, -0.314159F, 0.0F, 0.680679F));
@@ -574,7 +574,7 @@ public final class ExtraLegacyModelLayers {
     private static LayerDefinition model_peafowl() {
         MeshDefinition mesh = new MeshDefinition();
         PartDefinition root = mesh.getRoot();
-        PartDefinition root_node = root.addOrReplaceChild("root_node", CubeListBuilder.create().texOffs(16, 16).addBox(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F), PartPose.offsetAndRotation(0.0F, 11.5F, 0.0F, 0.0F, 0.0F, 0.0F));
+        PartDefinition root_node = root.addOrReplaceChild("root_node", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 11.5F, 0.0F, 0.0F, 0.0F, 0.0F));
         PartDefinition neck = root.addOrReplaceChild("neck", CubeListBuilder.create().texOffs(3, 19).addBox(-2.5F, -2.5F, -2.0F, 5.0F, 5.0F, 4.0F), PartPose.offsetAndRotation(0.0F, 13.3998F, -1.0F, -0.539251F, 0.0F, 0.0F));
         PartDefinition neck2 = neck.addOrReplaceChild("neck2", CubeListBuilder.create().texOffs(21, 21).addBox(-2.0F, -2.0F, -1.5F, 4.0F, 4.0F, 3.0F), PartPose.offsetAndRotation(0.0F, -1.49826F, -2.01686F, -0.94909F, 0.0F, 0.0F));
         PartDefinition neck3 = neck.addOrReplaceChild("neck3", CubeListBuilder.create().texOffs(5, 30).addBox(-1.5F, -1.5F, -5.0F, 3.0F, 3.0F, 4.0F), PartPose.offsetAndRotation(0.0F, -1.20705F, -2.423303F, -1.376694F, 0.0F, 0.0F));

@@ -1,8 +1,10 @@
 name: Animania Forge 1.20.1
 
 on:
-  push:
-  pull_request:
+  # Development checkpoints are pushed frequently so players can test model
+  # fixes.  Run this expensive full-release gate deliberately from Actions;
+  # it should not send a failed-workflow email for every checkpoint push.
+  workflow_dispatch:
 
 jobs:
   build:
