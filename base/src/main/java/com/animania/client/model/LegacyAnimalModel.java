@@ -140,6 +140,14 @@ public final class LegacyAnimalModel extends HierarchicalModel<AnimaniaAnimalEnt
         } else if (entity.getHunger() < 25) {
             heads.forEach(part -> part.xRot += 0.35F + Mth.sin(ageInTicks * 0.45F) * 0.12F);
         }
+        if (entity.getCrowDuration() > 0 && entity.registryPath().startsWith("rooster_")) {
+            ModelPart neck = child("neck");
+            if (neck != null) {
+                int duration = entity.getCrowDuration();
+                neck.xRot = duration < 10 ? -(duration * 0.005F)
+                        : duration >= 40 ? -0.5742105F + duration * 0.005F : -0.5742105F;
+            }
+        }
     }
 
     /** Applies the final positions written by ModelHamster#setLivingAnimations in 1.12. */

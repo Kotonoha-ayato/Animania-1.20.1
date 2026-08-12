@@ -135,6 +135,7 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
     private static final EntityDataAccessor<Float> GROWTH_PROGRESS = SynchedEntityData.defineId(AnimaniaAnimalEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Integer> HAMSTER_FOOD_STACK = SynchedEntityData.defineId(AnimaniaAnimalEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Boolean> HAMSTER_STANDING = SynchedEntityData.defineId(AnimaniaAnimalEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Integer> CROW_DURATION = SynchedEntityData.defineId(AnimaniaAnimalEntity.class, EntityDataSerializers.INT);
     public static final String CARRIED_ENTITY_TAG = "AnimaniaCarriedEntity";
     public static final String CARRIED_ANIMAL_TAG = "AnimaniaCarriedAnimal";
     private int pregnancyTicks;
@@ -147,6 +148,7 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
     private int starvationTicks;
     private boolean legacyNamedCombatConfigured;
     private int eggLayTicks;
+    private boolean eggLayInitialized;
     private int featherDropTicks;
     private int fedTimer;
     private int wateredTimer;
@@ -570,6 +572,7 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
         entityData.define(GROWTH_PROGRESS, 1.0F);
         entityData.define(HAMSTER_FOOD_STACK, 0);
         entityData.define(HAMSTER_STANDING, false);
+        entityData.define(CROW_DURATION, 0);
     }
 
     @Override
@@ -590,6 +593,7 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
         tickHamsterState();
         tickAmphibianHop();
         tickExtraNameEffects();
+        tickFarmNameEffects();
         if (dartFrogPoisonTimer > 1) dartFrogPoisonTimer--;
         if (config(AnimaniaConfig.AMBIANCE_MODE, false)) {
             // Ambiance mode keeps the care meters full and disables all
@@ -775,6 +779,7 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
 
     private void tickRoosterCrow() {
         if (!registryPath().startsWith("rooster_")) return;
+        if (getCrowDuration() > 0) entityData.set(CROW_DURATION, getCrowDuration() - 1);
         if (crowCooldown > 0) crowCooldown--;
         long time = level().getDayTime() % 24000L;
         if (crowCooldown > 0 || (time >= 500L && time <= 23250L)) return;
@@ -784,7 +789,12 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
                     * (random.nextBoolean() ? 1.0F : -1.0F);
             level().playSound(null, blockPosition(), crow, getSoundSource(), 0.65F, 1.0F + modular);
         }
+        entityData.set(CROW_DURATION, 50);
         crowCooldown = 200 + random.nextInt(200);
+    }
+
+    public int getCrowDuration() {
+        return Math.max(0, entityData.get(CROW_DURATION));
     }
 
     @Override
@@ -1136,8 +1146,20 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
                     interacted = true;
                     if (!player.getAbilities().instabuild) stack.shrink(1);
                     if (!player.addItem(new ItemStack(result))) player.drop(new ItemStack(result), false);
+                    consumeWateredAfterProduction();
                     level().playSound(null, blockPosition(), SoundEvents.COW_MILK, getSoundSource(), 1.0F, 1.0F);
                 }
+            }
+            return InteractionResult.sidedSuccess(level().isClientSide);
+        }
+        if (stack.is(Items.BOWL) && isMilkableMooshroom()) {
+            if (!level().isClientSide) {
+                interacted = true;
+                if (!player.getAbilities().instabuild) stack.shrink(1);
+                if (!player.addItem(new ItemStack(Items.MUSHROOM_STEW))) {
+                    player.drop(new ItemStack(Items.MUSHROOM_STEW), false);
+                }
+                consumeWateredAfterProduction();
             }
             return InteractionResult.sidedSuccess(level().isClientSide);
         }
@@ -1147,6 +1169,12 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
                 interacted = true;
                 if (!player.getAbilities().instabuild) stack.shrink(1);
                 level().playSound(null, blockPosition(), SoundEvents.DYE_USE, getSoundSource(), 1.0F, 1.0F);
+            }
+            return InteractionResult.sidedSuccess(level().isClientSide);
+        }
+        if (stack.is(Items.SHEARS) && !isBaby() && isFarmMooshroom()) {
+            if (!level().isClientSide && convertMooshroomAfterShearing(player, hand, stack)) {
+                return InteractionResult.CONSUME;
             }
             return InteractionResult.sidedSuccess(level().isClientSide);
         }
@@ -2137,6 +2165,8 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
         tag.putInt("AnimaniaDartFrogPoisonTimer", dartFrogPoisonTimer);
         tag.putInt("AnimaniaChildGrowthTimer", childGrowthTimer);
         tag.putInt("CrowTime", crowCooldown);
+        tag.putInt("CrowDuration", getCrowDuration());
+        tag.putBoolean("AnimaniaEggLayInitialized", eggLayInitialized);
         tag.putBoolean("AnimaniaMilkReady", isMilkReady());
         tag.putBoolean("AnimaniaInteracted", interacted);
         tag.putBoolean("AnimaniaInBall", isInBall());
@@ -2209,6 +2239,8 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
         childGrowthTimer = tag.contains("AnimaniaChildGrowthTimer")
                 ? Math.max(0, tag.getInt("AnimaniaChildGrowthTimer")) : 0;
         crowCooldown = Math.max(0, tag.getInt("CrowTime"));
+        entityData.set(CROW_DURATION, Math.max(0, tag.getInt("CrowDuration")));
+        eggLayInitialized = tag.getBoolean("AnimaniaEggLayInitialized") || eggLayTicks > 0;
         setMilkReady(tag.getBoolean("AnimaniaMilkReady"));
         interacted = tag.getBoolean("AnimaniaInteracted");
         setInBall(tag.getBoolean("AnimaniaInBall") || tag.getBoolean("InBall"));
@@ -2250,17 +2282,31 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
     }
 
     private boolean isMilkable() {
-        if (getGender() != AnimalGender.FEMALE || !isAdult() || !isMilkReady()) return false;
+        if (getGender() != AnimalGender.FEMALE || !isAdult() || !isMilkReady()
+                || getHunger() <= 0 || getThirst() <= 0) return false;
         ResourceLocation id = ForgeRegistries.ENTITY_TYPES.getKey(getType());
         if (id == null) return false;
         String path = id.getPath();
-        return path.startsWith("cow_") || path.startsWith("doe_") || path.startsWith("ewe_") || path.startsWith("mare_");
+        return (path.startsWith("cow_") && !path.equals("cow_mooshroom"))
+                || path.startsWith("doe_") || path.startsWith("ewe_");
+    }
+
+    private boolean isMilkableMooshroom() {
+        return registryNamespace().equals("animania_farm") && registryPath().equals("cow_mooshroom")
+                && getGender() == AnimalGender.FEMALE && isAdult() && isMilkReady()
+                && getHunger() > 0 && getThirst() > 0;
+    }
+
+    private void consumeWateredAfterProduction() {
+        setThirst(0);
+        wateredTimer = 0;
     }
 
     @Nullable
     private Item milkBucket() {
         ResourceLocation id = ForgeRegistries.ENTITY_TYPES.getKey(getType());
         if (id == null) return null;
+        if (isPurpCow()) return Items.LAVA_BUCKET;
         String path = id.getPath();
         String bucketId = null;
         if (path.startsWith("doe_")) bucketId = "milk_goat_bucket";
@@ -2276,6 +2322,68 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
             if (custom != null) return custom;
         }
         return Items.MILK_BUCKET;
+    }
+
+    private boolean isPurpCow() {
+        if (!registryNamespace().equals("animania_farm") || !hasCustomName()
+                || !"purp".equals(getCustomName().getString().trim().toLowerCase(Locale.ROOT))) return false;
+        String path = registryPath();
+        return path.endsWith("_friesian") || path.endsWith("_holstein");
+    }
+
+    private void tickFarmNameEffects() {
+        if (!isPurpCow()) return;
+        addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 4, 2, false, false));
+        if (!isInWaterRainOrBubble()) setSecondsOnFire(1);
+    }
+
+    private boolean isFarmMooshroom() {
+        return registryNamespace().equals("animania_farm")
+                && (registryPath().equals("cow_mooshroom") || registryPath().equals("bull_mooshroom"));
+    }
+
+    private boolean convertMooshroomAfterShearing(Player player, InteractionHand hand, ItemStack shears) {
+        if (!(level() instanceof ServerLevel server)) return false;
+        String targetPath = registryPath().startsWith("cow_") ? "cow_friesian" : "bull_friesian";
+        EntityType<?> raw = ForgeRegistries.ENTITY_TYPES.getValue(
+                ResourceLocation.fromNamespaceAndPath("animania_farm", targetPath));
+        if (raw == null || !(raw.create(server) instanceof AnimaniaAnimalEntity replacement)) return false;
+        replacement.moveTo(getX(), getY(), getZ(), getYRot(), getXRot());
+        replacement.setHealth(Math.min(getHealth(), replacement.getMaxHealth()));
+        replacement.setCustomName(getCustomName());
+        replacement.setCustomNameVisible(isCustomNameVisible());
+        replacement.setNoAi(isNoAi());
+        replacement.setHunger(getHunger());
+        replacement.setThirst(getThirst());
+        replacement.interacted = interacted;
+        replacement.setPersistenceRequired();
+        if (!server.addFreshEntity(replacement)) return false;
+        for (int i = 0; i < 5; i++) spawnAtLocation(Items.RED_MUSHROOM);
+        if (!player.getAbilities().instabuild) {
+            shears.hurtAndBreak(1, player, broken -> player.broadcastBreakEvent(hand));
+        }
+        server.sendParticles(ParticleTypes.EXPLOSION, getX(), getY() + getBbHeight() * 0.5D, getZ(),
+                1, 0.0D, 0.0D, 0.0D, 0.0D);
+        level().playSound(null, blockPosition(), SoundEvents.MOOSHROOM_SHEAR, getSoundSource(), 1.0F, 1.0F);
+        discard();
+        return true;
+    }
+
+    @Override
+    public void thunderHit(ServerLevel level, net.minecraft.world.entity.LightningBolt lightning) {
+        if (!isFarmPig()) {
+            super.thunderHit(level, lightning);
+            return;
+        }
+        net.minecraft.world.entity.monster.ZombifiedPiglin replacement =
+                EntityType.ZOMBIFIED_PIGLIN.create(level);
+        if (replacement == null) return;
+        replacement.moveTo(getX(), getY(), getZ(), getYRot(), getXRot());
+        replacement.setBaby(isBaby());
+        replacement.setNoAi(isNoAi());
+        replacement.setCustomName(getCustomName());
+        replacement.setCustomNameVisible(isCustomNameVisible());
+        if (level.addFreshEntity(replacement)) discard();
     }
 
     private boolean isShearable() {
@@ -2332,7 +2440,11 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
         if (level().isClientSide || !isAdult() || getGender() != AnimalGender.FEMALE) return false;
         ResourceLocation id = ForgeRegistries.ENTITY_TYPES.getKey(getType());
         if (id == null || !"animania_farm".equals(id.getNamespace()) || !id.getPath().startsWith("hen_")) return false;
-        if (eggLayTicks <= 0) eggLayTicks = Math.max(20, config(AnimaniaConfig.LAID_TIMER, 2000)) + random.nextInt(100);
+        if (!eggLayInitialized) {
+            eggLayTicks = Math.max(20, config(AnimaniaConfig.LAID_TIMER, 2000) / 2) + random.nextInt(100);
+            eggLayInitialized = true;
+        }
+        if (!isLegacyDaytime() || isSleeping() || getHunger() <= 0 || getThirst() <= 0) return false;
         if (--eggLayTicks > 0) return false;
         eggLayTicks = Math.max(20, config(AnimaniaConfig.LAID_TIMER, 2000)) + random.nextInt(100);
         String variant = speciesKey(id.getPath());
