@@ -314,7 +314,7 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
             goalSelector.addGoal(6, new AnimaniaWanderAvoidWaterGoal(this,
                     AnimaniaWanderAvoidWaterGoal.legacySpeed(this)));
         }
-        if (isPeafowl()) goalSelector.addGoal(5, new AnimaniaWatchFromSideGoal(this));
+        if (isPeafowl() || isFarmChicken()) goalSelector.addGoal(5, new AnimaniaWatchFromSideGoal(this));
         else if (AnimaniaWatchClosestGoal.supports(this)) goalSelector.addGoal(7, new AnimaniaWatchClosestGoal(this));
         if (AnimaniaLookIdleGoal.supports(this)) goalSelector.addGoal(8, new AnimaniaLookIdleGoal(this));
         // Cats and dogs retain the legacy companion combat intent while
@@ -351,7 +351,31 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
                                 || target.registryPath().equals("toad") || target.registryPath().startsWith("peachick_"))));
             }
         }
+        if (attacksAllowed() && isFarmAnimal()) registerFarmCombat();
         if (attacksAllowed() && isExtraPredator()) registerExtraPredatorCombat();
+    }
+
+    /** Restores the family combat tasks installed by the 1.12 Farm base classes. */
+    private void registerFarmCombat() {
+        targetSelector.addGoal(0, new AnimaniaHurtByTargetGoal(this));
+        String path = registryPath();
+        if (path.startsWith("bull_")) {
+            goalSelector.addGoal(0, new MeleeAttackGoal(this, 1.8D, false));
+        } else if (path.startsWith("cow_")) {
+            goalSelector.addGoal(4, new MeleeAttackGoal(this, 1.2D, false));
+        } else if (path.startsWith("hen_")) {
+            goalSelector.addGoal(9, new LeapAtTargetGoal(this, 0.2F));
+            goalSelector.addGoal(10, new MeleeAttackGoal(this, 1.0D, true));
+        } else if (path.startsWith("rooster_")) {
+            goalSelector.addGoal(3, new LeapAtTargetGoal(this, 0.2F));
+            goalSelector.addGoal(3, new MeleeAttackGoal(this, 1.0D, true));
+        }
+        if (path.startsWith("hen_") || path.startsWith("rooster_")) {
+            targetSelector.addGoal(2, new AnimaniaNearestAttackableTargetGoal<>(this, AnimaniaAnimalEntity.class,
+                    80, false, false, target -> target instanceof AnimaniaAnimalEntity animal
+                    && animal.registryNamespace().equals("animania_extra")
+                    && (animal.registryPath().equals("frog") || animal.registryPath().equals("toad"))));
+        }
     }
 
     private void registerAmphibianGoals() {
@@ -448,6 +472,12 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
         }
         if (special == null) {
             boolean result = super.doHurtTarget(target);
+            if (result && registryNamespace().equals("animania_farm") && registryPath().startsWith("bull_")
+                    && target instanceof net.minecraft.world.entity.LivingEntity living) {
+                setFighting(true);
+                setFightTimer(40);
+                living.knockback(1.0D, getX() - target.getX(), getZ() - target.getZ());
+            }
             if (result && isPeafowl() && target instanceof AnimaniaAnimalEntity animal && animal.isAmphibian()) {
                 setHunger(100);
                 interacted = true;
@@ -1004,7 +1034,7 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
                 return InteractionResult.sidedSuccess(level().isClientSide);
             }
         }
-        if (isHorseAnimal() && !isBaby()) {
+        if (isRideableFarmAnimal() && !isBaby()) {
             if (stack.is(Items.SADDLE) && !isSaddled()) {
                 if (!level().isClientSide) {
                     setSaddled(true);
@@ -1014,7 +1044,12 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
                 }
                 return InteractionResult.sidedSuccess(level().isClientSide);
             }
-            if (stack.isEmpty() && isSaddled() && !player.isPassenger()) {
+            if (isHorseAnimal() && stack.isEmpty() && isSaddled() && !player.isPassenger()) {
+                if (!level().isClientSide) player.startRiding(this);
+                return InteractionResult.sidedSuccess(level().isClientSide);
+            }
+            if (isFarmPig() && stack.is(Items.CARROT_ON_A_STICK) && isSaddled()
+                    && getHunger() > 0 && getThirst() > 0 && !player.isPassenger()) {
                 if (!level().isClientSide) player.startRiding(this);
                 return InteractionResult.sidedSuccess(level().isClientSide);
             }
@@ -1320,13 +1355,15 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
 
     @Override
     protected boolean canAddPassenger(Entity passenger) {
-        if (isHorseAnimal()) return passenger instanceof Player && isSaddled() && getPassengers().isEmpty();
+        if (isRideableFarmAnimal()) return passenger instanceof Player && isSaddled() && getPassengers().isEmpty();
         return super.canAddPassenger(passenger);
     }
 
     @Override
     public void travel(Vec3 input) {
-        if (isHorseAnimal() && isSaddled() && getControllingPassenger() instanceof Player rider) {
+        if (isRideableFarmAnimal() && isSaddled() && getControllingPassenger() instanceof Player rider
+                && (!isFarmPig() || rider.getMainHandItem().is(Items.CARROT_ON_A_STICK)
+                || rider.getOffhandItem().is(Items.CARROT_ON_A_STICK))) {
             setYRot(rider.getYRot());
             yRotO = getYRot();
             float strafe = rider.xxa * 0.5F;
@@ -1342,9 +1379,9 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
         super.travel(input);
     }
 
-    /** Start a short horse boost used by the riding crop. */
+    /** Start the legacy horse/pig riding boost. */
     public boolean boost() {
-        if (!isHorseAnimal() || boostTicks > 0) return false;
+        if (!isRideableFarmAnimal() || boostTicks > 0) return false;
         boostTicks = 40 + random.nextInt(80);
         return true;
     }
@@ -1706,7 +1743,7 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
     }
 
     public void setSaddled(boolean saddled) {
-        entityData.set(SADDLED, saddled && isHorseAnimal());
+        entityData.set(SADDLED, saddled && isRideableFarmAnimal());
     }
 
     /** Whether a female milk-producing animal has entered its lactation window. */
@@ -1738,6 +1775,32 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
         ResourceLocation id = ForgeRegistries.ENTITY_TYPES.getKey(getType());
         return id != null && id.getNamespace().equals("animania_farm")
                 && (id.getPath().startsWith("mare_") || id.getPath().startsWith("stallion_") || id.getPath().startsWith("foal_"));
+    }
+
+    public boolean isFarmPig() {
+        return registryNamespace().equals("animania_farm")
+                && (registryPath().startsWith("sow_") || registryPath().startsWith("hog_")
+                || registryPath().startsWith("piglet_"));
+    }
+
+    private boolean isRideableFarmAnimal() {
+        return isHorseAnimal() || (isFarmPig() && isAdult());
+    }
+
+    private boolean isFarmAnimal() {
+        return registryNamespace().equals("animania_farm");
+    }
+
+    private boolean isFarmChicken() {
+        return isFarmAnimal() && (registryPath().startsWith("hen_") || registryPath().startsWith("rooster_")
+                || registryPath().startsWith("chick_"));
+    }
+
+    public boolean isLegacySterilizableFarmMale() {
+        if (!isFarmAnimal() || !isAdult()) return false;
+        String path = registryPath();
+        return path.startsWith("bull_") || path.startsWith("buck_") || path.startsWith("stallion_")
+                || path.startsWith("hog_") || path.startsWith("ram_");
     }
 
     /**

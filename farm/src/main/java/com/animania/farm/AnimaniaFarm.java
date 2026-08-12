@@ -68,17 +68,18 @@ public final class AnimaniaFarm {
     }
 
     private static void register(String id) {
+        FarmAnimalProfile profile = FarmAnimalProfile.forId(id);
         RegistryObject<EntityType<?>> registered = FarmLegacyIds.VEHICLE_IDS.contains(id)
                 ? ENTITY_TYPES.register(id, () -> EntityType.Builder.of(AnimaniaVehicleEntity::new, MobCategory.MISC)
-                .sized(sizeFor(id, true), sizeFor(id, false)).clientTrackingRange(8).updateInterval(3)
+                .sized(profile.width(), profile.height()).clientTrackingRange(8).updateInterval(3)
                 .build(MOD_ID + ":" + id))
                 : ENTITY_TYPES.register(id, () -> EntityType.Builder.of(AnimaniaAnimalEntity::new, MobCategory.CREATURE)
-                .sized(sizeFor(id, true), sizeFor(id, false)).clientTrackingRange(8).updateInterval(3)
+                .sized(profile.width(), profile.height()).clientTrackingRange(8).updateInterval(3)
                 .build(MOD_ID + ":" + id));
         ENTITIES.put(id, registered);
         if (!FarmLegacyIds.VEHICLE_IDS.contains(id)) {
             AnimaniaApi.registerSpecies(new SpeciesDefinition(new ResourceLocation(MOD_ID, id), family(id), gender(id),
-                    sizeFor(id, true), sizeFor(id, false), 20000));
+                    profile.width(), profile.height(), 20000));
         }
     }
 
@@ -114,6 +115,7 @@ public final class AnimaniaFarm {
         MinecraftForge.EVENT_BUS.addListener(AnimaniaFarm::decorateHiveOnChunkLoad);
         MinecraftForge.EVENT_BUS.addListener(AnimaniaFarm::processHiveQueue);
         MinecraftForge.EVENT_BUS.addListener(FarmEggThrowHandler::onRightClickItem);
+        MinecraftForge.EVENT_BUS.addListener(AnimaniaFarm::boostRiddenPig);
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> bus.addListener(AnimaniaFarmClient::onClientSetup));
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> bus.addListener(AnimaniaFarmClient::registerLayers));
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> bus.addListener(AnimaniaFarmClient::registerRenderers));
@@ -135,7 +137,7 @@ public final class AnimaniaFarm {
     private void attributes(EntityAttributeCreationEvent event) {
         ENTITIES.forEach((id, type) -> {
             if (!FarmLegacyIds.VEHICLE_IDS.contains(id)) {
-                event.put((EntityType<? extends LivingEntity>) type.get(), AnimaniaAnimalEntity.createAttributes().build());
+                event.put((EntityType<? extends LivingEntity>) type.get(), FarmAnimalProfile.forId(id).attributes().build());
             }
         });
     }
@@ -266,6 +268,17 @@ public final class AnimaniaFarm {
                 && configured(FarmConfig.COWS_MILKABLE_AT_SPAWN)) animal.setMilkReady(true);
     }
 
+    private static void boostRiddenPig(net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickItem event) {
+        if (!event.getItemStack().is(net.minecraft.world.item.Items.CARROT_ON_A_STICK)
+                || !(event.getEntity().getVehicle() instanceof AnimaniaAnimalEntity animal)
+                || !animal.isFarmPig() || !animal.boost()) return;
+        if (!event.getEntity().level().isClientSide && !event.getEntity().getAbilities().instabuild) {
+            event.getItemStack().hurtAndBreak(1, event.getEntity(), player -> player.broadcastBreakEvent(event.getHand()));
+        }
+        event.setCancellationResult(net.minecraft.world.InteractionResult.sidedSuccess(event.getEntity().level().isClientSide));
+        event.setCanceled(true);
+    }
+
     /**
      * Forge 1.20.1 no longer exposes the 1.12 tree-decoration event.  A
      * full-chunk data hook provides the same once-per-chunk semantics without
@@ -385,9 +398,4 @@ public final class AnimaniaFarm {
         try { return value.get(); } catch (IllegalStateException ignored) { return value.getDefault(); }
     }
 
-    private static float sizeFor(String id, boolean width) {
-        if (id.startsWith("chick_") || id.startsWith("calf_") || id.startsWith("kid_") || id.startsWith("lamb_") || id.startsWith("piglet_") || id.startsWith("foal_")) return width ? 0.45f : 0.55f;
-        if (id.equals("wagon") || id.equals("cart") || id.equals("tiller")) return width ? 1.2f : 1.0f;
-        return width ? 0.8f : 1.0f;
-    }
 }

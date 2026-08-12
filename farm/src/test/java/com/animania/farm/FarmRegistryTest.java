@@ -26,6 +26,25 @@ class FarmRegistryTest {
     }
 
     @Test
+    void everyFarmEntityHasItsPinnedLegacyPhysicalProfile() {
+        assertEquals(102, FarmLegacyIds.ALL.size());
+        for (String id : FarmLegacyIds.ALL) {
+            FarmAnimalProfile profile = assertDoesNotThrow(() -> FarmAnimalProfile.forId(id), id);
+            assertTrue(profile.width() > 0.0F && profile.height() > 0.0F, id);
+            assertTrue(profile.maxHealth() > 0.0D && profile.movementSpeed() > 0.0D, id);
+        }
+        assertEquals(new FarmAnimalProfile(24.0D, 0.20D, 4.0D, 1.6F, 1.8F),
+                FarmAnimalProfile.forId("bull_angus"));
+        assertEquals(new FarmAnimalProfile(6.0D, 0.29D, 1.5D, 0.5F, 0.7F),
+                FarmAnimalProfile.forId("hen_leghorn"));
+        assertEquals(new FarmAnimalProfile(15.0D, 0.265D, 0.0D, 1.6F, 1.3F),
+                FarmAnimalProfile.forId("doe_alpine"));
+        assertEquals(new FarmAnimalProfile(15.0D, 0.265D, 0.0D, 1.1F, 1.2F),
+                FarmAnimalProfile.forId("doe_nigerian_dwarf"));
+        assertEquals(2.5F, FarmAnimalProfile.forId("wagon").width());
+    }
+
+    @Test
     void everyAnimalEggHasItsExactLegacyTintPair() {
         FarmLegacyIds.ALL.stream().filter(id -> !FarmLegacyIds.isVehicle(id))
                 .forEach(id -> assertNotNull(LegacyEggColors.forEntity(id), id));
