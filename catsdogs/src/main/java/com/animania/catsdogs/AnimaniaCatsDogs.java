@@ -99,7 +99,16 @@ public final class AnimaniaCatsDogs {
     }
 
     private void attributes(EntityAttributeCreationEvent event) {
-        ENTITIES.values().forEach(type -> event.put((EntityType<? extends LivingEntity>) type.get(), AnimaniaAnimalEntity.createAttributes().build()));
+        ENTITIES.forEach((id, type) -> {
+            var attributes = AnimaniaAnimalEntity.createAttributes()
+                    .add(net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH,
+                            id.startsWith("tom_") || id.startsWith("male_") ? 20.0D
+                                    : id.startsWith("kitten_") || id.startsWith("puppy_") ? 12.0D : 18.0D)
+                    .add(net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED,
+                            id.startsWith("kitten_") || id.startsWith("puppy_") ? 0.315D : 0.3D)
+                    .add(net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_DAMAGE, 2.5D);
+            event.put((EntityType<? extends LivingEntity>) type.get(), attributes.build());
+        });
     }
 
     private void spawnPlacements(SpawnPlacementRegisterEvent event) {

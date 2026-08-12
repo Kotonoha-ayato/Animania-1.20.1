@@ -1823,7 +1823,25 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
     }
 
     private int careTimer(net.minecraftforge.common.ForgeConfigSpec.IntValue value, int fallback) {
-        return Math.max(1, config(value, fallback)) + random.nextInt(100);
+        int base = Math.max(1, config(value, fallback));
+        ResourceLocation type = ForgeRegistries.ENTITY_TYPES.getKey(getType());
+        if (type == null) return base + random.nextInt(100);
+        String path = type.getPath();
+        boolean water = value == AnimaniaConfig.WATER_TIMER;
+        int multiplier = 1;
+        int randomRange = 100;
+        if ("animania_extra".equals(type.getNamespace())) {
+            if (path.equals("hamster") && water) {
+                multiplier = 4;
+                randomRange = 200;
+            } else if ((path.startsWith("ferret_") || path.startsWith("hedgehog")) && water) {
+                multiplier = 2;
+                randomRange = 200;
+            } else if (path.startsWith("peacock_") || path.startsWith("peahen_") || path.startsWith("peachick_")) {
+                multiplier = 2;
+            }
+        }
+        return Math.multiplyExact(base, multiplier) + random.nextInt(randomRange);
     }
 
     private static double config(net.minecraftforge.common.ForgeConfigSpec.DoubleValue value, double fallback) {
