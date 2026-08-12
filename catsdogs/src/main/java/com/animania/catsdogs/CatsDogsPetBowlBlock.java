@@ -147,9 +147,10 @@ public final class CatsDogsPetBowlBlock extends AnimaniaContainerBlock {
     private static boolean fillFromItemEntity(CatsDogsPetBowlBlockEntity bowl, ItemEntity entity) {
         ItemStack stack = entity.getItem();
         if (stack.is(Items.WATER_BUCKET) || stack.is(AnimaniaItems.WATER_BOTTLE.get())) {
+            boolean bucket = stack.is(Items.WATER_BUCKET);
             if (!fillWater(bowl)) return false;
             stack.shrink(1);
-            if (stack.isEmpty()) stack = new ItemStack(stack.is(Items.WATER_BUCKET) ? Items.BUCKET : Items.GLASS_BOTTLE);
+            if (stack.isEmpty()) stack = new ItemStack(bucket ? Items.BUCKET : Items.GLASS_BOTTLE);
             entity.setItem(stack);
             return true;
         }

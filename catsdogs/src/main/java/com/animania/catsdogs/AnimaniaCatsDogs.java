@@ -62,6 +62,7 @@ public final class AnimaniaCatsDogs {
         CatsDogsContent.ITEMS.register(bus);
         CatsDogsContent.BLOCKS.register(bus);
         CatsDogsContent.BLOCK_ENTITIES.register(bus);
+        CatsDogsPetSeller.POI_TYPES.register(bus);
         CatsDogsPetSeller.PROFESSIONS.register(bus);
         CatsDogsTab.TABS.register(bus);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, CatsDogsConfig.SPEC);
@@ -185,8 +186,7 @@ public final class AnimaniaCatsDogs {
             replacement.setSitting(((Wolf) vanilla).isOrderedToSit());
         }
         replacement.setPersistenceRequired();
-        event.getLevel().addFreshEntity(replacement);
-        event.setCanceled(true);
+        if (event.getLevel().addFreshEntity(replacement)) event.setCanceled(true);
     }
 
     private static boolean replaceWolves() {

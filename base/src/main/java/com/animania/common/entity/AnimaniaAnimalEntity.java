@@ -319,16 +319,25 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
                 targetSelector.addGoal(2, new AnimaniaOwnerHurtByTargetGoal(this));
                 targetSelector.addGoal(3, new AnimaniaOwnerHurtTargetGoal(this));
             }
-            targetSelector.addGoal(4, new AnimaniaNearestAttackableTargetGoal<>(this, AbstractSkeleton.class, true,
-                    target -> !isTamed()));
             if (isDogCompanion()) {
+                targetSelector.addGoal(4, new AnimaniaNearestAttackableTargetGoal<>(this, AbstractSkeleton.class, true,
+                        target -> true));
                 targetSelector.addGoal(5, new AnimaniaTargetNonTamedGoal<>(this, Sheep.class, true,
                         target -> true));
                 targetSelector.addGoal(6, new AnimaniaTargetNonTamedGoal<>(this, Rabbit.class, true,
                         target -> true));
+                if (registryPath().endsWith("_fox") || registryPath().endsWith("_wolf")) {
+                    targetSelector.addGoal(4, new AnimaniaTargetNonTamedGoal<>(this, Chicken.class, true,
+                            target -> true));
+                }
             } else {
-                targetSelector.addGoal(5, new AnimaniaTargetNonTamedGoal<>(this, Chicken.class, true,
+                targetSelector.addGoal(4, new AnimaniaTargetNonTamedGoal<>(this,
+                        net.minecraft.world.entity.monster.Silverfish.class, true,
                         target -> true));
+                targetSelector.addGoal(5, new AnimaniaTargetNonTamedGoal<>(this, AnimaniaAnimalEntity.class, true,
+                        target -> target.registryNamespace().equals("animania_extra")
+                                && (target.registryPath().startsWith("ferret_")
+                                || target.registryPath().startsWith("hedgehog"))));
             }
         }
     }
@@ -914,14 +923,28 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
                 }
                 return InteractionResult.sidedSuccess(level().isClientSide);
             }
-            if (!isTamed() && canTameWith(stack)) {
+            if (!isTamed() && isConfiguredCompanionFood(stack)) {
                 if (!level().isClientSide) {
                     setTamed(true);
                     setOwnerUUID(player.getUUID());
                     setSitting(false);
                     interacted = true;
-                    if (!player.getAbilities().instabuild) stack.shrink(1);
                     level().broadcastEntityEvent(this, (byte) 7);
+                }
+                // Configured food is consumed exactly once by the normal feed
+                // path below, preserving fed/hand-fed/love state from 1.12.
+            } else if (!isTamed() && isDogCompanion() && stack.is(Items.BONE)) {
+                if (!level().isClientSide) {
+                    if (!player.getAbilities().instabuild) stack.shrink(1);
+                    if (random.nextInt(3) == 0) {
+                        setTamed(true);
+                        setOwnerUUID(player.getUUID());
+                        setSitting(false);
+                        interacted = true;
+                        level().broadcastEntityEvent(this, (byte) 7);
+                    } else {
+                        level().broadcastEntityEvent(this, (byte) 6);
+                    }
                 }
                 return InteractionResult.sidedSuccess(level().isClientSide);
             }
@@ -1602,11 +1625,10 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
                 && (id.getPath().startsWith("female_") || id.getPath().startsWith("male_") || id.getPath().startsWith("puppy_"));
     }
 
-    private boolean canTameWith(ItemStack stack) {
-        if (stack.isEmpty()) return false;
+    private boolean isConfiguredCompanionFood(ItemStack stack) {
+        if (stack.isEmpty() || !isCompanionAnimal()) return false;
         ResourceLocation entityId = ForgeRegistries.ENTITY_TYPES.getKey(getType());
-        if (isCatCompanion() && entityId != null && AnimaniaApi.matchesRegisteredFood(entityId, stack)) return true;
-        return isCatCompanion() ? isCatFood(stack) : stack.is(Items.BONE);
+        return entityId != null && AnimaniaApi.matchesRegisteredFood(entityId, stack);
     }
 
     private boolean isCompanionFood(ItemStack stack) {
