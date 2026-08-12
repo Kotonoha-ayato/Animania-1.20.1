@@ -290,6 +290,143 @@ public final class AnimaniaFarmGameTests {
         loaded.tick();
         helper.assertTrue(loaded.getHunger() == 0 && loaded.getThirst() == 0,
                 "expired legacy care timers did not clear fed/watered state");
+        helper.assertTrue(loaded.hasEffect(net.minecraft.world.effect.MobEffects.WEAKNESS)
+                        && loaded.getEffect(net.minecraft.world.effect.MobEffects.WEAKNESS).getAmplifier() == 1,
+                "fully hungry/thirsty animal did not receive legacy Weakness II");
+        helper.succeed();
+    }
+
+    @GameTest(template = "empty")
+    public static void baseCareInteractionsRejectInvalidAndSleepingConsumption(GameTestHelper helper) {
+        AnimaniaGameTestEvidence.mark("animania_farm:baseCareInteractionsRejectInvalidAndSleepingConsumption");
+        AnimaniaAnimalEntity cow = createAnimal(helper, "cow_angus");
+        cow.moveTo(helper.absolutePos(new BlockPos(1, 1, 1)), 0.0F, 0.0F);
+        helper.getLevel().addFreshEntity(cow);
+        var player = helper.makeMockPlayer();
+
+        cow.setThirst(0);
+        ItemStack poison = net.minecraft.world.item.alchemy.PotionUtils.setPotion(
+                new ItemStack(Items.POTION), net.minecraft.world.item.alchemy.Potions.POISON);
+        player.setItemInHand(InteractionHand.MAIN_HAND, poison);
+        helper.assertTrue(cow.mobInteract(player, InteractionHand.MAIN_HAND) == net.minecraft.world.InteractionResult.PASS,
+                "non-water potion was accepted as animal drinking water");
+        helper.assertTrue(cow.getThirst() == 0 && poison.getCount() == 1,
+                "non-water potion changed thirst or was consumed");
+
+        ItemStack water = net.minecraft.world.item.alchemy.PotionUtils.setPotion(
+                new ItemStack(Items.POTION), net.minecraft.world.item.alchemy.Potions.WATER);
+        player.setItemInHand(InteractionHand.MAIN_HAND, water);
+        helper.assertTrue(cow.mobInteract(player, InteractionHand.MAIN_HAND).consumesAction(),
+                "water potion was rejected");
+        helper.assertTrue(cow.getThirst() == 100 && player.getMainHandItem().is(Items.GLASS_BOTTLE),
+                "water potion did not hydrate or return its glass bottle");
+
+        cow.setThirst(0);
+        player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.WATER_BUCKET));
+        helper.assertTrue(cow.mobInteract(player, InteractionHand.MAIN_HAND).consumesAction()
+                        && player.getMainHandItem().is(Items.BUCKET),
+                "water bucket did not hydrate and return an empty bucket");
+
+        cow.setSleeping(true);
+        cow.setHunger(0);
+        ItemStack wheat = new ItemStack(Items.WHEAT, 2);
+        player.setItemInHand(InteractionHand.MAIN_HAND, wheat);
+        helper.assertTrue(cow.mobInteract(player, InteractionHand.MAIN_HAND) == net.minecraft.world.InteractionResult.PASS,
+                "sleeping animal accepted food");
+        helper.assertTrue(cow.getHunger() == 0 && wheat.getCount() == 2,
+                "sleeping animal changed hunger or consumed food");
+
+        int interval = AnimaniaConfig.HUNGER_INTERVAL.get();
+        AnimaniaAnimalEntity untouched = createAnimal(helper, "cow_angus");
+        untouched.setHunger(100);
+        // A direct GameTest invocation does not advance Entity#tickCount the
+        // way ServerLevel's entity ticker does, so place it on the exact
+        // configured boundary before exercising Animania's server tick.
+        untouched.tickCount = interval;
+        untouched.tick();
+        helper.assertTrue(untouched.getHunger() == 100,
+                "requireAnimalInteractionForAI did not protect an untouched animal's care meter");
+        untouched.markInteracted();
+        untouched.tickCount = interval * 2;
+        untouched.tick();
+        helper.assertTrue(untouched.getHunger() < 100,
+                "interacted animal did not resume configured hunger decay: hunger="
+                        + untouched.getHunger() + ", tickCount=" + untouched.tickCount
+                        + ", interacted=" + untouched.hasInteracted());
+        helper.succeed();
+    }
+
+    @GameTest(template = "empty")
+    public static void baseRandomEggRosterContainsOnlySpeciesEntities(GameTestHelper helper) {
+        AnimaniaGameTestEvidence.mark("animania_farm:baseRandomEggRosterContainsOnlySpeciesEntities");
+        var projectile = FarmContent.BROWN_EGG_PROJECTILE.get();
+        var roster = com.animania.common.AnimaniaItems.registeredAnimalTypes();
+        helper.assertFalse(roster.contains(projectile), "random egg roster still contains brown_egg_projectile");
+        helper.assertTrue(!roster.isEmpty(), "random egg roster is empty with all addons installed");
+        for (var type : roster) {
+            var created = type.create(helper.getLevel());
+            helper.assertTrue(created instanceof AnimaniaAnimalEntity,
+                    "random egg roster contains a non-animal type: " + ForgeRegistries.ENTITY_TYPES.getKey(type));
+            if (created != null) created.discard();
+        }
+        helper.succeed();
+    }
+
+    @GameTest(template = "empty")
+    public static void basePregnancyRecoveryLactationAndProductionTimersMatchLegacyUnits(GameTestHelper helper) {
+        AnimaniaGameTestEvidence.mark("animania_farm:basePregnancyRecoveryLactationAndProductionTimersMatchLegacyUnits");
+        int configuredGestation = AnimaniaConfig.GESTATION_TICKS.get();
+        AnimaniaAnimalEntity cow = createAnimal(helper, "cow_angus");
+        cow.setPregnant(true);
+        helper.assertTrue(cow.gestationTicks() >= configuredGestation
+                        && cow.gestationTicks() < configuredGestation + 200,
+                "pregnancy ignored configured duration or legacy random spread: " + cow.gestationTicks());
+
+        CompoundTag recovery = new CompoundTag();
+        cow.addAdditionalSaveData(recovery);
+        recovery.putBoolean("AnimaniaPregnant", false);
+        recovery.putBoolean("Fertile", false);
+        recovery.putInt("AnimaniaFertilityCooldown", 1);
+        recovery.putBoolean("AnimaniaMilkReady", true);
+        recovery.putInt("AnimaniaLactationTicks", 1);
+        cow.readAdditionalSaveData(recovery);
+        cow.tick();
+        helper.assertTrue(cow.isFertile() && !cow.isMilkReady(),
+                "post-birth fertility/lactation timers did not expire in server ticks");
+
+        AnimaniaAnimalEntity sheep = createAnimal(helper, "ewe_dorper");
+        CompoundTag wool = new CompoundTag();
+        sheep.addAdditionalSaveData(wool);
+        wool.putBoolean("AnimaniaSheared", true);
+        wool.putInt("AnimaniaWoolRegrowthTicks", 2);
+        sheep.readAdditionalSaveData(wool);
+        sheep.tick();
+        helper.assertTrue(sheep.isSheared() && sheep.woolRegrowthTicks() == 1,
+                "wool timer did not decrement once per server tick");
+        sheep.tick();
+        helper.assertFalse(sheep.isSheared(), "wool did not regrow when the tick counter reached zero");
+        helper.succeed();
+    }
+
+    @GameTest(template = "empty")
+    public static void baseFallAndTransactionalConversionRules(GameTestHelper helper) {
+        AnimaniaGameTestEvidence.mark("animania_farm:baseFallAndTransactionalConversionRules");
+        helper.assertTrue(AnimaniaAnimalEntity.legacyFallDamage(10, false, 0.45D) == 10,
+                "unleashed animal incorrectly received fall reduction");
+        helper.assertTrue(AnimaniaAnimalEntity.legacyFallDamage(10, true, 0.45D) == 4,
+                "leashed animal fall reduction did not apply to final damage");
+
+        AnimaniaAnimalEntity source = createAnimal(helper, "cow_angus");
+        source.moveTo(helper.absolutePos(new BlockPos(2, 1, 2)), 0.0F, 0.0F);
+        helper.getLevel().addFreshEntity(source);
+        Cow rejected = EntityType.COW.create(helper.getLevel());
+        helper.assertTrue(rejected != null, "vanilla replacement could not be constructed");
+        if (rejected == null) return;
+        rejected.setUUID(source.getUUID());
+        helper.assertFalse(com.animania.common.command.AnimaniaCommand.replaceAfterSuccessfulSpawn(
+                        helper.getLevel(), source, rejected),
+                "duplicate-UUID replacement unexpectedly entered the world");
+        helper.assertTrue(source.isAlive(), "failed vanilla conversion deleted the source animal");
         helper.succeed();
     }
 
@@ -1829,6 +1966,8 @@ public final class AnimaniaFarmGameTests {
         int interval = AnimaniaConfig.CHILD_GROWTH_TICK.get();
         child.setAge(-interval);
         child.setHunger(0);
+        child.setCustomName(net.minecraft.network.chat.Component.literal("Kept Name"));
+        child.markInteracted();
         child.setNoAi(true);
         helper.getLevel().addFreshEntity(child);
         helper.runAtTickTime(interval + 5, () -> {
@@ -1841,11 +1980,19 @@ public final class AnimaniaFarmGameTests {
         helper.runAtTickTime(interval * 2 + 10, () -> {
                 var grown = helper.getLevel().getEntitiesOfClass(AnimaniaAnimalEntity.class,
                         new AABB(helper.absolutePos(new BlockPos(0, 1, 0))).inflate(10.0D));
-                helper.assertTrue(grown.stream().anyMatch(entity -> {
+                boolean preserved = grown.stream().anyMatch(entity -> {
                     var id = net.minecraftforge.registries.ForgeRegistries.ENTITY_TYPES.getKey(entity.getType());
                     return id != null && ("cow_angus".equals(id.getPath()) || "bull_angus".equals(id.getPath()))
-                            && entity.isAdult();
-                }), "cared-for calf did not become an adult cow/bull registry entity");
+                            && entity.isAdult() && entity.hasInteracted() && entity.hasCustomName()
+                            && "Kept Name".equals(entity.getCustomName().getString());
+                });
+                String observed = grown.stream().map(entity -> {
+                    var id = net.minecraftforge.registries.ForgeRegistries.ENTITY_TYPES.getKey(entity.getType());
+                    return id + "[adult=" + entity.isAdult() + ",interacted=" + entity.hasInteracted()
+                            + ",name=" + (entity.hasCustomName() ? entity.getCustomName().getString() : "<none>") + "]";
+                }).collect(java.util.stream.Collectors.joining(", "));
+                helper.assertTrue(preserved,
+                        "cared-for calf did not preserve adult state; observed: " + observed);
                 helper.succeed();
         });
     }
@@ -2129,6 +2276,16 @@ public final class AnimaniaFarmGameTests {
         if (!(created instanceof AnimaniaAnimalEntity animal)) {
             throw new IllegalStateException("farm animal could not be constructed: " + id);
         }
+        return animal;
+    }
+
+    private static AnimaniaAnimalEntity createExtraAnimal(GameTestHelper helper, String id) {
+        EntityType<?> type = ForgeRegistries.ENTITY_TYPES.getValue(
+                ResourceLocation.fromNamespaceAndPath("animania_extra", id));
+        if (type == null || !(type.create(helper.getLevel()) instanceof AnimaniaAnimalEntity animal)) {
+            throw new IllegalStateException("extra animal could not be constructed: " + id);
+        }
+        animal.setAge(0);
         return animal;
     }
 

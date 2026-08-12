@@ -38,7 +38,10 @@ class AnimaniaCommandTest {
                 "src/main/java/com/animania/common/command/AnimaniaCommand.java"));
         assertTrue(source.contains("CONFIRM_WINDOW_MILLIS"));
         assertTrue(source.contains("commands.animania.tovanilla.warning"));
-        assertTrue(source.contains("entity.discard()"));
-        assertTrue(source.contains("level.addFreshEntity(replacement)"));
+        assertTrue(source.contains("replaceAfterSuccessfulSpawn(level, entity, replacement)"));
+        int spawn = source.indexOf("if (!level.addFreshEntity(replacement)) return false;");
+        int discard = source.indexOf("source.discard();", spawn);
+        assertTrue(spawn >= 0 && discard > spawn,
+                "conversion must discard the source only after replacement spawn succeeds");
     }
 }

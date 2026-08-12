@@ -367,6 +367,8 @@ public final class AnimaniaBaseGameTests {
         AnimaniaBlocks.NestEntity nest = (AnimaniaBlocks.NestEntity) helper.getLevel().getBlockEntity(nestPos);
         var handler = nest.getCapability(ForgeCapabilities.ITEM_HANDLER).resolve().orElseThrow();
         helper.assertTrue(handler.insertItem(0, new ItemStack(Items.DIRT), false).getCount() == 1, "nest accepted a non-egg item");
+        helper.assertTrue(!nest.getCapability(ForgeCapabilities.ITEM_HANDLER, Direction.UP).isPresent(),
+                "nest exposed sided automation despite the legacy insert rejection rule");
         handler.insertItem(0, new ItemStack(Items.EGG, 3), false);
         var player = helper.makeMockPlayer();
         player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);

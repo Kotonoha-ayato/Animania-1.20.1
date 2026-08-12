@@ -625,6 +625,37 @@ public final class AnimaniaExtraGameTests {
     }
 
     @GameTest(template = "empty")
+    public static void onlyMalePeacockDropsTimedFeather(GameTestHelper helper) {
+        AnimaniaGameTestEvidence.mark("animania_extra:onlyMalePeacockDropsTimedFeather");
+        AnimaniaAnimalEntity peahen = createAnimal(helper, "peahen_blue");
+        CompoundTag femaleTag = new CompoundTag();
+        peahen.addAdditionalSaveData(femaleTag);
+        femaleTag.putInt("AnimaniaFeatherDropTicks", 1);
+        peahen.readAdditionalSaveData(femaleTag);
+        peahen.moveTo(helper.absolutePos(new BlockPos(1, 1, 1)), 0.0F, 0.0F);
+        helper.getLevel().addFreshEntity(peahen);
+        peahen.tick();
+
+        AnimaniaAnimalEntity peacock = createAnimal(helper, "peacock_blue");
+        CompoundTag maleTag = new CompoundTag();
+        peacock.addAdditionalSaveData(maleTag);
+        maleTag.putInt("AnimaniaFeatherDropTicks", 1);
+        peacock.readAdditionalSaveData(maleTag);
+        peacock.moveTo(helper.absolutePos(new BlockPos(3, 1, 1)), 0.0F, 0.0F);
+        helper.getLevel().addFreshEntity(peacock);
+        peacock.tick();
+
+        var feathers = helper.getLevel().getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class,
+                new net.minecraft.world.phys.AABB(helper.absolutePos(new BlockPos(2, 1, 1))).inflate(3.0D),
+                item -> net.minecraftforge.registries.ForgeRegistries.ITEMS.getKey(item.getItem().getItem()) != null
+                        && net.minecraftforge.registries.ForgeRegistries.ITEMS.getKey(item.getItem().getItem())
+                        .getPath().endsWith("peacock_feather"));
+        helper.assertTrue(feathers.size() == 1,
+                "only the male peacock should drop one feather; found " + feathers.size());
+        helper.succeed();
+    }
+
+    @GameTest(template = "empty")
     public static void extraAnimalCareAndSaveRoundTrip(GameTestHelper helper) {
         @SuppressWarnings("unchecked")
         EntityType<? extends AnimaniaAnimalEntity> type = (EntityType<? extends AnimaniaAnimalEntity>) (EntityType<?>) AnimaniaExtra.ENTITIES.values().iterator().next().get();

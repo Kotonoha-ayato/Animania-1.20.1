@@ -72,6 +72,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.PotionItem;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.level.Level;
@@ -106,6 +110,7 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
     private static final EntityDataAccessor<Boolean> MUDDY = SynchedEntityData.defineId(AnimaniaAnimalEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Integer> EATING_TICKS = SynchedEntityData.defineId(AnimaniaAnimalEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Boolean> PREGNANT = SynchedEntityData.defineId(AnimaniaAnimalEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> FERTILE = SynchedEntityData.defineId(AnimaniaAnimalEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> STERILIZED = SynchedEntityData.defineId(AnimaniaAnimalEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> SHEARED = SynchedEntityData.defineId(AnimaniaAnimalEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> TAMED = SynchedEntityData.defineId(AnimaniaAnimalEntity.class, EntityDataSerializers.BOOLEAN);
@@ -131,12 +136,16 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
     public static final String CARRIED_ENTITY_TAG = "AnimaniaCarriedEntity";
     public static final String CARRIED_ANIMAL_TAG = "AnimaniaCarriedAnimal";
     private int pregnancyTicks;
+    private int pregnancyDurationTicks;
+    private int fertilityCooldownTicks;
+    private int lactationTicks;
     private int playingTicks;
     private int woolRegrowthTicks;
     private int boostTicks;
     private int starvationTicks;
     private boolean legacyNamedCombatConfigured;
     private int eggLayTicks;
+    private int featherDropTicks;
     private int fedTimer;
     private int wateredTimer;
     private int childGrowthTimer;
@@ -440,6 +449,7 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
         entityData.define(MUDDY, false);
         entityData.define(EATING_TICKS, 0);
         entityData.define(PREGNANT, false);
+        entityData.define(FERTILE, true);
         entityData.define(STERILIZED, false);
         entityData.define(SHEARED, false);
         entityData.define(TAMED, false);
@@ -489,14 +499,21 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
             starvationTicks = 0;
         } else {
             boolean careTimersActive = !config(AnimaniaConfig.REQUIRE_ANIMAL_INTERACTION_FOR_AI, true) || interacted;
-            if (careTimersActive && fedTimer > 0 && --fedTimer == 0) setHunger(0);
-            if (careTimersActive && wateredTimer > 0 && --wateredTimer == 0) setThirst(0);
-            if (tickCount % Math.max(20, config(AnimaniaConfig.HUNGER_INTERVAL, 2400)) == 0) setHunger(getHunger() - 1);
-            if (tickCount % Math.max(20, config(AnimaniaConfig.THIRST_INTERVAL, 1800)) == 0) setThirst(getThirst() - 1);
+            if (careTimersActive) {
+                if (fedTimer > 0 && --fedTimer == 0) setHunger(0);
+                if (wateredTimer > 0 && --wateredTimer == 0) setThirst(0);
+                if (tickCount % Math.max(20, config(AnimaniaConfig.HUNGER_INTERVAL, 2400)) == 0) setHunger(getHunger() - 1);
+                if (tickCount % Math.max(20, config(AnimaniaConfig.THIRST_INTERVAL, 1800)) == 0) setThirst(getThirst() - 1);
+            }
+            if (getHunger() <= 0 && getThirst() <= 0) {
+                addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 2, 1, false, false));
+            } else if (getHunger() <= 0 || getThirst() <= 0) {
+                addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 2, 0, false, false));
+            }
             if (config(AnimaniaConfig.ANIMALS_STARVE, false) && (getHunger() <= 0 || getThirst() <= 0)) {
-                if (++starvationTicks >= Math.max(20, config(AnimaniaConfig.STARVATION_TIMER, 400))) {
+                if (!isSleeping() && ++starvationTicks >= Math.max(20, config(AnimaniaConfig.STARVATION_TIMER, 400))) {
                     starvationTicks = 0;
-                    hurt(level().damageSources().starve(), 1.0F);
+                    hurt(level().damageSources().starve(), 4.0F);
                 }
             } else {
                 starvationTicks = 0;
@@ -520,9 +537,18 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
             else if (isInWaterRainOrBubble()) setMuddy(false);
         }
         if (boostTicks > 0) boostTicks--;
-        if (isSheared() && tickCount % 20 == 0 && --woolRegrowthTicks <= 0) setSheared(false);
-        if (isAdult() && config(AnimaniaConfig.BIRDS_DROP_FEATHERS, true) && tickCount > 0
-                && tickCount % Math.max(20, config(AnimaniaConfig.FEATHER_TIMER, 12000)) == 0) produceFeather();
+        if (isSheared() && --woolRegrowthTicks <= 0) setSheared(false);
+        if (isAdult() && config(AnimaniaConfig.BIRDS_DROP_FEATHERS, true) && canDropFeather()) {
+            if (featherDropTicks <= 0) featherDropTicks = nextFeatherDropTicks();
+            if (--featherDropTicks <= 0) {
+                produceFeather();
+                featherDropTicks = nextFeatherDropTicks();
+            }
+        }
+        if (!isFertile() && fertilityCooldownTicks > 0 && --fertilityCooldownTicks == 0 && !isSterilized()) {
+            setFertile(true);
+        }
+        if (isMilkReady() && lactationTicks > 0 && --lactationTicks == 0) setMilkReady(false);
         if (isBaby() && isChildRegistryId() && getAge() < 0) {
             int interval = childGrowthInterval();
             if (++childGrowthTimer >= interval && getHunger() > 0 && getThirst() > 0 && !isSleeping()) {
@@ -751,8 +777,17 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
     }
 
     private int pregnancyDuration() {
+        if (pregnancyDurationTicks > 0) return pregnancyDurationTicks;
         ResourceLocation id = ForgeRegistries.ENTITY_TYPES.getKey(getType());
-        return AnimaniaApi.species(id).map(SpeciesDefinition::gestationTicks).orElse(AnimaniaConfig.GESTATION_TICKS.get());
+        int configured = Math.max(200, config(AnimaniaConfig.GESTATION_TICKS, 20000));
+        if (id != null && (id.getNamespace().equals("animania") || id.getNamespace().startsWith("animania_"))) {
+            return configured;
+        }
+        return AnimaniaApi.species(id).map(SpeciesDefinition::gestationTicks).orElse(configured);
+    }
+
+    private int newPregnancyDuration() {
+        return pregnancyDuration() + random.nextInt(isHorseAnimal() ? 400 : 200);
     }
 
     private void giveBirth() {
@@ -763,6 +798,7 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
         }
         setPregnant(false);
         pregnancyTicks = 0;
+        pregnancyDurationTicks = 0;
         // A hungry/thirsty female can lose a pregnancy when the legacy rule is
         // enabled.  The decision is made only on the authoritative level.
         if ((getHunger() <= 0 || getThirst() <= 0)
@@ -783,8 +819,13 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
             child.moveTo(getX() + (index * 0.25D), getY(), getZ() + (index * 0.25D), getYRot(), 0.0f);
             ((ServerLevel) level()).addFreshEntity(child);
         }
-        if (isMilkSpecies()) setMilkReady(true);
-        setAge(6000);
+        if (isMilkSpecies()) {
+            setMilkReady(true);
+            lactationTicks = childGrowthDuration();
+        }
+        setFertile(false);
+        fertilityCooldownTicks = Math.max(1, config(AnimaniaConfig.GESTATION_TICKS, 20000) / 9
+                + random.nextInt(50));
     }
 
     /**
@@ -809,8 +850,10 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
         if (!(rawType instanceof EntityType<?>)) return;
         @SuppressWarnings("unchecked") EntityType<? extends AnimaniaAnimalEntity> adultType =
                 (EntityType<? extends AnimaniaAnimalEntity>) rawType;
-        AnimaniaAnimalEntity adult = new AnimaniaAnimalEntity(adultType, server);
+        Entity created = adultType.create(server);
+        if (!(created instanceof AnimaniaAnimalEntity adult)) return;
         adult.moveTo(getX(), getY(), getZ(), getYRot(), getXRot());
+        adult.setDeltaMovement(getDeltaMovement());
         adult.setAge(0);
         adult.setGender(adultGender);
         adult.setVariantName(getVariantName());
@@ -820,12 +863,17 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
         adult.setTamed(isTamed());
         adult.setOwnerUUID(getOwnerUUID());
         adult.setSitting(isSitting());
+        adult.interacted = interacted;
+        adult.setCustomName(getCustomName());
+        adult.setCustomNameVisible(isCustomNameVisible());
+        adult.setSilent(isSilent());
+        adult.setNoGravity(isNoGravity());
+        adult.setInvulnerable(isInvulnerable());
+        adult.setHealth(Math.min(getHealth(), adult.getMaxHealth()));
         adult.setPersistenceRequired();
-        if (isPassenger()) {
-            stopRiding();
-        }
+        if (!server.addFreshEntity(adult)) return;
+        if (isPassenger()) stopRiding();
         discard();
-        server.addFreshEntity(adult);
     }
 
     @Override
@@ -878,20 +926,15 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
                 return InteractionResult.sidedSuccess(level().isClientSide);
             }
         }
-        if (stack.is(AnimaniaTags.ANIMAL_DRINK) || stack.is(Items.WATER_BUCKET) || stack.is(Items.POTION)) {
-            if (!level().isClientSide) drink(stack);
+        if (isAnimaniaDrink(stack)) {
+            if (isSleeping()) return InteractionResult.PASS;
+            if (!level().isClientSide && !drink(stack)) return InteractionResult.PASS;
             if (!level().isClientSide && !player.getAbilities().instabuild
-                    && config(AnimaniaConfig.WATER_REMOVED_AFTER_DRINKING, true)) {
-                if (stack.is(Items.WATER_BUCKET) || stack.is(com.animania.common.AnimaniaItems.WATER_BOTTLE.get())) {
-                    stack.shrink(1);
-                } else if (stack.getItem() instanceof PotionItem) {
-                    stack.shrink(1);
-                    player.addItem(new ItemStack(Items.GLASS_BOTTLE));
-                }
-            }
+                    && config(AnimaniaConfig.WATER_REMOVED_AFTER_DRINKING, true)) consumeDrinkContainer(player, hand, stack);
             return InteractionResult.sidedSuccess(level().isClientSide);
         }
         if (stack.is(AnimaniaTags.ANIMAL_FEED) || isAnimaniaFood(stack)) {
+            if (isSleeping()) return InteractionResult.PASS;
             if (!level().isClientSide) {
                 if (isHamster() && player.isShiftKeyDown()
                         && com.animania.common.AnimaniaSupporters.contains(player.getUUID())) {
@@ -908,7 +951,7 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
                     setHamsterStanding(true, 100);
                 }
                 ItemStack fedItem = stack.copyWithCount(1);
-                feed(stack);
+                if (!feed(stack)) return InteractionResult.PASS;
                 if (player instanceof ServerPlayer serverPlayer) {
                     ResourceLocation entityId = ForgeRegistries.ENTITY_TYPES.getKey(getType());
                     if (entityId != null) FeedAnimalTrigger.INSTANCE.trigger(serverPlayer, fedItem, entityId);
@@ -943,7 +986,7 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
             if (!level().isClientSide) {
                 interacted = true;
                 setSheared(true);
-                woolRegrowthTicks = Math.max(20, AnimaniaConfig.WOOL_REGROWTH_TIMER.get());
+                woolRegrowthTicks = nextWoolRegrowthTicks();
                 spawnAtLocation(new ItemStack(woolDropItem(), 1 + random.nextInt(3)));
                 stack.hurtAndBreak(1, player, broken -> player.broadcastBreakEvent(hand));
                 level().playSound(null, blockPosition(), SoundEvents.SHEEP_SHEAR, getSoundSource(), 1.0f, 1.0f);
@@ -1150,8 +1193,25 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
     }
 
     private static boolean isAnimaniaDrink(ItemStack stack) {
+        // Item tags cannot distinguish potion NBT; test PotionItem first so a
+        // tag containing minecraft:potion never turns every potion into water.
+        if (stack.getItem() instanceof PotionItem) return PotionUtils.getPotion(stack) == Potions.WATER;
         return stack.is(AnimaniaTags.ANIMAL_DRINK) || stack.is(Items.WATER_BUCKET)
-                || stack.is(Items.POTION) || stack.is(com.animania.common.AnimaniaItems.WATER_BOTTLE.get());
+                || stack.is(com.animania.common.AnimaniaItems.WATER_BOTTLE.get());
+    }
+
+    private static void consumeDrinkContainer(Player player, InteractionHand hand, ItemStack stack) {
+        if (!stack.is(Items.WATER_BUCKET)
+                && !stack.is(com.animania.common.AnimaniaItems.WATER_BOTTLE.get())
+                && !(stack.getItem() instanceof PotionItem)) return;
+        Item empty = stack.is(Items.WATER_BUCKET) ? Items.BUCKET : Items.GLASS_BOTTLE;
+        if (stack.getCount() == 1) {
+            player.setItemInHand(hand, new ItemStack(empty));
+            return;
+        }
+        stack.shrink(1);
+        ItemStack remainder = new ItemStack(empty);
+        if (!player.addItem(remainder)) player.drop(remainder, false);
     }
 
     @Override
@@ -1379,6 +1439,28 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
 
     public void setPregnant(boolean pregnant) {
         entityData.set(PREGNANT, pregnant && getGender() == AnimalGender.FEMALE && !isSterilized());
+        if (!pregnant) {
+            pregnancyTicks = 0;
+            pregnancyDurationTicks = 0;
+        } else if (pregnancyDurationTicks <= 0) {
+            pregnancyDurationTicks = newPregnancyDuration();
+        }
+    }
+
+    @Override
+    public boolean isFertile() {
+        return entityData.get(FERTILE);
+    }
+
+    @Override
+    public int fertilityCooldownTicks() {
+        return Math.max(0, fertilityCooldownTicks);
+    }
+
+    @Override
+    public void setFertile(boolean fertile) {
+        entityData.set(FERTILE, fertile && !isSterilized());
+        if (fertile) fertilityCooldownTicks = 0;
     }
 
     @Override
@@ -1388,7 +1470,10 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
 
     public void setSterilized(boolean sterilized) {
         entityData.set(STERILIZED, sterilized);
-        if (sterilized) setPregnant(false);
+        if (sterilized) {
+            setPregnant(false);
+            setFertile(false);
+        }
     }
 
     /** Stable taming facade used by the Cats&Dogs addon and probe providers. */
@@ -1455,6 +1540,8 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
 
     public void setMilkReady(boolean ready) {
         entityData.set(MILK_READY, ready && getGender() == AnimalGender.FEMALE && isAdult() && isMilkSpecies());
+        if (!ready) lactationTicks = 0;
+        else if (lactationTicks <= 0) lactationTicks = childGrowthDuration();
     }
 
     public void setSitting(boolean sitting) {
@@ -1589,6 +1676,8 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
                 && isAdult() && mate.isAdult()
                 && getGender() != mate.getGender()
                 && !isSterilized() && !mate.isSterilized()
+                && (getGender() != AnimalGender.FEMALE || isFertile())
+                && (mate.getGender() != AnimalGender.FEMALE || mate.isFertile())
                 && !isPregnant() && !mate.isPregnant()
                 && (!tamedRequirement || (isTamed() && mate.isTamed()));
     }
@@ -1773,10 +1862,15 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
         tag.putBoolean("AnimaniaSaddled", isSaddled());
         if (getOwnerUUID() != null) tag.putUUID("AnimaniaOwner", getOwnerUUID());
         tag.putInt("AnimaniaPregnancyTicks", pregnancyTicks);
+        tag.putInt("AnimaniaPregnancyDuration", pregnancyDurationTicks);
+        tag.putBoolean("Fertile", isFertile());
+        tag.putInt("AnimaniaFertilityCooldown", fertilityCooldownTicks);
+        tag.putInt("AnimaniaLactationTicks", lactationTicks);
         tag.putInt("AnimaniaWoolRegrowthTicks", woolRegrowthTicks);
         tag.putInt("AnimaniaBoostTicks", boostTicks);
         tag.putInt("AnimaniaStarvationTicks", starvationTicks);
         tag.putInt("AnimaniaEggLayTicks", eggLayTicks);
+        tag.putInt("AnimaniaFeatherDropTicks", featherDropTicks);
         tag.putInt("AnimaniaFedTimer", fedTimer);
         tag.putInt("AnimaniaWateredTimer", wateredTimer);
         tag.putInt("AnimaniaChildGrowthTimer", childGrowthTimer);
@@ -1831,10 +1925,19 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
         setSitting(tag.getBoolean("AnimaniaSitting"));
         setSaddled(tag.getBoolean("AnimaniaSaddled"));
         pregnancyTicks = tag.getInt("AnimaniaPregnancyTicks");
+        pregnancyDurationTicks = tag.contains("AnimaniaPregnancyDuration")
+                ? Math.max(0, tag.getInt("AnimaniaPregnancyDuration"))
+                : isPregnant() ? newPregnancyDuration() : 0;
+        fertilityCooldownTicks = Math.max(0, tag.getInt("AnimaniaFertilityCooldown"));
+        setFertile(!tag.contains("Fertile") || tag.getBoolean("Fertile"));
+        if (tag.contains("AnimaniaLactationTicks")) {
+            lactationTicks = Math.max(0, tag.getInt("AnimaniaLactationTicks"));
+        }
         woolRegrowthTicks = Math.max(0, tag.getInt("AnimaniaWoolRegrowthTicks"));
         boostTicks = Math.max(0, tag.getInt("AnimaniaBoostTicks"));
         starvationTicks = Math.max(0, tag.getInt("AnimaniaStarvationTicks"));
         eggLayTicks = Math.max(0, tag.getInt("AnimaniaEggLayTicks"));
+        featherDropTicks = Math.max(0, tag.getInt("AnimaniaFeatherDropTicks"));
         fedTimer = tag.contains("AnimaniaFedTimer") ? Math.max(0, tag.getInt("AnimaniaFedTimer"))
                 : careTimer(AnimaniaConfig.FEED_TIMER, 12000);
         wateredTimer = tag.contains("AnimaniaWateredTimer") ? Math.max(0, tag.getInt("AnimaniaWateredTimer"))
@@ -1869,9 +1972,16 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
     }
 
     @Override
-    public boolean causeFallDamage(float fallDistance, float multiplier, net.minecraft.world.damagesource.DamageSource source) {
+    protected int calculateFallDamage(float fallDistance, float multiplier) {
+        int damage = super.calculateFallDamage(fallDistance, multiplier);
         double reduction = Math.max(0.0D, Math.min(1.0D, config(AnimaniaConfig.FALL_DAMAGE_REDUCE_MULTIPLIER, 0.45D)));
-        return super.causeFallDamage((float) (fallDistance * reduction), multiplier, source);
+        return legacyFallDamage(damage, isLeashed(), reduction);
+    }
+
+    public static int legacyFallDamage(int damage, boolean leashed, double reduction) {
+        if (!leashed) return Math.max(0, damage);
+        double clamped = Math.max(0.0D, Math.min(1.0D, reduction));
+        return net.minecraft.util.Mth.floor(Math.max(0, damage) * clamped);
     }
 
     private boolean isMilkable() {
@@ -1927,11 +2037,26 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
         Item item = null;
         if (path.startsWith("hen_") || path.startsWith("rooster_")) {
             item = Items.FEATHER;
-        } else if (path.startsWith("peacock_") || path.startsWith("peahen_")) {
+        } else if (path.startsWith("peacock_")) {
             String color = speciesKey(path);
             item = ForgeRegistries.ITEMS.getValue(new ResourceLocation("animania_extra", color + "_peacock_feather"));
         }
         if (item != null) spawnAtLocation(new ItemStack(item));
+    }
+
+    private boolean canDropFeather() {
+        String path = registryPath();
+        return path.startsWith("hen_") || path.startsWith("rooster_") || path.startsWith("peacock_");
+    }
+
+    private int nextFeatherDropTicks() {
+        int base = Math.max(20, config(AnimaniaConfig.FEATHER_TIMER, 12000));
+        String path = registryPath();
+        return path.startsWith("hen_") || path.startsWith("rooster_") ? base + random.nextInt(1000) : base;
+    }
+
+    private int nextWoolRegrowthTicks() {
+        return Math.max(20, config(AnimaniaConfig.WOOL_REGROWTH_TIMER, 8000)) + random.nextInt(500);
     }
 
     /**
