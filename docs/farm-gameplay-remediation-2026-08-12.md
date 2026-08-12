@@ -42,11 +42,13 @@ GameTest log SHA-256 values:
 
 ## Test build artifacts
 
-The following artifacts were copied to the configured Minecraft test instance:
+The following `build/release` production artifacts are the only JARs suitable
+for a normal Forge installation. `build/libs` contains mapped development
+bytecode and must not be deployed.
 
 | JAR | Bytes | SHA-256 |
 | --- | ---: | --- |
-| `animania-base-1.20.1-3.0.0.jar` | 2,820,539 | `4E981D525F14D625036CFAACD898EEA2CB9BDACCD7D8F44FC617AFB04F05FB95` |
+| `animania-base-1.20.1-3.0.0.jar` | 2,828,945 | `7E01F2025DD3CBF2F785E499039DC508AA56109BF11875092EC115162D5AEC83` |
 | `animania-farm-1.20.1-3.0.0.jar` | 6,324,893 | `7B177F26208787D47DE2CB7AABDD4CC6B9948199DE8F11DD9880755B49EF2417` |
 | `animania-extra-1.20.1-3.0.0.jar` | 1,885,786 | `DE984252A63FBD1D39B7DB85BEA3B2C439A6CBF03511ED0CC78041E3DA74A6B1` |
 | `animania-catsdogs-1.20.1-3.0.0.jar` | 816,177 | `846344BB772A644F8AB4C537EE3EB40E63F9E172C2B3459137D854F78A1F7D96` |
