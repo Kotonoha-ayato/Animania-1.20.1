@@ -66,7 +66,6 @@ public final class AnimaniaCatsDogs {
         CatsDogsPetSeller.PROFESSIONS.register(bus);
         CatsDogsTab.TABS.register(bus);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, CatsDogsConfig.SPEC);
-        AnimaniaApi.registerTamingRequirement(MOD_ID, () -> CatsDogsConfig.REQUIRE_TAMING_FOR_BREEDING.get());
         AnimaniaSleepProfiles.register(MOD_ID, AnimaniaCatsDogs::sleepProfile);
         AnimaniaApi.registerFoodMatcher(MOD_ID, (id, stack) -> {
             String path = id.getPath();

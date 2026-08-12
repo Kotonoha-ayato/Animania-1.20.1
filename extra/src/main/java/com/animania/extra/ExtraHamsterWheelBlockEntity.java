@@ -22,8 +22,7 @@ import net.minecraftforge.registries.ForgeRegistries;
  * generates FE through the standard Forge capability.
  */
 public final class ExtraHamsterWheelBlockEntity extends AnimaniaStorageBlockEntity {
-    private final EnergyStorage energy = new EnergyStorage(ExtraConfig.HAMSTER_WHEEL_CAPACITY.get(),
-            ExtraConfig.HAMSTER_WHEEL_GENERATION.get(), ExtraConfig.HAMSTER_WHEEL_GENERATION.get());
+    private final PersistedEnergyStorage energy = new PersistedEnergyStorage(ExtraConfig.HAMSTER_WHEEL_CAPACITY.get());
     private final LazyOptional<EnergyStorage> energyOptional = LazyOptional.of(() -> energy);
     private CompoundTag hamsterData = new CompoundTag();
     private int useTicks;
@@ -61,6 +60,7 @@ public final class ExtraHamsterWheelBlockEntity extends AnimaniaStorageBlockEnti
             return;
         }
         energy.receiveEnergy(ExtraConfig.HAMSTER_WHEEL_GENERATION.get(), false);
+        pushEnergyToNeighbours();
         if (++useTicks >= ExtraConfig.HAMSTER_WHEEL_USE_TIME.get()) {
             useTicks = 0;
             ItemStack food = getItem(0);
@@ -72,6 +72,20 @@ public final class ExtraHamsterWheelBlockEntity extends AnimaniaStorageBlockEnti
             }
         }
         setChanged();
+    }
+
+    private void pushEnergyToNeighbours() {
+        if (level == null || energy.getEnergyStored() <= 0) return;
+        for (net.minecraft.core.Direction direction : net.minecraft.core.Direction.values()) {
+            var neighbour = level.getBlockEntity(worldPosition.relative(direction));
+            if (neighbour == null) continue;
+            int available = energy.getEnergyStored();
+            if (available <= 0) break;
+            int accepted = neighbour.getCapability(ForgeCapabilities.ENERGY, direction.getOpposite())
+                    .map(handler -> handler.canReceive() ? handler.receiveEnergy(available, false) : 0)
+                    .orElse(0);
+            if (accepted > 0) energy.extractEnergy(accepted, false);
+        }
     }
 
     public boolean insertHamster(CompoundTag data) {
@@ -181,9 +195,19 @@ public final class ExtraHamsterWheelBlockEntity extends AnimaniaStorageBlockEnti
         if (!food.isEmpty() && food.getCount() > getMaxStackSize()) {
             setItem(0, food.copyWithCount(getMaxStackSize()));
         }
-        energy.receiveEnergy(Math.max(0, tag.getInt("Energy")), false);
+        energy.restore(tag.getInt("Energy"));
         useTicks = Math.max(0, tag.getInt("UseTicks"));
         hamsterData = tag.contains("Hamster") ? tag.getCompound("Hamster").copy() : new CompoundTag();
         running = hasHamster() && tag.getBoolean("Running");
+    }
+
+    private static final class PersistedEnergyStorage extends EnergyStorage {
+        private PersistedEnergyStorage(int capacity) {
+            super(capacity, capacity, capacity);
+        }
+
+        private void restore(int stored) {
+            energy = Math.max(0, Math.min(capacity, stored));
+        }
     }
 }

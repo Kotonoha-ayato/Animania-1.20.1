@@ -219,8 +219,7 @@ public final class AnimaniaExtra {
         replacement.setCustomNameVisible(vanilla.isCustomNameVisible());
         replacement.setPersistenceRequired();
         if (baby) replacement.setAge(-AnimaniaAnimalEntity.childGrowthDuration());
-        event.getLevel().addFreshEntity(replacement);
-        event.setCanceled(true);
+        if (event.getLevel().addFreshEntity(replacement)) event.setCanceled(true);
     }
 
     private void registerGameTests(RegisterGameTestsEvent event) {

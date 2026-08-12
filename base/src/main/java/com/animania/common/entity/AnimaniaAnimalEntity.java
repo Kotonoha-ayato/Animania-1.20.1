@@ -38,6 +38,8 @@ import com.animania.common.entity.goal.AnimaniaOwnerHurtByTargetGoal;
 import com.animania.common.entity.goal.AnimaniaOwnerHurtTargetGoal;
 import com.animania.common.entity.goal.AnimaniaTargetNonTamedGoal;
 import com.animania.common.entity.goal.AnimaniaAvoidEntityGoal;
+import com.animania.common.entity.goal.AnimaniaCatAttackGoal;
+import com.animania.common.entity.goal.AnimaniaWatchFromSideGoal;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -160,6 +162,7 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
     private boolean interacted;
     private int hamsterStandTicks;
     private int hamsterEatTicks = 5000;
+    private int dartFrogPoisonTimer = 2;
 
     public AnimaniaAnimalEntity(EntityType<? extends AnimaniaAnimalEntity> type, Level level) {
         super(type, level);
@@ -266,6 +269,10 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
 
     @Override
     protected void registerGoals() {
+        if (isAmphibian()) {
+            registerAmphibianGoals();
+            return;
+        }
         if (isHamster()) {
             registerHamsterGoals();
             return;
@@ -307,12 +314,14 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
             goalSelector.addGoal(6, new AnimaniaWanderAvoidWaterGoal(this,
                     AnimaniaWanderAvoidWaterGoal.legacySpeed(this)));
         }
-        if (AnimaniaWatchClosestGoal.supports(this)) goalSelector.addGoal(7, new AnimaniaWatchClosestGoal(this));
+        if (isPeafowl()) goalSelector.addGoal(5, new AnimaniaWatchFromSideGoal(this));
+        else if (AnimaniaWatchClosestGoal.supports(this)) goalSelector.addGoal(7, new AnimaniaWatchClosestGoal(this));
         if (AnimaniaLookIdleGoal.supports(this)) goalSelector.addGoal(8, new AnimaniaLookIdleGoal(this));
         // Cats and dogs retain the legacy companion combat intent while
         // remaining server-authoritative and opt-out through the shared rule.
         if (attacksAllowed() && isCompanionAnimal()) {
-            goalSelector.addGoal(4, new MeleeAttackGoal(this, isDogCompanion() ? 1.15D : 1.0D, true));
+            goalSelector.addGoal(4, isCatCompanion() ? new AnimaniaCatAttackGoal(this)
+                    : new MeleeAttackGoal(this, 1.15D, true));
             if (isCatCompanion()) goalSelector.addGoal(5, new LeapAtTargetGoal(this, 0.4F));
             targetSelector.addGoal(1, new AnimaniaHurtByTargetGoal(this));
             if (isDogCompanion()) {
@@ -337,8 +346,46 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
                 targetSelector.addGoal(5, new AnimaniaTargetNonTamedGoal<>(this, AnimaniaAnimalEntity.class, true,
                         target -> target.registryNamespace().equals("animania_extra")
                                 && (target.registryPath().startsWith("ferret_")
-                                || target.registryPath().startsWith("hedgehog"))));
+                                || target.registryPath().startsWith("hedgehog")
+                                || target.registryPath().equals("frog") || target.registryPath().equals("dartfrog")
+                                || target.registryPath().equals("toad") || target.registryPath().startsWith("peachick_"))));
             }
+        }
+        if (attacksAllowed() && isExtraPredator()) registerExtraPredatorCombat();
+    }
+
+    private void registerAmphibianGoals() {
+        goalSelector.addGoal(0, new AnimaniaSmallCreatureFloatGoal(this));
+        goalSelector.addGoal(1, new AnimaniaPanicGoal(this, 2.2D));
+        goalSelector.addGoal(2, new AnimaniaAvoidEntityGoal<>(this, Player.class,
+                target -> !isNamedFrog("Pepe"), 6.0F, 1.5D, 1.5D, target -> true));
+        goalSelector.addGoal(3, new AnimaniaWanderAvoidWaterGoal(this, 0.6D));
+        goalSelector.addGoal(4, new AnimaniaWatchClosestGoal(this));
+        goalSelector.addGoal(5, new AnimaniaAvoidEntityGoal<>(this, AnimaniaAnimalEntity.class,
+                target -> target instanceof AnimaniaAnimalEntity animal && animal.isPeafowl(),
+                10.0F, 3.0D, 3.5D, target -> true));
+        goalSelector.addGoal(5, new AnimaniaAvoidEntityGoal<>(this, Chicken.class,
+                10.0F, 3.0D, 3.5D));
+    }
+
+    private void registerExtraPredatorCombat() {
+        if (registryPath().startsWith("ferret_") || registryPath().startsWith("hedgehog")) {
+            goalSelector.addGoal(5, new LeapAtTargetGoal(this, 0.2F));
+            goalSelector.addGoal(6, new MeleeAttackGoal(this, 1.0D, true));
+            targetSelector.addGoal(1, new AnimaniaHurtByTargetGoal(this));
+            targetSelector.addGoal(2, new AnimaniaNearestAttackableTargetGoal<>(this,
+                    net.minecraft.world.entity.monster.Silverfish.class, false));
+            targetSelector.addGoal(3, new AnimaniaNearestAttackableTargetGoal<>(this, AnimaniaAnimalEntity.class,
+                    false, target -> target instanceof AnimaniaAnimalEntity animal
+                    && (animal.registryPath().equals("frog") || animal.registryPath().equals("toad")
+                    || (registryPath().startsWith("ferret_") && animal.registryNamespace().equals("animania_farm")
+                    && animal.registryPath().startsWith("chick_")))));
+        } else if (isPeafowl()) {
+            goalSelector.addGoal(8, new LeapAtTargetGoal(this, 0.2F));
+            goalSelector.addGoal(9, new MeleeAttackGoal(this, 1.0D, true));
+            targetSelector.addGoal(0, new AnimaniaHurtByTargetGoal(this));
+            targetSelector.addGoal(2, new AnimaniaNearestAttackableTargetGoal<>(this, AnimaniaAnimalEntity.class,
+                    false, target -> target instanceof AnimaniaAnimalEntity animal && animal.isAmphibian()));
         }
     }
 
@@ -399,7 +446,14 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
             special = com.animania.common.AnimaniaDamageSources.killerRabbit(level());
             amount = 5.0F;
         }
-        if (special == null) return super.doHurtTarget(target);
+        if (special == null) {
+            boolean result = super.doHurtTarget(target);
+            if (result && isPeafowl() && target instanceof AnimaniaAnimalEntity animal && animal.isAmphibian()) {
+                setHunger(100);
+                interacted = true;
+            }
+            return result;
+        }
         boolean first = target.hurt(special, amount);
         target.hurt(special, amount);
         if (first && target instanceof net.minecraft.world.entity.LivingEntity living) {
@@ -435,6 +489,12 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
                 || id.getPath().startsWith("buck_") || id.getPath().startsWith("kit_"))) {
             goalSelector.addGoal(9, new AnimaniaAvoidEntityGoal<>(this, Wolf.class, 24.0F, 3.0D, 3.5D));
             goalSelector.addGoal(9, new AnimaniaAvoidEntityGoal<>(this, Monster.class, 16.0F, 2.2D, 2.2D));
+        } else if ("animania_extra".equals(id.getNamespace()) && id.getPath().startsWith("hedgehog")) {
+            goalSelector.addGoal(9, new AnimaniaAvoidEntityGoal<>(this, AnimaniaAnimalEntity.class,
+                    target -> target instanceof AnimaniaAnimalEntity animal
+                            && animal.registryNamespace().equals("animania_farm")
+                            && animal.registryPath().startsWith("rooster_"),
+                    10.0F, 1.2D, 1.5D, target -> true));
         }
     }
 
@@ -498,6 +558,9 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
             setDeltaMovement(0.0D, getDeltaMovement().y, 0.0D);
         }
         tickHamsterState();
+        tickAmphibianHop();
+        tickExtraNameEffects();
+        if (dartFrogPoisonTimer > 1) dartFrogPoisonTimer--;
         if (config(AnimaniaConfig.AMBIANCE_MODE, false)) {
             // Ambiance mode keeps the care meters full and disables all
             // starvation pressure while retaining the visible state fields.
@@ -601,6 +664,24 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
         }
     }
 
+    private void tickExtraNameEffects() {
+        if (!registryNamespace().equals("animania_extra") || !registryPath().startsWith("hedgehog") || !hasCustomName()) return;
+        String name = getCustomName().getString();
+        if (name.equals("Sonic")) {
+            addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 2, 4, false, false));
+        } else if (name.equals("Sanic")) {
+            addEffect(new MobEffectInstance(MobEffects.GLOWING, 2, 3, false, false));
+            addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 2, 6, false, false));
+        }
+    }
+
+    private void tickAmphibianHop() {
+        if (!isAmphibian() || !onGround() || getNavigation().isDone() || random.nextInt(6) != 0) return;
+        Vec3 movement = getDeltaMovement();
+        setDeltaMovement(movement.x, 0.42D, movement.z);
+        hasImpulse = true;
+    }
+
     /** Client-synchronized 0..1 fraction of the legacy 0.00..0.85 child growth cycle. */
     public float growthProgress() {
         return entityData.get(GROWTH_PROGRESS);
@@ -622,6 +703,10 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
     /** Modern collision hook for the three fainting-goat registrations. */
     @Override
     public void push(Entity entity) {
+        if (!level().isClientSide && registryNamespace().equals("animania_extra")
+                && registryPath().equals("dartfrog") && entity instanceof Player player) {
+            player.addEffect(new MobEffectInstance(MobEffects.POISON, 200, 1, false, false));
+        }
         if (!level().isClientSide && isFaintingGoat() && entity instanceof Player player && player.isSprinting()) {
             setSpooked(true);
             setSpookedTimer(20);
@@ -708,6 +793,8 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
         if (path.equals("frog")) return legacySound("frogliving1", "frogliving2", "frogliving3");
         if (path.equals("dartfrog")) return legacySound("dartfrogliving1", "dartfrogliving2", "dartfrogliving3", "dartfrogliving4");
         if (path.equals("toad")) return legacySound("toadliving1", "toadliving2", "toadliving3", "toadliving4");
+        if (isDogCompanion()) return SoundEvents.WOLF_AMBIENT;
+        if (isCatCompanion()) return SoundEvents.OCELOT_AMBIENT;
         return super.getAmbientSound();
     }
 
@@ -738,6 +825,8 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
             return legacySound("rabbithurt1", "rabbithurt2");
         if (path.startsWith("peacock_") || path.startsWith("peahen_") || path.startsWith("peachick_"))
             return legacySound("peacockhurt1", "peacockhurt2");
+        if (isDogCompanion()) return SoundEvents.WOLF_HURT;
+        if (isCatCompanion()) return SoundEvents.OCELOT_HURT;
         return super.getHurtSound(source);
     }
 
@@ -748,6 +837,8 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
         if (path.startsWith("rooster_")) return legacySound("death1", "death2");
         if (path.startsWith("bull_") || path.startsWith("cow_")) return legacySound("cowdeath1", "cowdeath2");
         if (path.equals("hamster")) return legacySound("hamsterhurt1");
+        if (isDogCompanion()) return SoundEvents.WOLF_DEATH;
+        if (isCatCompanion()) return SoundEvents.OCELOT_DEATH;
         SoundEvent hurt = getHurtSound(level().damageSources().generic());
         return hurt != null ? hurt : super.getDeathSound();
     }
@@ -888,6 +979,8 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
     @Override
     public InteractionResult mobInteract(Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
+        InteractionResult poisonArrow = interactDartFrogArrow(player, hand, stack);
+        if (poisonArrow != null) return poisonArrow;
         if (isHamster()) {
             InteractionResult ballResult = interactHamsterBall(player, hand, stack);
             if (ballResult != null) return ballResult;
@@ -895,6 +988,17 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
                 if (!level().isClientSide) {
                     setSitting(!isSitting());
                     setHamsterStanding(false, 0);
+                    getNavigation().stop();
+                }
+                return InteractionResult.sidedSuccess(level().isClientSide);
+            }
+        }
+        if (isTameableExtraRodent()) {
+            InteractionResult carryResult = interactCarryableAnimal(player, hand, stack);
+            if (carryResult != null) return carryResult;
+            if (stack.isEmpty() && isTamed() && !player.isCrouching() && !isSleeping()) {
+                if (!level().isClientSide) {
+                    setSitting(!isSitting());
                     getNavigation().stop();
                 }
                 return InteractionResult.sidedSuccess(level().isClientSide);
@@ -973,6 +1077,12 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
                     else heal(1.0F);
                     setHamsterStanding(true, 100);
                 }
+                if (isTameableExtraRodent() && !isTamed()) {
+                    setTamed(true);
+                    setOwnerUUID(player.getUUID());
+                    setSitting(false);
+                    level().broadcastEntityEvent(this, (byte) 7);
+                }
                 ItemStack fedItem = stack.copyWithCount(1);
                 if (!feed(stack)) return InteractionResult.PASS;
                 if (player instanceof ServerPlayer serverPlayer) {
@@ -1023,6 +1133,28 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
     public boolean isHamster() {
         ResourceLocation id = ForgeRegistries.ENTITY_TYPES.getKey(getType());
         return id != null && "animania_extra".equals(id.getNamespace()) && "hamster".equals(id.getPath());
+    }
+
+    public boolean isAmphibian() {
+        return registryNamespace().equals("animania_extra")
+                && (registryPath().equals("frog") || registryPath().equals("dartfrog") || registryPath().equals("toad"));
+    }
+
+    public boolean isPeafowl() {
+        return registryNamespace().equals("animania_extra")
+                && (registryPath().startsWith("peacock_") || registryPath().startsWith("peahen_")
+                || registryPath().startsWith("peachick_"));
+    }
+
+    private boolean isTameableExtraRodent() {
+        return registryNamespace().equals("animania_extra")
+                && (registryPath().equals("hamster") || registryPath().startsWith("ferret_")
+                || registryPath().startsWith("hedgehog"));
+    }
+
+    private boolean isExtraPredator() {
+        return registryNamespace().equals("animania_extra")
+                && (registryPath().startsWith("ferret_") || registryPath().startsWith("hedgehog") || isPeafowl());
     }
 
     public int getHamsterFoodStack() {
@@ -1115,6 +1247,11 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
             }
             return InteractionResult.sidedSuccess(level().isClientSide);
         }
+        return null;
+    }
+
+    @Nullable
+    private InteractionResult interactCarryableAnimal(Player player, InteractionHand hand, ItemStack stack) {
         if (stack.isEmpty() && player.isCrouching() && isTamed()
                 && !isSleeping() && !isInBall() && !hasCarriedAnimal(player)) {
             if (!level().isClientSide) {
@@ -1136,6 +1273,22 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
             return InteractionResult.sidedSuccess(level().isClientSide);
         }
         return null;
+    }
+
+    @Nullable
+    private InteractionResult interactDartFrogArrow(Player player, InteractionHand hand, ItemStack stack) {
+        if (!registryNamespace().equals("animania_extra") || !registryPath().equals("dartfrog")
+                || !stack.is(Items.ARROW) || dartFrogPoisonTimer > 1) return null;
+        if (!level().isClientSide) {
+            dartFrogPoisonTimer = 800;
+            ItemStack poisoned = PotionUtils.setPotion(new ItemStack(Items.TIPPED_ARROW), Potions.POISON);
+            if (!player.getAbilities().instabuild) stack.shrink(1);
+            if (stack.isEmpty()) player.setItemInHand(hand, poisoned);
+            else if (!player.addItem(poisoned)) player.drop(poisoned, false);
+            level().playSound(null, blockPosition(), SoundEvents.MAGMA_CUBE_SQUISH_SMALL,
+                    getSoundSource(), 0.2F, 1.8F);
+        }
+        return InteractionResult.sidedSuccess(level().isClientSide);
     }
 
     private static int ballColorFromStack(ItemStack stack) {
@@ -1727,6 +1880,11 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
         ResourceLocation id = ForgeRegistries.ENTITY_TYPES.getKey(getType());
         if (id == null) return AnimalGender.MALE;
         String path = id.getPath();
+        if (id.getNamespace().equals("animania_extra")
+                && (path.equals("frog") || path.equals("dartfrog") || path.equals("toad")
+                || path.equals("hamster") || path.startsWith("ferret_") || path.startsWith("hedgehog"))) {
+            return AnimalGender.NONE;
+        }
         if (path.startsWith("hen_") || path.startsWith("cow_") || path.startsWith("doe_") || path.startsWith("ewe_")
                 || path.startsWith("sow_") || path.startsWith("mare_") || path.startsWith("queen_") || path.startsWith("female_")) return AnimalGender.FEMALE;
         if (path.startsWith("chick_") || path.startsWith("calf_") || path.startsWith("kid_") || path.startsWith("lamb_")
@@ -1913,6 +2071,7 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
         tag.putInt("AnimaniaFeatherDropTicks", featherDropTicks);
         tag.putInt("AnimaniaFedTimer", fedTimer);
         tag.putInt("AnimaniaWateredTimer", wateredTimer);
+        tag.putInt("AnimaniaDartFrogPoisonTimer", dartFrogPoisonTimer);
         tag.putInt("AnimaniaChildGrowthTimer", childGrowthTimer);
         tag.putInt("CrowTime", crowCooldown);
         tag.putBoolean("AnimaniaMilkReady", isMilkReady());
@@ -1982,6 +2141,8 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
                 : careTimer(AnimaniaConfig.FEED_TIMER, 12000);
         wateredTimer = tag.contains("AnimaniaWateredTimer") ? Math.max(0, tag.getInt("AnimaniaWateredTimer"))
                 : careTimer(AnimaniaConfig.WATER_TIMER, 12000);
+        dartFrogPoisonTimer = tag.contains("AnimaniaDartFrogPoisonTimer")
+                ? Math.max(0, tag.getInt("AnimaniaDartFrogPoisonTimer")) : 2;
         childGrowthTimer = tag.contains("AnimaniaChildGrowthTimer")
                 ? Math.max(0, tag.getInt("AnimaniaChildGrowthTimer")) : 0;
         crowCooldown = Math.max(0, tag.getInt("CrowTime"));
@@ -2013,6 +2174,7 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
 
     @Override
     protected int calculateFallDamage(float fallDistance, float multiplier) {
+        if (isPeafowl()) return 0;
         int damage = super.calculateFallDamage(fallDistance, multiplier);
         double reduction = Math.max(0.0D, Math.min(1.0D, config(AnimaniaConfig.FALL_DAMAGE_REDUCE_MULTIPLIER, 0.45D)));
         return legacyFallDamage(damage, isLeashed(), reduction);

@@ -51,6 +51,98 @@ import java.util.UUID;
 @PrefixGameTestTemplate(false)
 public final class AnimaniaExtraGameTests {
     @GameTest(template = "empty")
+    public static void legacyExtraAttributesSpecialInteractionsAndEnergyPersistence(GameTestHelper helper) {
+        AnimaniaAnimalEntity frog = createAnimal(helper, "frog");
+        AnimaniaAnimalEntity dart = createAnimal(helper, "dartfrog");
+        AnimaniaAnimalEntity ferret = createAnimal(helper, "ferret_grey");
+        AnimaniaAnimalEntity hedgehog = createAnimal(helper, "hedgehog");
+        AnimaniaAnimalEntity peacock = createAnimal(helper, "peacock_blue");
+        AnimaniaAnimalEntity doe = createAnimal(helper, "doe_rex");
+        helper.assertTrue(frog.getGender() == AnimalGender.NONE && ferret.getGender() == AnimalGender.NONE
+                        && hedgehog.getGender() == AnimalGender.NONE,
+                "genderless Extra animals were exposed as male");
+        helper.assertTrue(frog.getMaxHealth() == 3.0F && ferret.getMaxHealth() == 8.0F
+                        && hedgehog.getMaxHealth() == 8.0F && peacock.getMaxHealth() == 7.0F
+                        && doe.getMaxHealth() == 9.0F,
+                "Extra family health table differs from 1.12");
+        helper.assertTrue(Math.abs(ferret.getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED) - 0.35D) < 0.0001D
+                        && Math.abs(peacock.getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_DAMAGE) - 1.5D) < 0.0001D,
+                "Extra speed/attack table differs from 1.12");
+        helper.assertTrue(frog.goalSelector.getAvailableGoals().stream().anyMatch(goal -> goal.getGoal() instanceof AnimaniaAvoidEntityGoal)
+                        && frog.goalSelector.getAvailableGoals().stream().noneMatch(goal -> goal.getGoal() instanceof com.animania.common.entity.goal.AnimaniaMateGoal),
+                "amphibian retained domestic breeding AI or lost avoidance AI");
+
+        var player = helper.makeMockPlayer();
+        dart.tick(); // legacy poisonTimer starts at two and becomes usable after its first living tick
+        player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.ARROW));
+        helper.assertTrue(dart.mobInteract(player, InteractionHand.MAIN_HAND).consumesAction()
+                        && player.getMainHandItem().is(Items.TIPPED_ARROW)
+                        && net.minecraft.world.item.alchemy.PotionUtils.getPotion(player.getMainHandItem())
+                        == net.minecraft.world.item.alchemy.Potions.POISON,
+                "dart frog did not convert an arrow into a poison arrow");
+        dart.push(player);
+        helper.assertTrue(player.hasEffect(net.minecraft.world.effect.MobEffects.POISON)
+                        && player.getEffect(net.minecraft.world.effect.MobEffects.POISON).getAmplifier() == 1,
+                "dart frog collision did not apply legacy poison II");
+        CompoundTag dartTag = new CompoundTag();
+        dart.addAdditionalSaveData(dartTag);
+        AnimaniaAnimalEntity loadedDart = createAnimal(helper, "dartfrog");
+        loadedDart.readAdditionalSaveData(dartTag);
+        player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.ARROW));
+        helper.assertTrue(!loadedDart.mobInteract(player, InteractionHand.MAIN_HAND).consumesAction()
+                        && player.getMainHandItem().is(Items.ARROW),
+                "dart frog poison-arrow cooldown was not persisted");
+
+        player.setShiftKeyDown(false);
+        player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.MUTTON));
+        helper.assertTrue(ferret.mobInteract(player, InteractionHand.MAIN_HAND).consumesAction()
+                        && ferret.isTamed() && player.getUUID().equals(ferret.getOwnerUUID()),
+                "configured ferret food did not tame and assign its owner");
+        player.setShiftKeyDown(true);
+        player.setPose(net.minecraft.world.entity.Pose.CROUCHING);
+        player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+        helper.assertTrue(ferret.mobInteract(player, InteractionHand.MAIN_HAND).consumesAction()
+                        && AnimaniaAnimalEntity.hasCarriedAnimal(player),
+                "tamed ferret could not use the legacy shoulder-carry interaction");
+        AnimaniaAnimalEntity.clearCarriedAnimal(player);
+
+        hedgehog.setCustomName(net.minecraft.network.chat.Component.literal("Sanic"));
+        hedgehog.tick();
+        helper.assertTrue(hedgehog.hasEffect(net.minecraft.world.effect.MobEffects.GLOWING)
+                        && hedgehog.getEffect(net.minecraft.world.effect.MobEffects.MOVEMENT_SPEED).getAmplifier() == 6,
+                "Sanic did not receive legacy glowing IV and speed VII");
+        float health = peacock.getHealth();
+        peacock.causeFallDamage(20.0F, 1.0F, helper.getLevel().damageSources().fall());
+        helper.assertTrue(peacock.getHealth() == health, "peafowl took fall damage despite the legacy no-fall override");
+
+        BlockPos wheelPos = helper.absolutePos(new BlockPos(6, 1, 1));
+        helper.getLevel().setBlock(wheelPos, ExtraContent.HAMSTER_WHEEL.get().defaultBlockState(), 3);
+        ExtraHamsterWheelBlockEntity wheel = (ExtraHamsterWheelBlockEntity) helper.getLevel().getBlockEntity(wheelPos);
+        var energy = wheel.getCapability(net.minecraftforge.common.capabilities.ForgeCapabilities.ENERGY)
+                .orElseThrow(() -> new IllegalStateException("wheel energy capability missing"));
+        energy.receiveEnergy(400, false);
+        CompoundTag wheelTag = wheel.saveWithoutMetadata();
+        ExtraHamsterWheelBlockEntity loadedWheel = new ExtraHamsterWheelBlockEntity(wheelPos,
+                ExtraContent.HAMSTER_WHEEL.get().defaultBlockState());
+        loadedWheel.load(wheelTag);
+        helper.assertTrue(loadedWheel.energyStored() == 400,
+                "hamster wheel truncated persisted energy to one generation tick");
+
+        CompoundTag runner = new CompoundTag();
+        createAnimal(helper, "hamster").addAdditionalSaveData(runner);
+        wheel.insertHamster(runner);
+        wheel.tryInsertFood(new ItemStack(ExtraContent.ITEM_ENTRIES.get("hamster_food").get()));
+        BlockPos receiverPos = wheelPos.east();
+        helper.getLevel().setBlock(receiverPos, net.minecraft.world.level.block.Blocks.BARREL.defaultBlockState(), 3);
+        TestEnergyReceiver receiver = new TestEnergyReceiver(receiverPos,
+                net.minecraft.world.level.block.Blocks.BARREL.defaultBlockState());
+        helper.getLevel().setBlockEntity(receiver);
+        wheel.serverTick();
+        helper.assertTrue(receiver.energy.getEnergyStored() > 0,
+                "running hamster wheel did not actively push FE into an adjacent receiver");
+        helper.succeed();
+    }
+    @GameTest(template = "empty")
     public static void supporterSneakFeedingUnlocksLegacyGoldenHamster(GameTestHelper helper) {
         AnimaniaAnimalEntity hamster = createAnimal(helper, "hamster");
         hamster.setVariantName("brown");
@@ -1025,6 +1117,29 @@ public final class AnimaniaExtraGameTests {
         if (id.equals("frog")) return variant.equals("default") || variant.equals("green");
         if (id.endsWith("_lop")) return java.util.Set.of("black", "brown", "golden", "olive", "patch_black", "patch_brown", "patch_grey").contains(variant);
         return variant.equals("default");
+    }
+
+    private static final class TestEnergyReceiver extends net.minecraft.world.level.block.entity.BlockEntity {
+        private final net.minecraftforge.energy.EnergyStorage energy = new net.minecraftforge.energy.EnergyStorage(1000);
+        private final net.minecraftforge.common.util.LazyOptional<net.minecraftforge.energy.IEnergyStorage> capability =
+                net.minecraftforge.common.util.LazyOptional.of(() -> energy);
+
+        private TestEnergyReceiver(BlockPos pos, net.minecraft.world.level.block.state.BlockState state) {
+            super(net.minecraft.world.level.block.entity.BlockEntityType.BARREL, pos, state);
+        }
+
+        @Override
+        public <T> net.minecraftforge.common.util.LazyOptional<T> getCapability(
+                net.minecraftforge.common.capabilities.Capability<T> requested, Direction side) {
+            return requested == net.minecraftforge.common.capabilities.ForgeCapabilities.ENERGY
+                    ? capability.cast() : super.getCapability(requested, side);
+        }
+
+        @Override
+        public void invalidateCaps() {
+            super.invalidateCaps();
+            capability.invalidate();
+        }
     }
 
     private AnimaniaExtraGameTests() { }
