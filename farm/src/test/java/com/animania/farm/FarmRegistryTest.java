@@ -101,6 +101,19 @@ class FarmRegistryTest {
     }
 
     @Test
+    void everyGoatMuzzleIsAttachedToTheAnimatedHeadNode() {
+        FarmLegacyIds.ALL.stream()
+                .filter(id -> id.startsWith("buck_") || id.startsWith("doe_") || id.startsWith("kid_"))
+                .forEach(id -> {
+                    ModelPart root = FarmLegacyModelLayers.create(id).bakeRoot();
+                    assertTrue(root.hasChild("head_node"), id + " lost its head node");
+                    assertTrue(root.getChild("head_node").hasChild("nose"),
+                            id + " nose is not attached to the animated head");
+                    assertFalse(root.hasChild("nose"), id + " retained a root-level floating nose");
+                });
+    }
+
+    @Test
     void legacyColoredWoolPartsRemainDedicatedTintPasses() {
         for (String id : java.util.List.of("ewe_dorset", "ram_merino", "ewe_suffolk", "ram_friesian")) {
             var profile = FarmLegacyModelLayers.profile(id);

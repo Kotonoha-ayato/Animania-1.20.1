@@ -30,7 +30,7 @@ public final class CatsDogsPetSeller {
     public static final DeferredRegister<PoiType> POI_TYPES =
             DeferredRegister.create(ForgeRegistries.POI_TYPES, AnimaniaCatsDogs.MOD_ID);
     public static final ResourceKey<PoiType> PET_SELLER_POI_KEY = ResourceKey.create(Registries.POINT_OF_INTEREST_TYPE,
-            ResourceLocation.fromNamespaceAndPath(AnimaniaCatsDogs.MOD_ID, "pet_seller"));
+            new ResourceLocation(AnimaniaCatsDogs.MOD_ID, "pet_seller"));
     public static final RegistryObject<PoiType> PET_SELLER_POI = POI_TYPES.register("pet_seller", () ->
             new PoiType(java.util.Set.copyOf(CatsDogsContent.PET_BOWL.get().getStateDefinition().getPossibleStates()), 1, 1));
     public static final RegistryObject<VillagerProfession> PET_SELLER = PROFESSIONS.register("pet_seller", () ->

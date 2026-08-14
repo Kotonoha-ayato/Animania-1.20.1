@@ -21,4 +21,26 @@ class BaseClientContractTest {
         String main = Files.readString(Path.of("src/main/java/com/animania/client/model/LegacyAnimalModel.java"));
         assertTrue(!main.toLowerCase(java.util.Locale.ROOT).contains("craftstudio"));
     }
+
+    @Test
+    void peacockFanRestoresTheLegacyPerRendererThirdScale() throws Exception {
+        String main = Files.readString(Path.of("src/main/java/com/animania/client/model/LegacyAnimalModel.java"));
+        assertTrue(main.contains("LEGACY_PEACOCK_FAN_RENDER_SCALE"));
+        assertTrue(main.contains("fan_node_a"));
+        assertTrue(main.contains("pose.scale(LEGACY_PEACOCK_FAN_RENDER_SCALE"));
+        assertTrue(main.contains("renderRootWithLegacyFanScale"));
+        assertTrue(main.contains("fan.visible = true"),
+                "fan roots must be made visible during their explicit scaled pass");
+        assertTrue(main.contains("fan.skipDraw = false"),
+                "fan roots must not inherit the coloured-pass skipDraw flag");
+    }
+
+    @Test
+    void rabbitHeadUsesTheLegacyNeckRuntimePose() throws Exception {
+        String main = Files.readString(Path.of("src/main/java/com/animania/client/model/LegacyAnimalModel.java"));
+        assertTrue(main.contains("if (isRabbitId(entity.registryPath()))"));
+        assertTrue(main.contains("neck.xRot = 0.0F"));
+        assertTrue(main.contains("neck.yRot = netHeadYaw * Mth.DEG_TO_RAD"));
+        assertTrue(main.contains("|| isRabbitId(id)"));
+    }
 }

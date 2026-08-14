@@ -42,9 +42,9 @@ public final class AnimaniaBaseGameTests {
     public static void germanShepherdHerdsFarmRuminantsWhenAllAddonsAreInstalled(GameTestHelper helper) {
         AnimaniaGameTestEvidence.mark("animania:germanShepherdHerdsFarmRuminantsWhenAllAddonsAreInstalled");
         var sheepType = net.minecraftforge.registries.ForgeRegistries.ENTITY_TYPES.getValue(
-                net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("animania_farm", "ewe_dorper"));
+                new net.minecraft.resources.ResourceLocation("animania_farm", "ewe_dorper"));
         var shepherdType = net.minecraftforge.registries.ForgeRegistries.ENTITY_TYPES.getValue(
-                net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("animania_catsdogs", "male_german_shepherd"));
+                new net.minecraft.resources.ResourceLocation("animania_catsdogs", "male_german_shepherd"));
         helper.assertTrue(sheepType != null && shepherdType != null,
                 "full-addon fixture is missing the farm sheep or German shepherd registry entry");
         if (sheepType == null || shepherdType == null) return;
@@ -121,10 +121,10 @@ public final class AnimaniaBaseGameTests {
         helper.assertTrue(AnimaniaSounds.ZAP.isPresent() && AnimaniaSounds.COMBO.isPresent(),
                 "legacy Base sound RegistryObjects were not resolved");
         helper.assertTrue(net.minecraftforge.registries.ForgeRegistries.SOUND_EVENTS.containsKey(
-                        net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("animania", "zap")),
+                        new net.minecraft.resources.ResourceLocation("animania", "zap")),
                 "animania:zap is absent from the live Forge sound registry");
         helper.assertTrue(net.minecraftforge.registries.ForgeRegistries.SOUND_EVENTS.containsKey(
-                        net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("animania", "combo")),
+                        new net.minecraft.resources.ResourceLocation("animania", "combo")),
                 "animania:combo is absent from the live Forge sound registry");
         helper.succeed();
     }

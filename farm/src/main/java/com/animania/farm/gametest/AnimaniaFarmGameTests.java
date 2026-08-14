@@ -160,7 +160,7 @@ public final class AnimaniaFarmGameTests {
 
     @GameTest(template = "empty")
     public static void nativeRecipeParsingAndCarvingKnifeRemainder(GameTestHelper helper) {
-        ResourceLocation cuttingId = ResourceLocation.fromNamespaceAndPath(AnimaniaFarm.MOD_ID, "beef_cutting_1");
+        ResourceLocation cuttingId = new ResourceLocation(AnimaniaFarm.MOD_ID, "beef_cutting_1");
         var cutting = helper.getLevel().getRecipeManager().byKey(cuttingId);
         helper.assertTrue(cutting.isPresent(), "vanilla parser did not load the migrated shapeless cutting recipe");
         helper.assertTrue(cutting.orElseThrow().getSerializer()
@@ -680,9 +680,9 @@ public final class AnimaniaFarmGameTests {
         // The GameTest server has no network clients. Reloading mirrors the
         // advancement listener registration in PlayerList's login path.
         player.getAdvancements().reload(manager);
-        var root = manager.getAdvancement(ResourceLocation.fromNamespaceAndPath(AnimaniaFarm.MOD_ID, "animania/root"));
-        var angus = manager.getAdvancement(ResourceLocation.fromNamespaceAndPath(AnimaniaFarm.MOD_ID, "animania/feed_cow_angus"));
-        var hereford = manager.getAdvancement(ResourceLocation.fromNamespaceAndPath(AnimaniaFarm.MOD_ID, "animania/feed_cow_hereford"));
+        var root = manager.getAdvancement(new ResourceLocation(AnimaniaFarm.MOD_ID, "animania/root"));
+        var angus = manager.getAdvancement(new ResourceLocation(AnimaniaFarm.MOD_ID, "animania/feed_cow_angus"));
+        var hereford = manager.getAdvancement(new ResourceLocation(AnimaniaFarm.MOD_ID, "animania/feed_cow_hereford"));
         helper.assertTrue(root != null && angus != null && hereford != null,
                 "farm advancement tree did not load");
         if (root == null || angus == null || hereford == null) return;
@@ -693,7 +693,7 @@ public final class AnimaniaFarmGameTests {
                 "Angus bull criterion did not deserialize as FeedAnimalTrigger.Instance");
         if (bullCriterion == null || !(bullCriterion.getTrigger() instanceof FeedAnimalTrigger.Instance instance)) return;
         helper.assertTrue(instance.matches(new ItemStack(Items.WHEAT),
-                        ResourceLocation.fromNamespaceAndPath(AnimaniaFarm.MOD_ID, "bull_angus")),
+                        new ResourceLocation(AnimaniaFarm.MOD_ID, "bull_angus")),
                 "deserialized Angus criterion rejects its exact entity and food");
         helper.assertTrue(instance.matchesPlayer(player),
                 "deserialized Angus criterion rejects the joining player predicate");
@@ -706,24 +706,24 @@ public final class AnimaniaFarmGameTests {
                 "Hereford feeding advancement was granted before gameplay");
 
         helper.assertFalse(FeedAnimalTrigger.INSTANCE.trigger(player, new ItemStack(Items.CARROT),
-                ResourceLocation.fromNamespaceAndPath(AnimaniaFarm.MOD_ID, "bull_angus")),
+                new ResourceLocation(AnimaniaFarm.MOD_ID, "bull_angus")),
                 "wrong food matched a feed listener");
         helper.assertFalse(player.getAdvancements().getOrStartProgress(angus).isDone(),
                 "wrong food granted the Angus feeding advancement");
         helper.assertFalse(FeedAnimalTrigger.INSTANCE.trigger(player, new ItemStack(Items.WHEAT),
-                ResourceLocation.fromNamespaceAndPath("minecraft", "cow")),
+                new ResourceLocation("minecraft", "cow")),
                 "unregistered vanilla cow matched an Animania feed listener");
         helper.assertFalse(player.getAdvancements().getOrStartProgress(angus).isDone(),
                 "wrong breed granted the Angus feeding advancement");
 
         helper.assertTrue(FeedAnimalTrigger.INSTANCE.trigger(player, new ItemStack(Items.WHEAT),
-                ResourceLocation.fromNamespaceAndPath(AnimaniaFarm.MOD_ID, "bull_angus")),
+                new ResourceLocation(AnimaniaFarm.MOD_ID, "bull_angus")),
                 "matching Angus feed action found no advancement listener");
         var angusProgress = player.getAdvancements().getOrStartProgress(angus);
         helper.assertTrue(angusProgress.isDone(),
                 "matching Angus feed action did not grant its advancement: " + angusProgress);
         helper.assertFalse(FeedAnimalTrigger.INSTANCE.trigger(player, new ItemStack(Items.WHEAT),
-                        ResourceLocation.fromNamespaceAndPath(AnimaniaFarm.MOD_ID, "bull_angus")),
+                        new ResourceLocation(AnimaniaFarm.MOD_ID, "bull_angus")),
                 "completed Angus advancement left a stale feed listener attached");
         helper.assertFalse(player.getAdvancements().getOrStartProgress(hereford).isDone(),
                 "matching Angus feed action granted an unrelated advancement");
@@ -735,8 +735,8 @@ public final class AnimaniaFarmGameTests {
 
     @GameTest(template = "empty")
     public static void optionalFeedCriterionMatchesOnlyItsInstalledAddonItem(GameTestHelper helper) {
-        ResourceLocation animal = ResourceLocation.fromNamespaceAndPath(AnimaniaFarm.MOD_ID, "bull_angus");
-        ResourceLocation brownEgg = ResourceLocation.fromNamespaceAndPath(AnimaniaFarm.MOD_ID, "brown_egg");
+        ResourceLocation animal = new ResourceLocation(AnimaniaFarm.MOD_ID, "bull_angus");
+        ResourceLocation brownEgg = new ResourceLocation(AnimaniaFarm.MOD_ID, "brown_egg");
         var criterion = FeedAnimalTrigger.Instance.optional(animal, brownEgg);
         helper.assertTrue(criterion.isOptional(), "optional feed criterion lost its optional marker");
         helper.assertTrue(criterion.matches(new ItemStack(FarmContent.ITEM_ENTRIES.get("brown_egg").get()), animal),
@@ -744,7 +744,7 @@ public final class AnimaniaFarmGameTests {
         helper.assertFalse(criterion.matches(new ItemStack(Items.WHEAT), animal),
                 "optional criterion accepted the wrong installed item");
         helper.assertFalse(criterion.matches(new ItemStack(FarmContent.ITEM_ENTRIES.get("brown_egg").get()),
-                        ResourceLocation.fromNamespaceAndPath(AnimaniaFarm.MOD_ID, "bull_hereford")),
+                        new ResourceLocation(AnimaniaFarm.MOD_ID, "bull_hereford")),
                 "optional criterion accepted the wrong animal type");
         helper.succeed();
     }
@@ -765,7 +765,7 @@ public final class AnimaniaFarmGameTests {
         helper.assertTrue(FarmSounds.ALL.size() == 96, "Farm legacy sound ledger count changed");
         for (String id : FarmSounds.ALL.keySet()) {
             helper.assertTrue(ForgeRegistries.SOUND_EVENTS.containsKey(
-                    ResourceLocation.fromNamespaceAndPath(AnimaniaFarm.MOD_ID, id)),
+                    new ResourceLocation(AnimaniaFarm.MOD_ID, id)),
                     "missing Farm sound registration: " + id);
         }
         helper.succeed();
@@ -802,7 +802,7 @@ public final class AnimaniaFarmGameTests {
     private static void assertSmelting(GameTestHelper helper, String recipeId, net.minecraft.world.level.ItemLike input,
                                        net.minecraft.world.level.ItemLike output) {
         var found = helper.getLevel().getRecipeManager().byKey(
-                net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(AnimaniaFarm.MOD_ID, recipeId)).orElse(null);
+                new net.minecraft.resources.ResourceLocation(AnimaniaFarm.MOD_ID, recipeId)).orElse(null);
         helper.assertTrue(found instanceof net.minecraft.world.item.crafting.AbstractCookingRecipe,
                 "missing legacy smelting recipe " + recipeId);
         if (!(found instanceof net.minecraft.world.item.crafting.AbstractCookingRecipe recipe)) return;
@@ -817,7 +817,7 @@ public final class AnimaniaFarmGameTests {
         var item = FarmContent.ITEM_ENTRIES.get(itemId);
         helper.assertTrue(item != null && item.get().builtInRegistryHolder().is(net.minecraft.tags.TagKey.create(
                         net.minecraft.core.registries.Registries.ITEM,
-                        net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(namespace, path))),
+                        new net.minecraft.resources.ResourceLocation(namespace, path))),
                 itemId + " missing modern tag " + namespace + ":" + path);
     }
 
@@ -936,14 +936,14 @@ public final class AnimaniaFarmGameTests {
             helper.assertFalse(FarmEggThrowHandler.shouldCancelEggUse(helper.getLevel(), player),
                     "enabled egg throwing was canceled when Extra rodents were absent");
             helper.assertTrue(FarmEggThrowHandler.isEggProtectingRodent(
-                            ResourceLocation.fromNamespaceAndPath("animania_extra", "ferret_white"))
+                            new ResourceLocation("animania_extra", "ferret_white"))
                             && FarmEggThrowHandler.isEggProtectingRodent(
-                            ResourceLocation.fromNamespaceAndPath("animania_extra", "ferret_grey"))
+                            new ResourceLocation("animania_extra", "ferret_grey"))
                             && FarmEggThrowHandler.isEggProtectingRodent(
-                            ResourceLocation.fromNamespaceAndPath("animania_extra", "hedgehog")),
+                            new ResourceLocation("animania_extra", "hedgehog")),
                     "legacy Extra rodent protection IDs were not recognized without a hard dependency");
             helper.assertFalse(FarmEggThrowHandler.isEggProtectingRodent(
-                            ResourceLocation.fromNamespaceAndPath("animania_extra", "hedgehog_albino")),
+                            new ResourceLocation("animania_extra", "hedgehog_albino")),
                     "egg handler broadened the old normal-hedgehog rule to unrelated variants");
         } finally {
             FarmConfig.ALLOW_EGG_THROWING.set(previous);
@@ -2526,7 +2526,7 @@ public final class AnimaniaFarmGameTests {
 
     private static AnimaniaAnimalEntity createExtraAnimal(GameTestHelper helper, String id) {
         EntityType<?> type = ForgeRegistries.ENTITY_TYPES.getValue(
-                ResourceLocation.fromNamespaceAndPath("animania_extra", id));
+                new ResourceLocation("animania_extra", id));
         if (type == null || !(type.create(helper.getLevel()) instanceof AnimaniaAnimalEntity animal)) {
             throw new IllegalStateException("extra animal could not be constructed: " + id);
         }

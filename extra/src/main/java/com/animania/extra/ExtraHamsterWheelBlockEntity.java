@@ -121,7 +121,7 @@ public final class ExtraHamsterWheelBlockEntity extends AnimaniaStorageBlockEnti
     private boolean releaseHamster(boolean markHungry) {
         if (!hasHamster() || level == null || level.isClientSide) return false;
         var type = ForgeRegistries.ENTITY_TYPES.getValue(
-                ResourceLocation.fromNamespaceAndPath(AnimaniaExtra.MOD_ID, "hamster"));
+                new ResourceLocation(AnimaniaExtra.MOD_ID, "hamster"));
         if (type == null || !(type.create(level) instanceof AnimaniaAnimalEntity hamster)) return false;
         hamster.readAdditionalSaveData(hamsterData.copy());
         // The legacy wheel marks a runner unfed when its work cycle exhausts

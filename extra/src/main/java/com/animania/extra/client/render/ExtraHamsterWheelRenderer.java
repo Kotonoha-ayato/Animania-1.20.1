@@ -72,7 +72,7 @@ public final class ExtraHamsterWheelRenderer implements BlockEntityRenderer<Extr
             // after the native coordinate conversion made the runner travel
             // visually in the same direction as the belt.
             pose.mulPose(Axis.YP.rotationDegrees(ExtraHamsterWheelKinematics.HAMSTER_YAW_DEGREES));
-            ResourceLocation hamsterTexture = ResourceLocation.fromNamespaceAndPath("animania_extra",
+            ResourceLocation hamsterTexture = new ResourceLocation("animania_extra",
                     "textures/entity/rodents/hamster_" + entity.hamsterVariant() + ".png");
             hamster.render(pose, buffers.getBuffer(RenderType.entityCutout(hamsterTexture)), packedLight, OverlayTexture.NO_OVERLAY);
             pose.popPose();

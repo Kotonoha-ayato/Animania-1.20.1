@@ -50,7 +50,7 @@ public final class AnimaniaServerEvents {
                 event.getLevel().getBlockState(event.getPos()).getBlock());
         // The wheel owns this interaction: releasing here would spawn the
         // hamster on top instead of storing it inside the wheel.
-        if (ResourceLocation.fromNamespaceAndPath("animania_extra", "hamster_wheel").equals(clickedId)) return;
+        if (new ResourceLocation("animania_extra", "hamster_wheel").equals(clickedId)) return;
         BlockPos target = event.getPos().above();
         if (!releaseCarriedAnimal(event.getEntity(), target)) return;
         event.setCanceled(true);
@@ -87,7 +87,7 @@ public final class AnimaniaServerEvents {
         // paths such as "hamster" rather than a namespaced registry id.
         for (String namespace : java.util.List.of("animania_extra", "animania_farm", "animania_catsdogs", "animania")) {
             EntityType<?> type = ForgeRegistries.ENTITY_TYPES.getValue(
-                    ResourceLocation.fromNamespaceAndPath(namespace, storedType));
+                    new ResourceLocation(namespace, storedType));
             if (type != null) return type;
         }
         return null;

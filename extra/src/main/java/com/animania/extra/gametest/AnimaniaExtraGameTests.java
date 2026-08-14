@@ -209,12 +209,12 @@ public final class AnimaniaExtraGameTests {
 
     @GameTest(template = "empty")
     public static void absentFarmOptionalFeedItemsLoadButNeverMatch(GameTestHelper helper) {
-        ResourceLocation farmEgg = ResourceLocation.fromNamespaceAndPath("animania_farm", "brown_egg");
+        ResourceLocation farmEgg = new ResourceLocation("animania_farm", "brown_egg");
         boolean farmLoaded = net.minecraftforge.fml.ModList.get().isLoaded("animania_farm");
         helper.assertTrue(ForgeRegistries.ITEMS.containsKey(farmEgg) == farmLoaded,
                 "optional Farm registry visibility disagreed with the actual addon set");
         var advancement = helper.getLevel().getServer().getAdvancements().getAdvancement(
-                ResourceLocation.fromNamespaceAndPath(AnimaniaExtra.MOD_ID, "animania/feed_ferret_grey"));
+                new ResourceLocation(AnimaniaExtra.MOD_ID, "animania/feed_ferret_grey"));
         helper.assertTrue(advancement != null, "ferret advancement failed to load without Farm installed");
         if (advancement == null) return;
         var criterion = advancement.getCriteria().get("ferret4");
@@ -224,11 +224,11 @@ public final class AnimaniaExtraGameTests {
         if (criterion == null || !(criterion.getTrigger() instanceof com.animania.common.advancement.FeedAnimalTrigger.Instance instance)) return;
         helper.assertTrue(instance.isOptional(), "deserialized optional criterion lost its marker");
         helper.assertFalse(instance.matches(new ItemStack(Items.EGG),
-                        ResourceLocation.fromNamespaceAndPath(AnimaniaExtra.MOD_ID, "ferret_grey")),
+                        new ResourceLocation(AnimaniaExtra.MOD_ID, "ferret_grey")),
                 "missing optional Farm food degraded into an any-food match");
         if (farmLoaded) {
             helper.assertTrue(instance.matches(new ItemStack(ForgeRegistries.ITEMS.getValue(farmEgg)),
-                            ResourceLocation.fromNamespaceAndPath(AnimaniaExtra.MOD_ID, "ferret_grey")),
+                            new ResourceLocation(AnimaniaExtra.MOD_ID, "ferret_grey")),
                     "installed optional Farm food did not become an exact ferret criterion match");
         }
         helper.succeed();
@@ -511,7 +511,7 @@ public final class AnimaniaExtraGameTests {
         helper.assertTrue(ExtraSounds.ALL.size() == 52, "Extra legacy sound ledger count changed");
         for (String id : ExtraSounds.ALL.keySet()) {
             helper.assertTrue(ForgeRegistries.SOUND_EVENTS.containsKey(
-                    ResourceLocation.fromNamespaceAndPath(AnimaniaExtra.MOD_ID, id)),
+                    new ResourceLocation(AnimaniaExtra.MOD_ID, id)),
                     "missing Extra sound registration: " + id);
         }
         helper.succeed();
@@ -533,7 +533,7 @@ public final class AnimaniaExtraGameTests {
         assertSmelting(helper, "raw_prime_rabbit_smelting", "raw_prime_rabbit", "cooked_prime_rabbit");
         assertSmelting(helper, "raw_peacock_smelting", "raw_peacock", "cooked_peacock");
         assertSmelting(helper, "raw_prime_peacock_smelting", "raw_prime_peacock", "cooked_prime_peacock");
-        var omelette = helper.getLevel().getRecipeManager().byKey(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(
+        var omelette = helper.getLevel().getRecipeManager().byKey(new net.minecraft.resources.ResourceLocation(
                 AnimaniaExtra.MOD_ID, "peacock_egg_blue_smelting"));
         boolean farmLoaded = net.minecraftforge.fml.ModList.get().isLoaded("animania_farm");
         helper.assertTrue(omelette.isPresent() == farmLoaded,
@@ -542,7 +542,7 @@ public final class AnimaniaExtraGameTests {
             var input = new net.minecraft.world.SimpleContainer(new ItemStack(ExtraContent.ITEM_ENTRIES.get("peacock_egg_blue").get()));
             helper.assertTrue(recipe.matches(input, helper.getLevel())
                             && ForgeRegistries.ITEMS.getKey(recipe.getResultItem(helper.getLevel().registryAccess()).getItem())
-                            .equals(ResourceLocation.fromNamespaceAndPath("animania_farm", "plain_omelette"))
+                            .equals(new ResourceLocation("animania_farm", "plain_omelette"))
                             && Math.abs(recipe.getExperience() - 0.3F) < 0.0001F && recipe.getCookingTime() == 200,
                     "Farm-conditional peacock omelette recipe changed input/output/time/experience");
         }
@@ -551,7 +551,7 @@ public final class AnimaniaExtraGameTests {
 
     private static void assertSmelting(GameTestHelper helper, String recipeId, String inputId, String outputId) {
         var found = helper.getLevel().getRecipeManager().byKey(
-                net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(AnimaniaExtra.MOD_ID, recipeId)).orElse(null);
+                new net.minecraft.resources.ResourceLocation(AnimaniaExtra.MOD_ID, recipeId)).orElse(null);
         helper.assertTrue(found instanceof net.minecraft.world.item.crafting.AbstractCookingRecipe,
                 "missing legacy smelting recipe " + recipeId);
         if (!(found instanceof net.minecraft.world.item.crafting.AbstractCookingRecipe recipe)) return;
@@ -566,7 +566,7 @@ public final class AnimaniaExtraGameTests {
         var item = ExtraContent.ITEM_ENTRIES.get(itemId);
         helper.assertTrue(item != null && item.get().builtInRegistryHolder().is(net.minecraft.tags.TagKey.create(
                         net.minecraft.core.registries.Registries.ITEM,
-                        net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(namespace, path))),
+                        new net.minecraft.resources.ResourceLocation(namespace, path))),
                 itemId + " missing modern tag " + namespace + ":" + path);
     }
 

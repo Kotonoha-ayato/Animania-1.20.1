@@ -108,6 +108,8 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
     private static final EntityDataAccessor<Integer> HUNGER = SynchedEntityData.defineId(AnimaniaAnimalEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> THIRST = SynchedEntityData.defineId(AnimaniaAnimalEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Boolean> SLEEPING = SynchedEntityData.defineId(AnimaniaAnimalEntity.class, EntityDataSerializers.BOOLEAN);
+    /** Client-visible progress of the legacy 1.12 lie-down animation. */
+    private static final EntityDataAccessor<Float> SLEEP_TIMER = SynchedEntityData.defineId(AnimaniaAnimalEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Boolean> PLAYING = SynchedEntityData.defineId(AnimaniaAnimalEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> MUDDY = SynchedEntityData.defineId(AnimaniaAnimalEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Integer> EATING_TICKS = SynchedEntityData.defineId(AnimaniaAnimalEntity.class, EntityDataSerializers.INT);
@@ -240,7 +242,7 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
                     && speciesKey(otherId.getPath()).equals(speciesKey(id.getPath()));
         }).size();
         if (nearby > 8) return null;
-        EntityType<?> raw = ForgeRegistries.ENTITY_TYPES.getValue(ResourceLocation.fromNamespaceAndPath(id.getNamespace(), relatedPath));
+        EntityType<?> raw = ForgeRegistries.ENTITY_TYPES.getValue(new ResourceLocation(id.getNamespace(), relatedPath));
         if (raw == null) return null;
         Entity created = raw.create(server);
         if (!(created instanceof AnimaniaAnimalEntity companion)) return null;
@@ -546,6 +548,7 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
         entityData.define(HUNGER, 100);
         entityData.define(THIRST, 100);
         entityData.define(SLEEPING, false);
+        entityData.define(SLEEP_TIMER, 0.0F);
         entityData.define(PLAYING, false);
         entityData.define(MUDDY, false);
         entityData.define(EATING_TICKS, 0);
@@ -586,6 +589,7 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
         if (level().isClientSide) return;
         if (legacyChildAge < 0 && isChildRegistryId()) setAge(legacyChildAge);
         entityData.set(GROWTH_PROGRESS, calculateGrowthProgress());
+        tickSleepTimer();
         if (isSitting() || isSleeping()) {
             getNavigation().stop();
             setDeltaMovement(0.0D, getDeltaMovement().y, 0.0D);
@@ -670,6 +674,21 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
         }
         if (isPregnant() && ++pregnancyTicks >= pregnancyDuration()) giveBirth();
         tickRoosterCrow();
+    }
+
+    /**
+     * The 1.12 renderers eased animals into their lying pose by moving this
+     * value from 0 to -0.55 while the sleeping flag stayed true.  The port
+     * retained the flag but dropped the timer, which left farm models in
+     * their standing pose even though WAILA reported “睡眠”.  Keep the
+     * timer server-authoritative so all clients render the same transition.
+     */
+    private void tickSleepTimer() {
+        if (isSleeping()) {
+            setSleepTimer(Math.max(-0.55F, getSleepTimer() - 0.01F));
+        } else if (getSleepTimer() != 0.0F) {
+            setSleepTimer(0.0F);
+        }
     }
 
     /** Restores the 1.12 cheek-pouch, alert-standing and self-heal cycle. */
@@ -892,7 +911,7 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
         for (int attempt = 0; attempt < ids.length; attempt++) {
             String selected = ids[random.nextInt(ids.length)].toLowerCase(Locale.ROOT);
             SoundEvent event = ForgeRegistries.SOUND_EVENTS.getValue(
-                    ResourceLocation.fromNamespaceAndPath(namespace, selected));
+                    new ResourceLocation(namespace, selected));
             if (event != null) return event;
         }
         return null;
@@ -1565,7 +1584,17 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
     }
 
     public void setSleeping(boolean sleeping) {
+        if (sleeping && !isSleeping()) setSleepTimer(0.0F);
+        if (!sleeping) setSleepTimer(0.0F);
         entityData.set(SLEEPING, sleeping);
+    }
+
+    public float getSleepTimer() {
+        return entityData.get(SLEEP_TIMER);
+    }
+
+    public void setSleepTimer(float value) {
+        entityData.set(SLEEP_TIMER, Math.max(-0.55F, Math.min(0.0F, value)));
     }
 
     @Override
@@ -2140,6 +2169,7 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
         tag.putInt("AnimaniaHunger", getHunger());
         tag.putInt("AnimaniaThirst", getThirst());
         tag.putBoolean("AnimaniaSleeping", isSleeping());
+        tag.putFloat("AnimaniaSleepTimer", getSleepTimer());
         tag.putBoolean("AnimaniaPlaying", isPlaying());
         tag.putInt("AnimaniaPlayingTicks", playingTicks);
         tag.putBoolean("AnimaniaMuddy", isMuddy());
@@ -2201,6 +2231,7 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
         setHunger(tag.contains("AnimaniaHunger") ? tag.getInt("AnimaniaHunger") : 100);
         setThirst(tag.contains("AnimaniaThirst") ? tag.getInt("AnimaniaThirst") : 100);
         setSleeping(tag.getBoolean("AnimaniaSleeping"));
+        if (isSleeping() && tag.contains("AnimaniaSleepTimer")) setSleepTimer(tag.getFloat("AnimaniaSleepTimer"));
         setPlaying(tag.getBoolean("AnimaniaPlaying"));
         playingTicks = Math.max(0, tag.getInt("AnimaniaPlayingTicks"));
         if (isPlaying() && playingTicks == 0 && AnimaniaFindMudGoal.supports(this)) {
@@ -2346,7 +2377,7 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
         if (!(level() instanceof ServerLevel server)) return false;
         String targetPath = registryPath().startsWith("cow_") ? "cow_friesian" : "bull_friesian";
         EntityType<?> raw = ForgeRegistries.ENTITY_TYPES.getValue(
-                ResourceLocation.fromNamespaceAndPath("animania_farm", targetPath));
+                new ResourceLocation("animania_farm", targetPath));
         if (raw == null || !(raw.create(server) instanceof AnimaniaAnimalEntity replacement)) return false;
         replacement.moveTo(getX(), getY(), getZ(), getYRot(), getXRot());
         replacement.setHealth(Math.min(getHealth(), replacement.getMaxHealth()));
@@ -2399,7 +2430,7 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
 
     private Item woolDropItem() {
         DyeColor color = DyeColor.byId(getWoolColor());
-        Item colored = ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("minecraft", color.getName() + "_wool"));
+        Item colored = ForgeRegistries.ITEMS.getValue(new ResourceLocation("minecraft", color.getName() + "_wool"));
         return colored == null || colored == Items.AIR ? Items.WHITE_WOOL : colored;
     }
 

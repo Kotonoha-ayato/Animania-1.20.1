@@ -144,9 +144,9 @@ public final class AnimaniaBlocks {
         @Override protected boolean isItemValid(int slot, ItemStack stack) {
             ResourceLocation id = ForgeRegistries.ITEMS.getKey(stack.getItem());
             return slot == 0 && id != null && (stack.is(net.minecraft.world.item.Items.EGG)
-                    || id.equals(ResourceLocation.fromNamespaceAndPath("animania_farm", "brown_egg"))
-                    || id.equals(ResourceLocation.fromNamespaceAndPath("animania_extra", "peacock_egg_blue"))
-                    || id.equals(ResourceLocation.fromNamespaceAndPath("animania_extra", "peacock_egg_white")));
+                    || id.equals(new ResourceLocation("animania_farm", "brown_egg"))
+                    || id.equals(new ResourceLocation("animania_extra", "peacock_egg_blue"))
+                    || id.equals(new ResourceLocation("animania_extra", "peacock_egg_white")));
         }
 
         public boolean insertEgg(ItemStack egg, String variant) {

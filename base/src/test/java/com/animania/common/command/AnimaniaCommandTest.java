@@ -9,23 +9,23 @@ class AnimaniaCommandTest {
     @Test
     void legacyFamiliesMapToModernVanillaCounterparts() {
         assertEquals("minecraft:cow", id(AnimaniaConversion.vanillaTypeIdFor(
-                net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("animania_farm", "cow_angus"))));
+                new net.minecraft.resources.ResourceLocation("animania_farm", "cow_angus"))));
         assertEquals("minecraft:sheep", id(AnimaniaConversion.vanillaTypeIdFor(
-                net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("animania_farm", "lamb_dorper"))));
+                new net.minecraft.resources.ResourceLocation("animania_farm", "lamb_dorper"))));
         assertEquals("minecraft:pig", id(AnimaniaConversion.vanillaTypeIdFor(
-                net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("animania_farm", "piglet_duroc"))));
+                new net.minecraft.resources.ResourceLocation("animania_farm", "piglet_duroc"))));
         assertEquals("minecraft:chicken", id(AnimaniaConversion.vanillaTypeIdFor(
-                net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("animania_farm", "rooster_leghorn"))));
+                new net.minecraft.resources.ResourceLocation("animania_farm", "rooster_leghorn"))));
         assertEquals("minecraft:horse", id(AnimaniaConversion.vanillaTypeIdFor(
-                net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("animania_farm", "mare_draft"))));
+                new net.minecraft.resources.ResourceLocation("animania_farm", "mare_draft"))));
         assertEquals("minecraft:rabbit", id(AnimaniaConversion.vanillaTypeIdFor(
-                net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("animania_extra", "doe_lop"))));
+                new net.minecraft.resources.ResourceLocation("animania_extra", "doe_lop"))));
         assertEquals("minecraft:cat", id(AnimaniaConversion.vanillaTypeIdFor(
-                net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("animania_catsdogs", "queen_tabby"))));
+                new net.minecraft.resources.ResourceLocation("animania_catsdogs", "queen_tabby"))));
         assertEquals("minecraft:wolf", id(AnimaniaConversion.vanillaTypeIdFor(
-                net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("animania_catsdogs", "male_collie"))));
+                new net.minecraft.resources.ResourceLocation("animania_catsdogs", "male_collie"))));
         assertNull(AnimaniaConversion.vanillaTypeIdFor(
-                net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("minecraft", "cow")));
+                new net.minecraft.resources.ResourceLocation("minecraft", "cow")));
     }
 
     private static String id(net.minecraft.resources.ResourceLocation value) {
