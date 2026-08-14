@@ -43,4 +43,12 @@ class BaseClientContractTest {
         assertTrue(main.contains("neck.yRot = netHeadYaw * Mth.DEG_TO_RAD"));
         assertTrue(main.contains("|| isRabbitId(id)"));
     }
+
+    @Test
+    void horseSaddleRenderingIsGatedBySyncedSaddleState() throws Exception {
+        String main = Files.readString(Path.of("src/main/java/com/animania/client/model/LegacyAnimalModel.java"));
+        assertTrue(main.contains("LEGACY_HORSE_SADDLE_PARTS"));
+        assertTrue(main.contains("this.saddleParts = resolve(root, LEGACY_HORSE_SADDLE_PARTS)"));
+        assertTrue(main.contains("for (ModelPart part : saddleParts) part.visible = entity.isSaddled();"));
+    }
 }

@@ -15,6 +15,20 @@ import java.util.List;
 public final class LegacyAnimalModel extends HierarchicalModel<AnimaniaAnimalEntity> {
     /** ModelPeacock.render() in 1.12 rendered every fan root with scale / 3. */
     private static final float LEGACY_PEACOCK_FAN_RENDER_SCALE = 1.0F / 3.0F;
+    /**
+     * ModelDraftHorseMare/Stallion.render() in 1.12 rendered this complete
+     * saddle assembly only while isHorseSaddled() was true.  The converted
+     * 1.20 layers keep the parts as root children, so their visibility must be
+     * restored explicitly instead of letting the generic root render draw
+     * them for every horse.
+     */
+    private static final String[] LEGACY_HORSE_SADDLE_PARTS = {
+            "saddle_base", "saddle_base2", "saddle_base3", "saddle",
+            "saddle2", "saddle3", "saddle4", "saddle5", "saddle6",
+            "footstrap", "foot1", "foot2", "foot3", "foot4",
+            "footstrap2", "foot1a", "foot2a", "foot3a", "foot4a",
+            "saddle7", "saddle_hump", "saddle_hump2", "strap1", "strap2", "strap3"
+    };
     private final ModelPart root;
     private final List<ModelPart> heads;
     private final List<ModelPart> leftLegs;
@@ -25,6 +39,7 @@ public final class LegacyAnimalModel extends HierarchicalModel<AnimaniaAnimalEnt
     private final List<ModelPart> privateParts;
     private final List<ModelPart> coloredParts;
     private final List<ModelPart> fanNodes;
+    private final List<ModelPart> saddleParts;
     private final List<ResolvedPose> sittingPose;
     private final List<ResolvedPose> sleepingPose;
     private final ModelPart petLookPart;
@@ -57,6 +72,7 @@ public final class LegacyAnimalModel extends HierarchicalModel<AnimaniaAnimalEnt
         // scale without changing peahen/peachick geometry.
         this.fanNodes = resolve(root, new String[]{
                 "fan_node_a", "fan_node_b", "fan_node_c", "fan_node_d"});
+        this.saddleParts = resolve(root, LEGACY_HORSE_SADDLE_PARTS);
         this.sittingPose = resolvePose(root, sittingPose);
         this.sleepingPose = resolvePose(root, petAnimation.sleepingPose());
         List<ModelPart> look = resolve(root, new String[]{petAnimation.lookPart()});
@@ -88,6 +104,11 @@ public final class LegacyAnimalModel extends HierarchicalModel<AnimaniaAnimalEnt
             showPrivateParts = false;
         }
         for (ModelPart part : privateParts) part.visible = showPrivateParts;
+        // The 1.12 horse models guarded every saddle/stirrup part with
+        // isHorseSaddled().  Without this gate the converted root pass draws
+        // a saddle on every wild horse even though its synced saddle state is
+        // false and riding is correctly rejected.
+        for (ModelPart part : saddleParts) part.visible = entity.isSaddled();
         hideGoatHornBudArtifacts(entity);
         if (entity.isPigAnimal()) applyPigRestPose(entity.registryPath(), showPrivateParts);
         if (isRabbitId(entity.registryPath())) {

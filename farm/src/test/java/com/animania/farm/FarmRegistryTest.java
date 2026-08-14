@@ -158,6 +158,25 @@ class FarmRegistryTest {
         assertNull(com.animania.common.item.LegacyRawFoodProfile.forItemId("cooked_prime_beef"));
     }
 
+    @Test
+    void adultHorseLayersRetainTheCompleteLegacySaddleAssembly() {
+        String[] saddleParts = {
+                "saddle_base", "saddle_base2", "saddle_base3", "saddle",
+                "saddle2", "saddle3", "saddle4", "saddle5", "saddle6",
+                "footstrap", "foot1", "foot2", "foot3", "foot4",
+                "footstrap2", "foot1a", "foot2a", "foot3a", "foot4a",
+                "saddle7", "saddle_hump", "saddle_hump2", "strap1", "strap2", "strap3"
+        };
+        for (String id : java.util.List.of("mare_draft", "stallion_draft")) {
+            ModelPart root = FarmLegacyModelLayers.create(id).bakeRoot();
+            for (String part : saddleParts) {
+                assertTrue(root.hasChild(part), id + " lost saddle part " + part);
+            }
+        }
+        assertFalse(FarmLegacyModelLayers.create("foal_draft").bakeRoot().hasChild("saddle_base"),
+                "foal model should not expose the adult saddle assembly");
+    }
+
     private static void assertProfilePaths(ModelPart root, com.animania.client.model.LegacyAnimationProfile profile,
                                            String id) {
         java.util.stream.Stream.of(profile.heads(), profile.leftLegs(), profile.rightLegs(), profile.tails(),
