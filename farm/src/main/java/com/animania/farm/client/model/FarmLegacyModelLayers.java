@@ -253,7 +253,9 @@ public final class FarmLegacyModelLayers {
             case "bull_angus", "bull_hereford", "bull_jersey" -> 1.4F;
             case "bull_friesian", "bull_holstein", "bull_mooshroom" -> 1.3F;
             case "bull_highland", "bull_longhorn" -> 1.5F;
-            case "calf_angus", "calf_friesian", "calf_hereford", "calf_highland", "calf_holstein", "calf_jersey", "calf_longhorn", "calf_mooshroom", "chick_leghorn", "chick_orpington", "chick_plymouth_rock", "chick_rhode_island_red", "chick_wyandotte", "foal_draft", "hen_leghorn", "hen_orpington", "hen_plymouth_rock", "hen_rhode_island_red", "hen_wyandotte", "mare_draft", "piglet_duroc", "piglet_yorkshire", "rooster_leghorn", "rooster_orpington", "rooster_plymouth_rock", "rooster_rhode_island_red", "rooster_wyandotte", "sow_yorkshire", "stallion_draft" -> 1.0F;
+            case "calf_angus", "calf_friesian", "calf_hereford", "calf_highland", "calf_holstein", "calf_jersey", "calf_longhorn", "calf_mooshroom", "chick_leghorn", "chick_orpington", "chick_plymouth_rock", "chick_rhode_island_red", "chick_wyandotte", "foal_draft", "hen_leghorn", "hen_orpington", "hen_plymouth_rock", "hen_rhode_island_red", "hen_wyandotte", "piglet_duroc", "piglet_yorkshire", "rooster_leghorn", "rooster_orpington", "rooster_plymouth_rock", "rooster_rhode_island_red", "rooster_wyandotte", "sow_yorkshire" -> 1.0F;
+            case "mare_draft" -> 0.72F;
+            case "stallion_draft" -> 0.85F;
             case "cow_angus", "cow_hereford", "cow_jersey", "cow_mooshroom" -> 1.34F;
             case "cow_friesian", "cow_holstein" -> 1.24F;
             case "cow_highland", "cow_longhorn" -> 1.44F;

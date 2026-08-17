@@ -281,6 +281,15 @@ public final class AnimaniaBaseGameTests {
                 "trough did not create its persisted companion block");
         helper.assertTrue(helper.getLevel().getBlockState(companion).getValue(AnimaniaInvisibleBlock.CONTROLLER) == Direction.WEST,
                 "companion block did not point back to the trough controller");
+        var companionCollision = helper.getLevel().getBlockState(companion)
+                .getCollisionShape(helper.getLevel(), companion);
+        helper.assertTrue(!companionCollision.isEmpty(),
+                "trough companion had no collision shape");
+        var collisionBounds = companionCollision.bounds();
+        helper.assertTrue(Math.abs(collisionBounds.getXsize() - 1.0D) < 0.0001D
+                        && Math.abs(collisionBounds.getYsize() - 0.3D) < 0.0001D
+                        && Math.abs(collisionBounds.getZsize() - 0.8D) < 0.0001D,
+                "trough companion collision did not cover the full second half");
         helper.assertTrue(helper.getLevel().getBlockEntity(companion) instanceof AnimaniaBlocks.InvisibleTroughProxyEntity,
                 "trough companion did not create its capability proxy block entity");
         var proxy = (AnimaniaBlocks.InvisibleTroughProxyEntity) helper.getLevel().getBlockEntity(companion);
@@ -294,6 +303,11 @@ public final class AnimaniaBaseGameTests {
                         && !proxy.getCapability(ForgeCapabilities.FLUID_HANDLER, Direction.UP).isPresent(),
                 "trough companion ignored allowTroughAutomation=false");
         AnimaniaConfig.ALLOW_TROUGH_AUTOMATION.set(previousAutomation);
+        helper.getLevel().removeBlock(companion, false);
+        helper.assertTrue(((AnimaniaTroughBlock) AnimaniaBlocks.TROUGH.get())
+                        .ensureCompanion(helper.getLevel(), pos, state)
+                        && helper.getLevel().getBlockState(companion).is(AnimaniaBlocks.INVISIBLE_BLOCK.get()),
+                "existing trough did not restore a missing companion collision block");
         helper.getLevel().destroyBlock(pos, false);
         helper.assertTrue(helper.getLevel().getBlockState(companion).isAir(), "breaking the trough left an orphan companion block");
         helper.succeed();

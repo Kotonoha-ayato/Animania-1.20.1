@@ -193,4 +193,10 @@ class FarmRegistryTest {
         }
         return true;
     }
+    @Test
+    void draftHorseRenderScaleMatchesLegacyAdultRenderers() {
+        assertEquals(0.72F, FarmLegacyModelLayers.scale("mare_draft"));
+        assertEquals(0.85F, FarmLegacyModelLayers.scale("stallion_draft"));
+    }
+
 }

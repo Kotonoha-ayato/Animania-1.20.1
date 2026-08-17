@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /** Native client registration and CraftStudio removal coverage. */
@@ -51,4 +52,23 @@ class BaseClientContractTest {
         assertTrue(main.contains("this.saddleParts = resolve(root, LEGACY_HORSE_SADDLE_PARTS)"));
         assertTrue(main.contains("for (ModelPart part : saddleParts) part.visible = entity.isSaddled();"));
     }
+    @Test
+    void troughRendererSeparatesFluidAndItemPassesAndClearsStaleParts() throws Exception {
+        String renderer = Files.readString(Path.of("src/main/java/com/animania/client/render/BaseTroughRenderer.java"));
+        assertTrue(renderer.contains("renderFluidSurface"));
+        assertTrue(renderer.contains("IClientFluidTypeExtensions.of"));
+        assertTrue(renderer.contains("InventoryMenu.BLOCK_ATLAS"));
+        assertTrue(renderer.contains("properties.getTintColor(fluid)"));
+        assertTrue(renderer.contains("float minX = -6.0F / 16.0F"));
+        assertTrue(renderer.contains("float maxX = 22.0F / 16.0F"));
+        assertTrue(renderer.contains("FOOD_PLANES"));
+        assertTrue(renderer.contains("sprite.wrap"));
+        assertTrue(renderer.contains("getParticleIcon"));
+        assertTrue(renderer.contains("show(model, \"feed\")"));
+        assertTrue(renderer.contains("foodTint(stack, entity.getLevel())"));
+        assertTrue(renderer.contains("BaseLegacyFacilityRenderSupport.hideAll(model)"));
+        assertTrue(renderer.contains("entity.fluidSnapshot()"));
+        assertTrue(renderer.contains("pose.scale(-1.0F, -1.0F, 1.0F)"));
+    }
+
 }

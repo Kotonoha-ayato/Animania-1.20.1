@@ -41,6 +41,7 @@ import com.animania.common.entity.goal.AnimaniaAvoidEntityGoal;
 import com.animania.common.entity.goal.AnimaniaCatAttackGoal;
 import com.animania.common.entity.goal.AnimaniaWatchFromSideGoal;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -53,16 +54,22 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.Container;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.AgeableMob;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.PlayerRideableJumping;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.ai.goal.LeapAtTargetGoal;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.ai.goal.FleeSunGoal;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.monster.AbstractSkeleton;
 import net.minecraft.world.entity.animal.Chicken;
 import net.minecraft.world.entity.animal.Rabbit;
@@ -84,6 +91,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ChestMenu;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.DifficultyInstance;
@@ -102,7 +113,8 @@ import java.util.concurrent.ThreadLocalRandom;
  * EntityType per legacy ID; this class carries the common state and behaviour
  * so variant and sex changes never require duplicated entity implementations.
  */
-public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBlinking, IConvertable {
+public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBlinking, IConvertable,
+        PlayerRideableJumping, Container, MenuProvider {
     private static final EntityDataAccessor<Byte> GENDER = SynchedEntityData.defineId(AnimaniaAnimalEntity.class, EntityDataSerializers.BYTE);
     private static final EntityDataAccessor<String> VARIANT = SynchedEntityData.defineId(AnimaniaAnimalEntity.class, EntityDataSerializers.STRING);
     private static final EntityDataAccessor<Integer> HUNGER = SynchedEntityData.defineId(AnimaniaAnimalEntity.class, EntityDataSerializers.INT);
@@ -114,6 +126,10 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
     private static final EntityDataAccessor<Boolean> MUDDY = SynchedEntityData.defineId(AnimaniaAnimalEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Integer> EATING_TICKS = SynchedEntityData.defineId(AnimaniaAnimalEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Boolean> PREGNANT = SynchedEntityData.defineId(AnimaniaAnimalEntity.class, EntityDataSerializers.BOOLEAN);
+    /** Elapsed pregnancy ticks; synced so Jade/TOP and clients see progress. */
+    private static final EntityDataAccessor<Integer> PREGNANCY_TICKS = SynchedEntityData.defineId(AnimaniaAnimalEntity.class, EntityDataSerializers.INT);
+    /** Total duration selected when the pregnancy starts; synced with the elapsed counter. */
+    private static final EntityDataAccessor<Integer> PREGNANCY_DURATION = SynchedEntityData.defineId(AnimaniaAnimalEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Boolean> FERTILE = SynchedEntityData.defineId(AnimaniaAnimalEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> STERILIZED = SynchedEntityData.defineId(AnimaniaAnimalEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> SHEARED = SynchedEntityData.defineId(AnimaniaAnimalEntity.class, EntityDataSerializers.BOOLEAN);
@@ -123,6 +139,8 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
     private static final EntityDataAccessor<Optional<java.util.UUID>> MATE = SynchedEntityData.defineId(AnimaniaAnimalEntity.class, EntityDataSerializers.OPTIONAL_UUID);
     private static final EntityDataAccessor<Optional<java.util.UUID>> PARENT = SynchedEntityData.defineId(AnimaniaAnimalEntity.class, EntityDataSerializers.OPTIONAL_UUID);
     private static final EntityDataAccessor<Boolean> SADDLED = SynchedEntityData.defineId(AnimaniaAnimalEntity.class, EntityDataSerializers.BOOLEAN);
+    /** Synched riding-crop boost window; movement is client-authoritative while mounted. */
+    private static final EntityDataAccessor<Integer> RIDING_BOOST_TICKS = SynchedEntityData.defineId(AnimaniaAnimalEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Boolean> MILK_READY = SynchedEntityData.defineId(AnimaniaAnimalEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> IN_BALL = SynchedEntityData.defineId(AnimaniaAnimalEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Integer> BALL_COLOR = SynchedEntityData.defineId(AnimaniaAnimalEntity.class, EntityDataSerializers.INT);
@@ -147,6 +165,12 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
     private int playingTicks;
     private int woolRegrowthTicks;
     private int boostTicks;
+    /** The legacy horse chest's first slot is the saddle slot. */
+    private final NonNullList<ItemStack> horseItems = NonNullList.withSize(9, ItemStack.EMPTY);
+    /** Pending client ride-jump scale, matching AbstractHorse's 0.4..1.0 range. */
+    private float playerJumpPendingScale;
+    /** Local movement state used to prevent a charged jump from retriggering mid-air. */
+    private boolean riderJumping;
     private int starvationTicks;
     private boolean legacyNamedCombatConfigured;
     private int eggLayTicks;
@@ -170,7 +194,7 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
 
     public AnimaniaAnimalEntity(EntityType<? extends AnimaniaAnimalEntity> type, Level level) {
         super(type, level);
-        this.setMaxUpStep(1.0f);
+        this.setMaxUpStep(legacyStepHeight());
         // Entity data is defined by the time the constructor returns.  Infer
         // the baseline sex from the legacy registration ID so natural spawns
         // are not all CHILD until their first save/reload.
@@ -553,6 +577,8 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
         entityData.define(MUDDY, false);
         entityData.define(EATING_TICKS, 0);
         entityData.define(PREGNANT, false);
+        entityData.define(PREGNANCY_TICKS, 0);
+        entityData.define(PREGNANCY_DURATION, 0);
         entityData.define(FERTILE, true);
         entityData.define(STERILIZED, false);
         entityData.define(SHEARED, false);
@@ -562,6 +588,7 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
         entityData.define(MATE, Optional.empty());
         entityData.define(PARENT, Optional.empty());
         entityData.define(SADDLED, false);
+        entityData.define(RIDING_BOOST_TICKS, 0);
         entityData.define(MILK_READY, false);
         entityData.define(IN_BALL, false);
         entityData.define(BALL_COLOR, 0);
@@ -586,9 +613,9 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
         int legacyChildAge = !level().isClientSide && isChildRegistryId() ? getAge() : 0;
         super.tick();
         tickBlinkTimer();
+        if (isFoalEntity()) refreshDimensions();
         if (level().isClientSide) return;
         if (legacyChildAge < 0 && isChildRegistryId()) setAge(legacyChildAge);
-        entityData.set(GROWTH_PROGRESS, calculateGrowthProgress());
         tickSleepTimer();
         if (isSitting() || isSleeping()) {
             getNavigation().stop();
@@ -646,7 +673,10 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
             if (inMud) enterMud();
             else if (isInWaterRainOrBubble()) setMuddy(false);
         }
-        if (boostTicks > 0) boostTicks--;
+        if (boostTicks > 0) {
+            boostTicks--;
+            entityData.set(RIDING_BOOST_TICKS, boostTicks);
+        }
         if (isSheared() && --woolRegrowthTicks <= 0) setSheared(false);
         if (isAdult() && config(AnimaniaConfig.BIRDS_DROP_FEATHERS, true) && canDropFeather()) {
             if (featherDropTicks <= 0) featherDropTicks = nextFeatherDropTicks();
@@ -661,7 +691,10 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
         if (isMilkReady() && lactationTicks > 0 && --lactationTicks == 0) setMilkReady(false);
         if (isBaby() && isChildRegistryId() && getAge() < 0) {
             int interval = childGrowthInterval();
-            if (++childGrowthTimer >= interval && getHunger() > 0 && getThirst() > 0 && !isSleeping()) {
+            // The legacy timer is care-gated. Advancing it only while the
+            // animal is fed, watered and awake lets the client display the
+            // actual in-between-tick progress instead of jumping every step.
+            if (getHunger() > 0 && getThirst() > 0 && !isSleeping() && ++childGrowthTimer >= interval) {
                 childGrowthTimer = 0;
                 setAge(Math.min(0, getAge() + interval));
             }
@@ -672,7 +705,13 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
         if (getAge() >= 0 && isChildRegistryId()) {
             growIntoAdultVariant();
         }
-        if (isPregnant() && ++pregnancyTicks >= pregnancyDuration()) giveBirth();
+        // Publish after the timer/age update so every server tick is visible to
+        // the client renderer and handbook rather than only at each interval.
+        entityData.set(GROWTH_PROGRESS, calculateGrowthProgress());
+        if (isPregnant()) {
+            setPregnancyTicks(pregnancyTicks + 1);
+            if (pregnancyTicks >= pregnancyDuration()) giveBirth();
+        }
         tickRoosterCrow();
     }
 
@@ -742,7 +781,24 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
 
     private float calculateGrowthProgress() {
         if (!isChildRegistryId() || getAge() >= 0) return 1.0F;
-        return net.minecraft.util.Mth.clamp(1.0F + (float) getAge() / childGrowthDuration(), 0.0F, 1.0F);
+        int interval = childGrowthInterval();
+        int remaining = Math.max(0, -getAge());
+        // getAge() stores the remaining legacy ticks and only changes at an
+        // interval boundary. Subtract the care timer from that remainder so
+        // the synchronized fraction advances every server tick in between.
+        int partial = Math.min(Math.max(0, childGrowthTimer), Math.max(0, interval - 1));
+        remaining = Math.max(0, remaining - partial);
+        return net.minecraft.util.Mth.clamp(1.0F - (float) remaining / childGrowthDuration(), 0.0F, 1.0F);
+    }
+
+    /** 1.12 foals changed their collision size continuously during growth. */
+    @Override
+    public EntityDimensions getDimensions(Pose pose) {
+        EntityDimensions base = super.getDimensions(pose);
+        if (!isFoalEntity() || pose != Pose.STANDING) return base;
+        float legacyAge = net.minecraft.util.Mth.clamp(calculateGrowthProgress() * 0.85F, 0.0F, 0.85F);
+        return EntityDimensions.scalable((1.0F + legacyAge) * 2.0F,
+                (1.35F + legacyAge) * 2.0F);
     }
 
     private void tickBlinkTimer() {
@@ -814,6 +870,15 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
 
     public int getCrowDuration() {
         return Math.max(0, entityData.get(CROW_DURATION));
+    }
+
+    @Override
+    protected void playStepSound(BlockPos pos, BlockState state) {
+        if (isHorseAnimal()) {
+            playSound(SoundEvents.HORSE_STEP, 0.20F, 0.8F);
+        } else {
+            super.playStepSound(pos, state);
+        }
     }
 
     @Override
@@ -936,6 +1001,8 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
     }
 
     private int pregnancyDuration() {
+        int syncedDuration = entityData.get(PREGNANCY_DURATION);
+        if (level().isClientSide && syncedDuration > 0) return syncedDuration;
         if (pregnancyDurationTicks > 0) return pregnancyDurationTicks;
         ResourceLocation id = ForgeRegistries.ENTITY_TYPES.getKey(getType());
         int configured = Math.max(200, config(AnimaniaConfig.GESTATION_TICKS, 20000));
@@ -952,12 +1019,9 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
     private void giveBirth() {
         if (getGender() != AnimalGender.FEMALE) {
             setPregnant(false);
-            pregnancyTicks = 0;
             return;
         }
         setPregnant(false);
-        pregnancyTicks = 0;
-        pregnancyDurationTicks = 0;
         // A hungry/thirsty female can lose a pregnancy when the legacy rule is
         // enabled.  The decision is made only on the authoritative level.
         if ((getHunger() <= 0 || getThirst() <= 0)
@@ -1022,6 +1086,7 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
         adult.setTamed(isTamed());
         adult.setOwnerUUID(getOwnerUUID());
         adult.setSitting(isSitting());
+        adult.setSaddled(isSaddled());
         adult.interacted = interacted;
         adult.setCustomName(getCustomName());
         adult.setCustomNameVisible(isCustomNameVisible());
@@ -1064,7 +1129,13 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
             }
         }
         if (isRideableFarmAnimal() && !isBaby()) {
-            if (stack.is(Items.SADDLE) && !isSaddled()) {
+            if (isHorseAnimal() && isSaddled() && player.isSecondaryUseActive()) {
+                if (!level().isClientSide && (!isVehicle() || getPassengers().contains(player))) {
+                    player.openMenu(this);
+                }
+                return InteractionResult.sidedSuccess(level().isClientSide);
+            }
+            if (stack.is(Items.SADDLE) && !isSaddled() && !isSleeping()) {
                 if (!level().isClientSide) {
                     setSaddled(true);
                     interacted = true;
@@ -1073,13 +1144,13 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
                 }
                 return InteractionResult.sidedSuccess(level().isClientSide);
             }
-            if (isHorseAnimal() && stack.isEmpty() && isSaddled() && !player.isPassenger()) {
-                if (!level().isClientSide) player.startRiding(this);
+            if (isHorseAnimal() && stack.isEmpty() && !player.isSecondaryUseActive()
+                    && canMountRider(player)) {
+                if (!level().isClientSide) player.startRiding(this, true);
                 return InteractionResult.sidedSuccess(level().isClientSide);
             }
-            if (isFarmPig() && stack.is(Items.CARROT_ON_A_STICK) && isSaddled()
-                    && getHunger() > 0 && getThirst() > 0 && !player.isPassenger()) {
-                if (!level().isClientSide) player.startRiding(this);
+            if (isFarmPig() && stack.is(Items.CARROT_ON_A_STICK) && canMountRider(player)) {
+                if (!level().isClientSide) player.startRiding(this, true);
                 return InteractionResult.sidedSuccess(level().isClientSide);
             }
         }
@@ -1402,35 +1473,167 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
 
     @Override
     protected boolean canAddPassenger(Entity passenger) {
-        if (isRideableFarmAnimal()) return passenger instanceof Player && isSaddled() && getPassengers().isEmpty();
+        if (isRideableFarmAnimal()) {
+            return passenger instanceof Player player && canMountRider(player) && getPassengers().isEmpty();
+        }
         return super.canAddPassenger(passenger);
+    }
+
+    private boolean canMountRider(Player player) {
+        if (!isRideableFarmAnimal() || !isAdult() || !isSaddled() || isSleeping()
+                || !getPassengers().isEmpty() || player.isPassenger()) return false;
+        // Legacy processInteract only mounted a cared-for animal. Keep the
+        // gate for horses as well as saddle pigs; once mounted, normal riding
+        // input remains available until the care timers expire.
+        if (getHunger() <= 0 || getThirst() <= 0) return false;
+        return !isFarmPig() || player.getMainHandItem().is(Items.CARROT_ON_A_STICK)
+                || player.getOffhandItem().is(Items.CARROT_ON_A_STICK);
+    }
+
+    private boolean canSteerRider(Player player) {
+        if (!isRideableFarmAnimal() || !isAdult() || !isSaddled() || isSleeping()) return false;
+        return !isFarmPig() || player.getMainHandItem().is(Items.CARROT_ON_A_STICK)
+                || player.getOffhandItem().is(Items.CARROT_ON_A_STICK);
+    }
+
+    /**
+     * Mob#getControllingPassenger only recognizes Mob passengers.  Farm
+     * horses (and legacy saddle pigs) are controlled by a Player, just like
+     * vanilla AbstractHorse, so expose the saddled player as the controller.
+     */
+    @Override
+    public net.minecraft.world.entity.LivingEntity getControllingPassenger() {
+        net.minecraft.world.entity.LivingEntity controlling = super.getControllingPassenger();
+        if (controlling != null) return controlling;
+        if (isRideableFarmAnimal() && isSaddled() && getFirstPassenger() instanceof Player player) {
+            return player;
+        }
+        return null;
+    }
+
+    /** Preserve the lower legacy saddle positions used by adult draft horses. */
+    @Override
+    public double getPassengersRidingOffset() {
+        if (isHorseAnimal()) {
+            String path = registryPath();
+            if (path.startsWith("mare_")) return getBbHeight() * 0.60D;
+            if (path.startsWith("stallion_")) return getBbHeight() * 0.72D;
+        }
+        return super.getPassengersRidingOffset();
+    }
+
+    /** Use the same modern riding hooks as AbstractHorse. */
+    @Override
+    protected void tickRidden(Player player, Vec3 input) {
+        super.tickRidden(player, input);
+        Vec2 rotation = getRiddenRotation(player);
+        setRot(rotation.y, rotation.x);
+        yHeadRot = yBodyRot = yRotO = getYRot();
+        // The client normally owns the movement of a ridden entity, but the
+        // server still receives the START_RIDING_JUMP packet. Processing the
+        // pending scale on both sides keeps mock/server riders authoritative
+        // and avoids a jump being discarded before the next travel tick.
+        if (!onGround()) return;
+
+        boolean wasJumping = riderJumping;
+        riderJumping = false;
+        setJumping(false);
+        if (playerJumpPendingScale > 0.0F && !wasJumping && canJump()) {
+            executeRiderJump(playerJumpPendingScale, input);
+        }
+        playerJumpPendingScale = 0.0F;
+    }
+
+    protected Vec2 getRiddenRotation(net.minecraft.world.entity.LivingEntity rider) {
+        return new Vec2(rider.getXRot() * 0.5F, rider.getYRot());
+    }
+
+    @Override
+    protected Vec3 getRiddenInput(Player player, Vec3 input) {
+        if (!canSteerRider(player)) return Vec3.ZERO;
+        float strafe = player.xxa * 0.5F;
+        float forward = player.zza;
+        if (forward < 0.0F) forward *= 0.25F;
+        return new Vec3(strafe, 0.0D, forward);
+    }
+
+    @Override
+    protected float getRiddenSpeed(Player player) {
+        float speed = (float) getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED);
+        // 1.12 applied Speed III during the crop window. Its vanilla
+        // movement-speed modifier is +80% (not a full 2x multiplier).
+        return speed * (isRidingBoostActive() ? 1.8F : 1.0F);
+    }
+
+    @Override
+    public void onPlayerJump(int jumpPower) {
+        if (!canJump()) return;
+        int clamped = Math.max(0, jumpPower);
+        playerJumpPendingScale = clamped >= 90
+                ? 1.0F
+                : 0.4F + 0.4F * clamped / 90.0F;
+    }
+
+    @Override
+    public boolean canJump() {
+        return isHorseAnimal() && isAdult() && isSaddled();
+    }
+
+    @Override
+    public void handleStartJump(int jumpPower) {
+        // Unlike AbstractHorse, this entity is not backed by the horse's
+        // client-authoritative movement state. Keep the packet charge on the
+        // server too, otherwise it immediately corrects the local jump.
+        if (!canJump()) return;
+        int clamped = Math.max(0, jumpPower);
+        playerJumpPendingScale = clamped >= 90
+                ? 1.0F
+                : 0.4F + 0.4F * clamped / 90.0F;
+    }
+
+    @Override
+    public void handleStopJump() {
+        // No continuous server-side state is needed; the pending scale is
+        // consumed by the next controlled travel tick.
+    }
+
+    private void executeRiderJump(float scale, Vec3 input) {
+        double jump = getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.JUMP_STRENGTH)
+                * scale * getBlockJumpFactor() + getJumpBoostPower();
+        Vec3 movement = getDeltaMovement();
+        setDeltaMovement(movement.x, jump, movement.z);
+        riderJumping = true;
+        setJumping(true);
+        hasImpulse = true;
+        net.minecraftforge.common.ForgeHooks.onLivingJump(this);
+        if (input.z > 0.0D) {
+            float yaw = getYRot() * net.minecraft.util.Mth.DEG_TO_RAD;
+            setDeltaMovement(getDeltaMovement().add(
+                    -0.4D * net.minecraft.util.Mth.sin(yaw) * scale,
+                    0.0D,
+                    0.4D * net.minecraft.util.Mth.cos(yaw) * scale));
+        }
+        playSound(SoundEvents.HORSE_JUMP, 0.4F, 1.0F);
     }
 
     @Override
     public void travel(Vec3 input) {
-        if (isRideableFarmAnimal() && isSaddled() && getControllingPassenger() instanceof Player rider
-                && (!isFarmPig() || rider.getMainHandItem().is(Items.CARROT_ON_A_STICK)
-                || rider.getOffhandItem().is(Items.CARROT_ON_A_STICK))) {
-            setYRot(rider.getYRot());
-            yRotO = getYRot();
-            float strafe = rider.xxa * 0.5F;
-            float forward = rider.zza;
-            if (forward < 0.0F) forward *= 0.25F;
-            float speed = (float) getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED)
-                    * (boostTicks > 0 ? 2.0F : 1.0F);
-            moveRelative(speed, new Vec3(strafe, input.y, forward));
-            move(MoverType.SELF, getDeltaMovement());
-            setDeltaMovement(getDeltaMovement().multiply(0.91D, 0.98D, 0.91D));
-            return;
-        }
+        // LivingEntity.travelRidden() has already converted the rider input
+        // and set the riding speed. Keep the normal implementation so gravity,
+        // friction, collision resolution and automatic maxUpStep all run.
         super.travel(input);
     }
 
     /** Start the legacy horse/pig riding boost. */
     public boolean boost() {
         if (!isRideableFarmAnimal() || boostTicks > 0) return false;
-        boostTicks = 40 + random.nextInt(80);
+        boostTicks = 20 + random.nextInt(100);
+        entityData.set(RIDING_BOOST_TICKS, boostTicks);
         return true;
+    }
+
+    private boolean isRidingBoostActive() {
+        return boostTicks > 0 || entityData.get(RIDING_BOOST_TICKS) > 0;
     }
 
     protected boolean isAnimaniaFood(ItemStack stack) {
@@ -1507,7 +1710,7 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
         setMateUuid(mate.getUUID());
         mate.setMateUuid(getUUID());
         female.setPregnant(true);
-        female.pregnancyTicks = 0;
+        female.setPregnancyTicks(0);
         if (getGender() == AnimalGender.MALE && !config(AnimaniaConfig.MALES_MATE_MULTIPLE_FEMALES, false)) setAge(6000);
         if (mate.getGender() == AnimalGender.MALE && !config(AnimaniaConfig.MALES_MATE_MULTIPLE_FEMALES, false)) mate.setAge(6000);
         resetLove();
@@ -1699,7 +1902,7 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
 
     @Override
     public int pregnancyTicks() {
-        return pregnancyTicks;
+        return level().isClientSide ? entityData.get(PREGNANCY_TICKS) : pregnancyTicks;
     }
 
     @Override
@@ -1708,13 +1911,31 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
     }
 
     public void setPregnant(boolean pregnant) {
-        entityData.set(PREGNANT, pregnant && getGender() == AnimalGender.FEMALE && !isSterilized());
-        if (!pregnant) {
-            pregnancyTicks = 0;
-            pregnancyDurationTicks = 0;
+        boolean active = pregnant && getGender() == AnimalGender.FEMALE && !isSterilized();
+        entityData.set(PREGNANT, active);
+        if (!active) {
+            setPregnancyTicks(0);
+            setPregnancyDuration(0);
         } else if (pregnancyDurationTicks <= 0) {
             pregnancyDurationTicks = newPregnancyDuration();
         }
+        syncPregnancyCounters();
+    }
+
+    /** Keep the server fields and client-visible entity data in lockstep. */
+    private void syncPregnancyCounters() {
+        entityData.set(PREGNANCY_TICKS, Math.max(0, pregnancyTicks));
+        entityData.set(PREGNANCY_DURATION, Math.max(0, pregnancyDurationTicks));
+    }
+
+    private void setPregnancyTicks(int ticks) {
+        pregnancyTicks = Math.max(0, ticks);
+        entityData.set(PREGNANCY_TICKS, pregnancyTicks);
+    }
+
+    private void setPregnancyDuration(int ticks) {
+        pregnancyDurationTicks = Math.max(0, ticks);
+        entityData.set(PREGNANCY_DURATION, pregnancyDurationTicks);
     }
 
     @Override
@@ -1800,7 +2021,87 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
     }
 
     public void setSaddled(boolean saddled) {
-        entityData.set(SADDLED, saddled && isRideableFarmAnimal());
+        boolean active = saddled && isRideableFarmAnimal();
+        entityData.set(SADDLED, active);
+        if (isHorseAnimal()) horseItems.set(0, active ? new ItemStack(Items.SADDLE) : ItemStack.EMPTY);
+    }
+
+    // A small native container restores the legacy saddle slot and makes
+    // shift-right-clicking a saddled draft horse useful without introducing a
+    // second custom menu type for the four addon modules.
+    @Override
+    public int getContainerSize() {
+        return horseItems.size();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return horseItems.stream().allMatch(ItemStack::isEmpty);
+    }
+
+    @Override
+    public ItemStack getItem(int slot) {
+        return slot >= 0 && slot < horseItems.size() ? horseItems.get(slot) : ItemStack.EMPTY;
+    }
+
+    @Override
+    public ItemStack removeItem(int slot, int amount) {
+        if (slot < 0 || slot >= horseItems.size()) return ItemStack.EMPTY;
+        ItemStack result = net.minecraft.world.ContainerHelper.removeItem(horseItems, slot, amount);
+        syncSaddleFromContainer();
+        return result;
+    }
+
+    @Override
+    public ItemStack removeItemNoUpdate(int slot) {
+        if (slot < 0 || slot >= horseItems.size()) return ItemStack.EMPTY;
+        ItemStack result = net.minecraft.world.ContainerHelper.takeItem(horseItems, slot);
+        syncSaddleFromContainer();
+        return result;
+    }
+
+    @Override
+    public void setItem(int slot, ItemStack stack) {
+        if (slot < 0 || slot >= horseItems.size() || !canPlaceItem(slot, stack)) return;
+        horseItems.set(slot, stack.copy());
+        syncSaddleFromContainer();
+        setChanged();
+    }
+
+    @Override
+    public boolean canPlaceItem(int slot, ItemStack stack) {
+        return !isHorseAnimal() || (slot == 0 && stack.is(Items.SADDLE));
+    }
+
+    private void syncSaddleFromContainer() {
+        if (!isHorseAnimal()) return;
+        boolean active = !horseItems.get(0).isEmpty() && horseItems.get(0).is(Items.SADDLE);
+        entityData.set(SADDLED, active);
+    }
+
+    @Override
+    public void setChanged() {
+    }
+
+    @Override
+    public boolean stillValid(Player player) {
+        return !isRemoved() && isHorseAnimal() && player.distanceToSqr(this) <= 64.0D;
+    }
+
+    @Override
+    public void clearContent() {
+        horseItems.clear();
+        syncSaddleFromContainer();
+    }
+
+    @Override
+    public Component getDisplayName() {
+        return Component.translatable(getType().getDescriptionId());
+    }
+
+    @Override
+    public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
+        return new ChestMenu(MenuType.GENERIC_9x1, id, inventory, this, 1);
     }
 
     /** Whether a female milk-producing animal has entered its lactation window. */
@@ -1828,10 +2129,23 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
         return id != null && id.getNamespace().equals("animania_catsdogs");
     }
 
+    private float legacyStepHeight() {
+        ResourceLocation id = ForgeRegistries.ENTITY_TYPES.getKey(getType());
+        if (id != null && id.getNamespace().equals("animania_farm")) {
+            if (id.getPath().startsWith("mare_") || id.getPath().startsWith("stallion_")) return 1.2F;
+            if (id.getPath().startsWith("foal_")) return 1.1F;
+        }
+        return 1.0F;
+    }
+
     private boolean isHorseAnimal() {
         ResourceLocation id = ForgeRegistries.ENTITY_TYPES.getKey(getType());
         return id != null && id.getNamespace().equals("animania_farm")
                 && (id.getPath().startsWith("mare_") || id.getPath().startsWith("stallion_") || id.getPath().startsWith("foal_"));
+    }
+
+    private boolean isFoalEntity() {
+        return isHorseAnimal() && registryPath().startsWith("foal_");
     }
 
     public boolean isFarmPig() {
@@ -2247,10 +2561,10 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
         if (tag.hasUUID("AnimaniaOwner")) setOwnerUUID(tag.getUUID("AnimaniaOwner"));
         setSitting(tag.getBoolean("AnimaniaSitting"));
         setSaddled(tag.getBoolean("AnimaniaSaddled"));
-        pregnancyTicks = tag.getInt("AnimaniaPregnancyTicks");
-        pregnancyDurationTicks = tag.contains("AnimaniaPregnancyDuration")
-                ? Math.max(0, tag.getInt("AnimaniaPregnancyDuration"))
-                : isPregnant() ? newPregnancyDuration() : 0;
+        setPregnancyTicks(tag.getInt("AnimaniaPregnancyTicks"));
+        setPregnancyDuration(tag.contains("AnimaniaPregnancyDuration")
+                ? tag.getInt("AnimaniaPregnancyDuration")
+                : isPregnant() ? newPregnancyDuration() : 0);
         fertilityCooldownTicks = Math.max(0, tag.getInt("AnimaniaFertilityCooldown"));
         setFertile(!tag.contains("Fertile") || tag.getBoolean("Fertile"));
         if (tag.contains("AnimaniaLactationTicks")) {
@@ -2258,6 +2572,7 @@ public class AnimaniaAnimalEntity extends Animal implements IAnimaniaAnimal, IBl
         }
         woolRegrowthTicks = Math.max(0, tag.getInt("AnimaniaWoolRegrowthTicks"));
         boostTicks = Math.max(0, tag.getInt("AnimaniaBoostTicks"));
+        entityData.set(RIDING_BOOST_TICKS, boostTicks);
         starvationTicks = Math.max(0, tag.getInt("AnimaniaStarvationTicks"));
         eggLayTicks = Math.max(0, tag.getInt("AnimaniaEggLayTicks"));
         featherDropTicks = Math.max(0, tag.getInt("AnimaniaFeatherDropTicks"));

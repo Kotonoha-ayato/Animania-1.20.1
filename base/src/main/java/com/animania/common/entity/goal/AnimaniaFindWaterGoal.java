@@ -8,6 +8,7 @@ import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
@@ -90,7 +91,12 @@ public final class AnimaniaFindWaterGoal extends Goal {
             }
         } else {
             FluidState fluid = animal.level().getFluidState(target);
-            if (fluid.is(FluidTags.WATER) && fluid.isSource()) {
+            if (fluid.is(FluidTags.WATER) && fluid.isSource()
+                    // Waterlogged slabs, stairs and other blocks expose a
+                    // source FluidState too, but drinking must not delete the
+                    // block that contains it. Only a real liquid block can be
+                    // consumed as a natural source.
+                    && animal.level().getBlockState(target).getBlock() instanceof LiquidBlock) {
                 animal.setThirst(100);
                 if (!halfAmount() && configured(AnimaniaConfig.WATER_REMOVED_AFTER_DRINKING, true)) {
                     // Level.removeBlock deliberately restores the position's
@@ -128,6 +134,7 @@ public final class AnimaniaFindWaterGoal extends Goal {
                 FluidState fluid = animal.level().getFluidState(pos);
                 var biome = animal.level().getBiome(pos);
                 match = fluid.is(FluidTags.WATER) && fluid.isSource()
+                        && animal.level().getBlockState(pos).getBlock() instanceof LiquidBlock
                         && (!enforceBiomeRules || (!biome.is(BiomeTags.IS_OCEAN) && !biome.is(BiomeTags.IS_BEACH)));
             }
             if (!match) continue;

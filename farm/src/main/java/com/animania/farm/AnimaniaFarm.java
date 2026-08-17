@@ -139,7 +139,13 @@ public final class AnimaniaFarm {
     private void attributes(EntityAttributeCreationEvent event) {
         ENTITIES.forEach((id, type) -> {
             if (!FarmLegacyIds.VEHICLE_IDS.contains(id)) {
-                event.put((EntityType<? extends LivingEntity>) type.get(), FarmAnimalProfile.forId(id).attributes().build());
+                var attributes = FarmAnimalProfile.forId(id).attributes();
+                if (id.startsWith("mare_") || id.startsWith("stallion_")) {
+                    // EntityHorse supplied this attribute in 1.12; the ported
+                    // entity is an Animal, so register the same jump strength.
+                    attributes.add(net.minecraft.world.entity.ai.attributes.Attributes.JUMP_STRENGTH, 0.7D);
+                }
+                event.put((EntityType<? extends LivingEntity>) type.get(), attributes.build());
             }
         });
     }

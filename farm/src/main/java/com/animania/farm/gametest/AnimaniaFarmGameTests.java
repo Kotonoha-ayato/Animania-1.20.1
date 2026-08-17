@@ -381,6 +381,10 @@ public final class AnimaniaFarmGameTests {
         helper.assertTrue(cow.gestationTicks() >= configuredGestation
                         && cow.gestationTicks() < configuredGestation + 200,
                 "pregnancy ignored configured duration or legacy random spread: " + cow.gestationTicks());
+        int pregnancyBeforeTick = cow.pregnancyTicks();
+        cow.tick();
+        helper.assertTrue(cow.pregnancyTicks() == pregnancyBeforeTick + 1,
+                "pregnancy counter did not advance on a server tick: " + cow.pregnancyTicks());
 
         CompoundTag recovery = new CompoundTag();
         cow.addAdditionalSaveData(recovery);
@@ -1282,6 +1286,40 @@ public final class AnimaniaFarmGameTests {
                 "small animal incorrectly removed its half-amount water source");
         chick.discard();
         com.animania.common.config.AnimaniaConfig.WATER_REMOVED_AFTER_DRINKING.set(previousRemoveWater);
+        helper.succeed();
+    }
+
+    @GameTest(template = "empty")
+    public static void animalsIgnoreWaterloggedBlocksAsNaturalWater(GameTestHelper helper) {
+        AnimaniaGameTestEvidence.mark("animania_farm:generic_ai_ignore_waterlogged_blocks");
+        boolean previousRemoveWater = AnimaniaConfig.WATER_REMOVED_AFTER_DRINKING.get();
+        AnimaniaConfig.WATER_REMOVED_AFTER_DRINKING.set(true);
+        AnimaniaAnimalEntity cow = createAnimal(helper, "cow_angus");
+        BlockPos cowPos = helper.absolutePos(new BlockPos(0, 1, 0));
+        BlockPos waterloggedPos = helper.absolutePos(new BlockPos(3, 1, 0));
+        cow.moveTo(cowPos.getX() + 0.5D, cowPos.getY(), cowPos.getZ() + 0.5D, 0.0F, 0.0F);
+        cow.markInteracted();
+        cow.setThirst(0);
+        cow.setHunger(100);
+        helper.getLevel().addFreshEntity(cow);
+        BlockState waterlogged = Blocks.OAK_SLAB.defaultBlockState()
+                .setValue(net.minecraft.world.level.block.SlabBlock.WATERLOGGED, true);
+        helper.getLevel().setBlock(waterloggedPos, waterlogged, 3);
+        try {
+            AnimaniaFindWaterGoal goal = new AnimaniaFindWaterGoal(cow, false, true, waterloggedPos::equals);
+            boolean found = false;
+            for (int attempt = 0; attempt < 500 && !found; attempt++) found = goal.canUse();
+            helper.assertFalse(found, "animal incorrectly selected a waterlogged slab as natural water");
+            BlockState remaining = helper.getLevel().getBlockState(waterloggedPos);
+            helper.assertTrue(remaining.is(Blocks.OAK_SLAB)
+                            && remaining.getValue(net.minecraft.world.level.block.SlabBlock.WATERLOGGED)
+                            && helper.getLevel().getFluidState(waterloggedPos).isSource(),
+                    "drinking logic damaged the waterlogged block: " + remaining
+                            + ", fluid=" + helper.getLevel().getFluidState(waterloggedPos));
+        } finally {
+            cow.discard();
+            AnimaniaConfig.WATER_REMOVED_AFTER_DRINKING.set(previousRemoveWater);
+        }
         helper.succeed();
     }
 
@@ -2342,6 +2380,105 @@ public final class AnimaniaFarmGameTests {
         pig.discard();
         bull.discard();
         helper.succeed();
+    }
+
+    @GameTest(template = "empty")
+    public static void saddledDraftHorseAcceptsPlayerControlInput(GameTestHelper helper) {
+        AnimaniaGameTestEvidence.mark("animania_farm:saddled_draft_horse_accepts_player_control");
+        AnimaniaAnimalEntity horse = createAnimal(helper, "mare_draft");
+        horse.setAge(0);
+        horse.setTamed(true);
+        horse.setSaddled(true);
+        horse.setHunger(100);
+        horse.setThirst(100);
+        helper.getLevel().setBlock(helper.absolutePos(new BlockPos(2, 0, 2)),
+                Blocks.STONE.defaultBlockState(), 3);
+        horse.moveTo(helper.absolutePos(new BlockPos(2, 1, 2)), 0.0F, 0.0F);
+        helper.getLevel().addFreshEntity(horse);
+        var rider = helper.makeMockPlayer();
+        helper.getLevel().addFreshEntity(rider);
+        rider.setYRot(0.0F);
+        rider.zza = 1.0F;
+        rider.xxa = 0.0F;
+        helper.assertTrue(rider.startRiding(horse, true),
+                "player could not mount a saddled draft horse");
+        helper.assertTrue(horse.getControllingPassenger() == rider,
+                "saddled draft horse did not expose the player as its controlling passenger");
+        helper.assertTrue(Math.abs(horse.getPassengersRidingOffset() - horse.getBbHeight() * 0.60D) < 0.0001D,
+                "mare draft horse did not retain the legacy 60 percent riding offset");
+        helper.assertTrue(horse.maxUpStep() >= 1.2F,
+                "draft horse did not retain the legacy one-block-plus step height");
+        helper.assertTrue(horse.getItem(0).is(Items.SADDLE),
+                "saddled draft horse did not expose its legacy saddle slot");
+        horse.setOnGround(true);
+        horse.setDeltaMovement(net.minecraft.world.phys.Vec3.ZERO);
+        horse.onPlayerJump(90);
+        horse.handleStartJump(90);
+        helper.runAtTickTime(1, () -> {
+            helper.assertTrue(horse.getDeltaMovement().y > 0.2D,
+                    "saddled draft horse ignored the real riding jump pipeline");
+            helper.assertTrue(horse.getDeltaMovement().horizontalDistanceSqr() > 0.000001D,
+                    "saddled draft horse ignored forward rider input");
+            helper.assertTrue(horse.walkAnimation.isMoving(),
+                    "ridden draft horse moved without updating its walk animation");
+        });
+        helper.runAtTickTime(18, () -> {
+            helper.assertTrue(horse.getY() < helper.absolutePos(new BlockPos(2, 3, 2)).getY(),
+                    "ridden draft horse did not receive normal gravity after jumping");
+            rider.stopRiding();
+            rider.discard();
+            horse.discard();
+            helper.succeed();
+        });
+    }
+
+    @GameTest(template = "empty", timeoutTicks = 80)
+    public static void saddledDraftHorseClimbsOneBlockWithNativeCollision(GameTestHelper helper) {
+        AnimaniaGameTestEvidence.mark("animania_farm:saddled_draft_horse_one_block_step");
+        AnimaniaAnimalEntity horse = createAnimal(helper, "mare_draft");
+        horse.setAge(0);
+        horse.setTamed(true);
+        horse.setSaddled(true);
+        horse.setHunger(100);
+        horse.setThirst(100);
+        BlockPos start = helper.absolutePos(new BlockPos(2, 1, 2));
+        BlockPos step = helper.absolutePos(new BlockPos(2, 1, 3));
+        for (int x = 1; x <= 3; x++) {
+            for (int z = 1; z <= 8; z++) {
+                helper.getLevel().setBlock(helper.absolutePos(new BlockPos(x, 0, z)),
+                        Blocks.STONE.defaultBlockState(), 3);
+            }
+        }
+        helper.getLevel().setBlock(step, Blocks.STONE.defaultBlockState(), 3);
+        horse.moveTo(start.getX() + 0.5D, start.getY(), start.getZ() + 0.05D, 0.0F, 0.0F);
+        horse.setOnGround(true);
+        horse.setDeltaMovement(net.minecraft.world.phys.Vec3.ZERO);
+        helper.getLevel().addFreshEntity(horse);
+        var rider = helper.makeMockPlayer();
+        helper.getLevel().addFreshEntity(rider);
+        rider.setYRot(0.0F);
+        rider.zza = 1.0F;
+        helper.assertTrue(rider.startRiding(horse, true), "player could not mount step-test horse");
+        double initialZ = horse.getZ();
+        // A GameTest mock player is server-side and therefore cannot claim
+        // LivingEntity.isControlledByLocalInstance() like a real client. Use
+        // the same native Entity.move collision path once to exercise the
+        // horse's maxUpStep without pretending the server owns client input.
+        helper.runAtTickTime(1, () -> {
+            horse.setOnGround(true);
+            horse.move(net.minecraft.world.entity.MoverType.SELF,
+                    new net.minecraft.world.phys.Vec3(0.0D, 0.0D, 1.0D));
+            helper.assertTrue(horse.getZ() > initialZ + 0.50D,
+                    "ridden draft horse never crossed the one-block obstacle: z=" + horse.getZ()
+                            + ", initial=" + initialZ + ", y=" + horse.getY()
+                            + ", delta=" + horse.getDeltaMovement() + ", step=" + horse.maxUpStep());
+            helper.assertTrue(horse.getY() >= start.getY() + 0.9D,
+                    "ridden draft horse did not climb onto the one-block obstacle: " + horse.getY());
+            rider.stopRiding();
+            rider.discard();
+            horse.discard();
+            helper.succeed();
+        });
     }
 
     @GameTest(template = "empty")
