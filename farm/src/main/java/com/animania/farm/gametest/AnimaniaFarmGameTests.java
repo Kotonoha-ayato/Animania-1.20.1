@@ -1290,8 +1290,8 @@ public final class AnimaniaFarmGameTests {
     }
 
     @GameTest(template = "empty")
-    public static void animalsIgnoreWaterloggedBlocksAsNaturalWater(GameTestHelper helper) {
-        AnimaniaGameTestEvidence.mark("animania_farm:generic_ai_ignore_waterlogged_blocks");
+    public static void animalsDrinkWaterloggedBlocksWithoutBreakingHost(GameTestHelper helper) {
+        AnimaniaGameTestEvidence.mark("animania_farm:generic_ai_drink_waterlogged_blocks");
         boolean previousRemoveWater = AnimaniaConfig.WATER_REMOVED_AFTER_DRINKING.get();
         AnimaniaConfig.WATER_REMOVED_AFTER_DRINKING.set(true);
         AnimaniaAnimalEntity cow = createAnimal(helper, "cow_angus");
@@ -1309,12 +1309,19 @@ public final class AnimaniaFarmGameTests {
             AnimaniaFindWaterGoal goal = new AnimaniaFindWaterGoal(cow, false, true, waterloggedPos::equals);
             boolean found = false;
             for (int attempt = 0; attempt < 500 && !found; attempt++) found = goal.canUse();
-            helper.assertFalse(found, "animal incorrectly selected a waterlogged slab as natural water");
+            helper.assertTrue(found && waterloggedPos.equals(goal.target()),
+                    "animal did not select a waterlogged slab as natural water");
+            if (!found) return;
+            cow.moveTo(waterloggedPos.getX() + 1.0D, waterloggedPos.getY(), waterloggedPos.getZ() + 0.5D,
+                    0.0F, 0.0F);
+            goal.tick();
+            helper.assertTrue(cow.getThirst() == 100,
+                    "animal did not drink from the waterlogged slab; thirst=" + cow.getThirst());
             BlockState remaining = helper.getLevel().getBlockState(waterloggedPos);
             helper.assertTrue(remaining.is(Blocks.OAK_SLAB)
-                            && remaining.getValue(net.minecraft.world.level.block.SlabBlock.WATERLOGGED)
-                            && helper.getLevel().getFluidState(waterloggedPos).isSource(),
-                    "drinking logic damaged the waterlogged block: " + remaining
+                            && !remaining.getValue(net.minecraft.world.level.block.SlabBlock.WATERLOGGED)
+                            && helper.getLevel().getFluidState(waterloggedPos).isEmpty(),
+                    "bucket-style drinking did not preserve the dry slab: " + remaining
                             + ", fluid=" + helper.getLevel().getFluidState(waterloggedPos));
         } finally {
             cow.discard();
