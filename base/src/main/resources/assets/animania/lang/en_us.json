@@ -35,6 +35,8 @@
   "screen.animania.config.list_hint": "Separate list entries with commas.",
   "screen.animania.config.invalid": "Invalid value: %s",
   "screen.animania.config.restart_hint": "Some spawn and world settings take effect after re-entering the world.",
+  "config.animania.gameplay.troughSolidCapacity": "Trough solid food capacity",
+  "config.animania.gameplay.troughFluidCapacity": "Trough liquid capacity (mB)",
   "item.animania.hay": "Hay",
   "item.animania.salt": "Salt",
   "item.animania.cheese": "Cheese",

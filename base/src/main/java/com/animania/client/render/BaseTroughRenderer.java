@@ -69,7 +69,7 @@ public final class BaseTroughRenderer implements BlockEntityRenderer<AnimaniaBlo
         // client packet cannot draw a food tint over a liquid surface.
         switch (entity.content()) {
             case FOOD -> renderFoodContents(entity, pose, buffers, packedLight, food);
-            case LIQUID -> renderFluidSurface(pose, buffers, fluid, packedLight);
+            case LIQUID -> renderFluidSurface(entity, pose, buffers, fluid, packedLight);
             case EMPTY -> { }
         }
         BaseLegacyFacilityRenderSupport.hideAll(model);
@@ -100,9 +100,10 @@ public final class BaseTroughRenderer implements BlockEntityRenderer<AnimaniaBlo
     /**
      * The 1.12 renderer used a fluid atlas sprite rather than the trough atlas.
      * Emit the same horizontal surface directly so water and slop use their
-     * registered still textures and the height follows the stored amount.
+     * registered still textures and the height follows the configured
+     * 1-30%, 30-60%, and 60-100% display bands.
      */
-    private static void renderFluidSurface(PoseStack pose, MultiBufferSource buffers,
+    private static void renderFluidSurface(AnimaniaBlocks.TroughEntity entity, PoseStack pose, MultiBufferSource buffers,
                                            FluidStack fluid, int packedLight) {
         IClientFluidTypeExtensions properties = IClientFluidTypeExtensions.of(fluid.getFluid());
         ResourceLocation stillTexture = properties.getStillTexture(fluid);
@@ -114,8 +115,8 @@ public final class BaseTroughRenderer implements BlockEntityRenderer<AnimaniaBlo
         float green = ((tint >> 8) & 0xFF) / 255.0F;
         float blue = (tint & 0xFF) / 255.0F;
         float alpha = ((tint >>> 24) & 0xFF) / 255.0F;
-        float amount = Math.max(0.0F, Math.min(1000.0F, fluid.getAmount()));
-        float y = 1.0F + 0.3122F * (1.0F - amount / 1000.0F);
+        int displayLevel = entity.fluidDisplayLevel();
+        float y = 1.0F + 0.3122F * (1.0F - displayLevel / 3.0F);
         VertexConsumer consumer = buffers.getBuffer(RenderType.entityTranslucent(InventoryMenu.BLOCK_ATLAS));
         PoseStack.Pose last = pose.last();
         // The converted trough spans x=-6..22 model pixels. The previous
@@ -148,13 +149,13 @@ public final class BaseTroughRenderer implements BlockEntityRenderer<AnimaniaBlo
      */
     private void renderFoodContents(AnimaniaBlocks.TroughEntity entity, PoseStack pose,
                                     MultiBufferSource buffers, int packedLight, ItemStack stack) {
-        int count = Math.min(3, Math.max(1, stack.getCount()));
+        int displayLevel = entity.foodDisplayLevel();
         float[] tint = foodTint(stack, entity.getLevel());
 
         BaseLegacyFacilityRenderSupport.hideAll(model);
         BaseLegacyFacilityRenderSupport.show(model, "feed");
         pose.pushPose();
-        pose.translate(0.0D, 0.17D * (3 - count), 0.0D);
+        pose.translate(0.0D, 0.17D * (3 - displayLevel), 0.0D);
         BaseLegacyFacilityRenderSupport.render(model, pose, buffers, TROUGH_TEXTURE,
                 packedLight, tint[0], tint[1], tint[2], 1.0F);
         pose.popPose();
@@ -178,7 +179,7 @@ public final class BaseTroughRenderer implements BlockEntityRenderer<AnimaniaBlo
         // causes camera-dependent dark speckles (z-fighting).
         VertexConsumer consumer = buffers.getBuffer(RenderType.entityCutout(foodTexture));
         pose.pushPose();
-        pose.translate(0.0D, 0.2D * (3 - count), 0.0D);
+        pose.translate(0.0D, 0.2D * (3 - displayLevel), 0.0D);
         pose.mulPose(Axis.YP.rotationDegrees(-10.0F));
         pose.scale(0.8F, 0.8F, 0.8F);
         pose.translate(0.0D, 0.25D, -0.1D);

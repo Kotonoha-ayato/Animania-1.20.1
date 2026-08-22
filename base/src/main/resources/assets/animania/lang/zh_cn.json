@@ -36,6 +36,8 @@
   "config.animania.gameplay.animalsStarve": "动物会饿死",
   "config.animania.gameplay.allowMobRiding": "允许骑乘动物",
   "config.animania.gameplay.allowTroughAutomation": "允许食槽自动化",
+  "config.animania.gameplay.troughSolidCapacity": "食槽固体食物容量",
+  "config.animania.gameplay.troughFluidCapacity": "食槽液体容量（mB）",
   "config.animania.gameplay.fallDamageReduceMultiplier": "摔落伤害倍率",
   "config.animania.gameplay.waterRemovedAfterDrinking": "饮水后消耗水源",
   "config.animania.gameplay.plantsRemovedAfterEating": "进食后移除植物",
