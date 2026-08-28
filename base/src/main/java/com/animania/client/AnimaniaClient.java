@@ -64,6 +64,10 @@ public final class AnimaniaClient {
 
     /** Restores the two tinted egg layers used by every non-random 1.12 animal egg. */
     public static void registerItemColors(RegisterColorHandlersEvent.Item event) {
+        event.register((stack, tintIndex) -> tintIndex == 0
+                        ? net.minecraft.world.item.alchemy.PotionUtils.getColor(net.minecraft.world.item.alchemy.Potions.WATER)
+                        : 0xFFFFFFFF,
+                com.animania.common.AnimaniaItems.WATER_BOTTLE.get());
         ForgeRegistries.ITEMS.getValues().stream()
                 .filter(AnimaniaEntityEggItem.class::isInstance)
                 .map(AnimaniaEntityEggItem.class::cast)

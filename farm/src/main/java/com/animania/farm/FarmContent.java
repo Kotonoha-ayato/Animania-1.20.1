@@ -68,7 +68,8 @@ public final class FarmContent {
             () -> net.minecraft.world.level.block.entity.BlockEntityType.Builder.of(FarmHiveBlockEntity::createWildHive, WILD_HIVE.get()).build(null));
 
     public static final RegistryObject<Block> CHEESE_MOLD = BLOCKS.register("cheese_mold", () ->
-            new FarmCheeseMoldBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_YELLOW).strength(1.2f).sound(SoundType.WOOD)));
+            new FarmCheeseMoldBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_YELLOW)
+                    .strength(1.2f).sound(SoundType.WOOD).noOcclusion()));
     public static final RegistryObject<net.minecraft.world.level.block.entity.BlockEntityType<FarmCheeseMoldBlockEntity>> CHEESE_MOLD_BE =
             BLOCK_ENTITIES.register("cheese_mold", () -> net.minecraft.world.level.block.entity.BlockEntityType.Builder
                     .of(FarmCheeseMoldBlockEntity::new, CHEESE_MOLD.get()).build(null));

@@ -29,6 +29,7 @@ final class FarmFluidPresentationTest {
             assertTrue(chinese.has(descriptionId), id + " Chinese name");
         }
         assertEquals("蜂蜜", chinese.get("fluid.animania_farm.animania_honey").getAsString());
+        assertEquals("荷斯坦牛牛奶", chinese.get("fluid.animania_farm.milk_holstein").getAsString());
     }
 
     @Test

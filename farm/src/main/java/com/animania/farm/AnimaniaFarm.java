@@ -123,6 +123,7 @@ public final class AnimaniaFarm {
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> bus.addListener(AnimaniaFarmClient::onClientSetup));
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> bus.addListener(AnimaniaFarmClient::registerLayers));
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> bus.addListener(AnimaniaFarmClient::registerRenderers));
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> bus.addListener(AnimaniaFarmClient::registerBlockColors));
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
