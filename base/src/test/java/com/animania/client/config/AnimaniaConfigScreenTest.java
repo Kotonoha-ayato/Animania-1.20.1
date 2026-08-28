@@ -13,9 +13,10 @@ class AnimaniaConfigScreenTest {
     @Test
     void forgeRegistersAnEditableClientConfigScreenForEveryModernSpec() throws Exception {
         String entry = Files.readString(Path.of("src/main/java/com/animania/Animania.java"));
+        String client = Files.readString(Path.of("src/main/java/com/animania/client/AnimaniaClient.java"));
         String screen = Files.readString(Path.of("src/main/java/com/animania/client/config/AnimaniaConfigScreen.java"));
-        assertTrue(entry.contains("ConfigScreenHandler.ConfigScreenFactory"));
-        assertTrue(entry.contains("AnimaniaConfigScreen::new"));
+        assertClientOnlyConfigRegistration(entry, client, "base");
+        assertTrue(client.contains("AnimaniaConfigScreen::new"));
         assertTrue(screen.contains("collectEntries(spec)"));
         assertTrue(screen.contains("new EditBox"));
         assertTrue(screen.contains("value.set(valueToSet)"));
@@ -24,18 +25,26 @@ class AnimaniaConfigScreenTest {
 
         for (String addon : new String[] {"farm", "catsdogs", "extra"}) {
             Path addonRoot = Path.of("..").resolve(addon).resolve("src/main/java/com/animania");
-            String addonEntry = Files.walk(addonRoot)
-                    .filter(path -> path.getFileName().toString().startsWith("Animania"))
-                    .filter(path -> path.getFileName().toString().endsWith(".java"))
-                    .map(path -> {
-                        try { return Files.readString(path); }
-                        catch (java.io.IOException exception) { throw new java.io.UncheckedIOException(exception); }
-                    })
-                    .filter(source -> source.contains("registerConfig(ModConfig.Type.COMMON"))
-                    .findFirst().orElseThrow();
-            assertTrue(addonEntry.contains("ConfigScreenHandler.ConfigScreenFactory"), addon);
-            assertTrue(addonEntry.contains("new com.animania.client.config.AnimaniaConfigScreen"), addon);
+            Path addonEntryPath = addonRoot.resolve(switch (addon) {
+                case "farm" -> "farm/AnimaniaFarm.java";
+                case "catsdogs" -> "catsdogs/AnimaniaCatsDogs.java";
+                case "extra" -> "extra/AnimaniaExtra.java";
+                default -> throw new IllegalStateException(addon);
+            });
+            String addonEntry = Files.readString(addonEntryPath);
+            Path addonClientPath = addonEntryPath.resolveSibling(addonEntryPath.getFileName().toString()
+                    .replace(".java", "Client.java"));
+            String addonClient = Files.readString(addonClientPath);
+            assertClientOnlyConfigRegistration(addonEntry, addonClient, addon);
+            assertTrue(addonClient.contains("new com.animania.client.config.AnimaniaConfigScreen"), addon);
         }
+    }
+
+    private static void assertClientOnlyConfigRegistration(String commonEntry, String clientEntry, String module) {
+        assertTrue(commonEntry.contains("Client::registerConfigScreen"), module);
+        assertTrue(!commonEntry.contains("ConfigScreenHandler.ConfigScreenFactory"), module);
+        assertTrue(!commonEntry.contains("AnimaniaConfigScreen"), module);
+        assertTrue(clientEntry.contains("ConfigScreenHandler.ConfigScreenFactory"), module);
     }
 
     @Test

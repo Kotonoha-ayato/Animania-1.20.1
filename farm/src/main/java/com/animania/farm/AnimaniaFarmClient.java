@@ -23,6 +23,15 @@ final class AnimaniaFarmClient {
     private AnimaniaFarmClient() {
     }
 
+    static void registerConfigScreen() {
+        net.minecraftforge.fml.ModLoadingContext.get().registerExtensionPoint(
+                net.minecraftforge.client.ConfigScreenHandler.ConfigScreenFactory.class,
+                () -> new net.minecraftforge.client.ConfigScreenHandler.ConfigScreenFactory((minecraft, parent) ->
+                        new com.animania.client.config.AnimaniaConfigScreen(parent,
+                                net.minecraft.network.chat.Component.translatable("screen.animania_farm.config.title"),
+                                AnimaniaFarm.MOD_ID, FarmConfig.SPEC)));
+    }
+
     static void registerLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
         FarmLegacyModelLayers.LAYERS.forEach((id, layer) -> event.registerLayerDefinition(layer, () -> FarmLegacyModelLayers.create(id)));
         FarmNativeModelLayers.LAYERS.forEach((id, layer) -> event.registerLayerDefinition(layer, () -> FarmNativeModelLayers.create(id)));

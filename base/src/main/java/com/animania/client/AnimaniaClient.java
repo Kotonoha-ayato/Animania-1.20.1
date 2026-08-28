@@ -21,6 +21,14 @@ public final class AnimaniaClient {
     private AnimaniaClient() {
     }
 
+    /** Register the Mod List screen without leaking Screen into common code. */
+    public static void registerConfigScreen() {
+        net.minecraftforge.fml.ModLoadingContext.get().registerExtensionPoint(
+                net.minecraftforge.client.ConfigScreenHandler.ConfigScreenFactory.class,
+                () -> new net.minecraftforge.client.ConfigScreenHandler.ConfigScreenFactory(
+                        com.animania.client.config.AnimaniaConfigScreen::new));
+    }
+
     public static void registerLayers(net.minecraftforge.client.event.EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(ANIMAL_LAYER, AnimaniaAnimalModel::createBodyLayer);
         event.registerLayerDefinition(VEHICLE_LAYER, AnimaniaVehicleModel::createBodyLayer);

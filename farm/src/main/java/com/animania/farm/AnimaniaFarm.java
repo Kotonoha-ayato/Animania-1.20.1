@@ -102,13 +102,8 @@ public final class AnimaniaFarm {
         AnimaniaApi.registerFoodMatcher(MOD_ID, (id, stack) -> FarmConfig.matchesSpeciesFood(id, stack));
         AnimaniaSleepProfiles.register(MOD_ID, AnimaniaFarm::sleepProfile);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, FarmConfig.SPEC);
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () ->
-                ModLoadingContext.get().registerExtensionPoint(
-                        net.minecraftforge.client.ConfigScreenHandler.ConfigScreenFactory.class,
-                        () -> new net.minecraftforge.client.ConfigScreenHandler.ConfigScreenFactory((minecraft, parent) ->
-                                new com.animania.client.config.AnimaniaConfigScreen(parent,
-                                        net.minecraft.network.chat.Component.translatable("screen.animania_farm.config.title"),
-                                        MOD_ID, FarmConfig.SPEC))));
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT,
+                () -> AnimaniaFarmClient::registerConfigScreen);
         bus.addListener(this::attributes);
         bus.addListener(this::spawnPlacements);
         bus.addListener(this::registerGameTests);
